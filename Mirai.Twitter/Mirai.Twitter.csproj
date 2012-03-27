@@ -46,12 +46,15 @@
     <Compile Include="Commands\FavoriateCommand.cs" />
     <Compile Include="Commands\TwitterCommandBase.cs" />
     <Compile Include="Commands\TimelineCommand.cs" />
+    <Compile Include="DataObjects\TwitterSearch.cs" />
+    <Compile Include="DataObjects\TwitterSearchResult.cs" />
     <Compile Include="DataObjects\TwitterIdCollection.cs" />
     <Compile Include="Commands\UserCommand.cs" />
     <Compile Include="Commands\FriendshipCommand.cs" />
     <Compile Include="DataObjects\TwitterRelationship.cs" />
     <Compile Include="DataObjects\TwitterRelationshipConnections.cs" />
     <Compile Include="DataObjects\TwitterRelationshipUser.cs" />
+    <Compile Include="DataObjects\TwitterSearchReusltType.cs" />
     <Compile Include="DataObjects\TwitterSuggestedUserCategory.cs" />
     <Compile Include="Commands\SuggestedUserCommand.cs" />
     <Compile Include="Core\TwitterLanguage.cs" />
