@@ -1,4 +1,4 @@
-﻿// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -21,45 +21,40 @@
 
 namespace Mirai.Twitter.Commands
 {
-    using System;
-    using System.Collections.Generic;
+    using System.Globalization;
 
-    using Mirai.Twitter.Core;
+    public sealed class TwitterGeoCode
+    {
+        public double Latitude { get; private set; }
 
-    using fastJSON;
+        public double Longitude { get; private set; }
 
-    public sealed class SearchCommand : TwitterCommandBase
-	{
-		private readonly string _CommandBaseUri;
+        public double Radius { get; private set; }
 
-
-		protected override string  CommandBaseUri
-		{
-			get 
-			{ 
-				 return this._CommandBaseUri;
-			}
-		}
+        public TwitterGeoCodeRadiusUnit RadiusUnit { get; private set; }
 
 
-		internal SearchCommand(TwitterApi twitterApi) : base(twitterApi, "")
-		{
-			this._CommandBaseUri = TwitterApi.SearchApiUri + "/" + "search.json";
-		}
+        public TwitterGeoCode(double latitude, double longitude, double radius, 
+                              TwitterGeoCodeRadiusUnit radiusUnit = TwitterGeoCodeRadiusUnit.Miles)
+        {
+            this.Latitude   = latitude;
+            this.Longitude  = longitude;
+            this.Radius     = radius;
+            this.RadiusUnit = radiusUnit;
+        }
 
-		public TwitterSearch Search(string q, SearchCommandOptions searchCommandOptions)
-		{
-            if (String.IsNullOrEmpty(q))
-                throw new ArgumentException();
+        public override string ToString()
+        {
+            return this.Latitude.ToString(CultureInfo.InvariantCulture) + "," +
+                   this.Longitude.ToString(CultureInfo.InvariantCulture) + "," +
+                   this.Radius.ToString(CultureInfo.InvariantCulture) + 
+                   (RadiusUnit == TwitterGeoCodeRadiusUnit.Miles ? "mi" : "km");
+        }
+    }
 
-			var uri         = new Uri(this.CommandBaseUri + String.Format("?q={0}{1}", q, 
-                                      searchCommandOptions != null ? "&" + searchCommandOptions : ""));
-            var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
-
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var search      = TwitterSearch.FromDictionary(jsonObj);
-
-            return search;
-		}
-	}
+    public enum TwitterGeoCodeRadiusUnit
+    {
+        Miles,
+        Kilometers
+    }
 }

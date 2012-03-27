@@ -46,11 +46,11 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Allows the authenticating users to follow the user specified in the ID parameter.
+        /// Allows the authenticating users to follow the search specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
-        /// <param name="follow">Enable notifications for the target user.</param>
+        /// <param name="follow">Enable notifications for the target search.</param>
         /// <returns></returns>
         public TwitterUser Create(string screenName, string userId = null, bool follow = true)
         {
@@ -85,12 +85,12 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows the authenticating users to unfollow the user specified in the ID parameter.
+        /// Allows the authenticating users to unfollow the search specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
         /// <param name="includeEntities"></param>
-        /// <returns>Returns the unfollowed user when successful.</returns>
+        /// <returns>Returns the unfollowed search when successful.</returns>
         public TwitterUser Destroy(string screenName, string userId = null, bool includeEntities = true)
         {
             if (!this.TwitterApi.Authenticated)
@@ -150,7 +150,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every user the specified user is following.
+        /// Returns an array of numeric IDs for every search the specified search is following.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -162,7 +162,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every user following the specified user.
+        /// Returns an array of numeric IDs for every search following the specified search.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -174,7 +174,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every user who has a pending request to follow the authenticating user.
+        /// Returns an array of numeric IDs for every search who has a pending request to follow the authenticating search.
         /// </summary>
         /// <param name="cursor"></param>
         /// <returns></returns>
@@ -184,7 +184,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every protected user for whom the authenticating user has a pending 
+        /// Returns an array of numeric IDs for every protected search for whom the authenticating search has a pending 
         /// follow request.
         /// </summary>
         /// <param name="cursor"></param>
@@ -195,7 +195,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of user_ids that the currently authenticated user does not want to see retweets from.
+        /// Returns an array of user_ids that the currently authenticated search does not want to see retweets from.
         /// </summary>
         /// <returns></returns>
         public string[] RetrieveNoRetweetIds()
@@ -252,7 +252,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows one to enable or disable retweets and device notifications from the specified user. 
+        /// Allows one to enable or disable retweets and device notifications from the specified search. 
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>

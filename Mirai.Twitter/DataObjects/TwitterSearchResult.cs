@@ -22,8 +22,8 @@
 namespace Mirai.Twitter
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Reflection;
 
     using Mirai.Twitter.Core;
@@ -54,8 +54,14 @@ namespace Mirai.Twitter
         [TwitterKey("iso_language_code")]
         public string IsoLanguageCode { get; set; }
 
+        [TwitterKey("metadata")]
+        public TwitterSearchResultMetadata Metadata { get; set; }
+
         [TwitterKey("profile_image_url")]
         public Uri ProfileImageUrl { get; set; }
+
+        [TwitterKey("profile_image_url_https")]
+        public Uri ProfileImageUrlHttps { get; set; }
 
         [TwitterKey("source")]
         public string Source { get; set; }
@@ -97,7 +103,14 @@ namespace Mirai.Twitter
                 }
                 else if (propertyInfo.PropertyType == typeof(DateTime))
                 {
-                    propertyInfo.SetValue(searchResult, value.ToString().ToDateTime(), null);
+                    DateTime dt;
+                    DateTime.TryParseExact(value.ToString(),
+                                           "ddd, dd MMM yyyy HH:mm:ss +0000",
+                                           CultureInfo.InvariantCulture,
+                                           DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
+                                           out dt);
+
+                    propertyInfo.SetValue(searchResult, dt, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterEntity))
                 {
@@ -110,6 +123,11 @@ namespace Mirai.Twitter
                 else if (propertyInfo.PropertyType == typeof(Uri))
                 {
                     propertyInfo.SetValue(searchResult, new Uri(value.ToString()), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterSearchResultMetadata))
+                {
+                    propertyInfo.SetValue(searchResult, 
+                        TwitterSearchResultMetadata.FromDictionary(value as Dictionary<string, object>), null);
                 }
             }
 

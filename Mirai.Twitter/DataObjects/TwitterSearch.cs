@@ -25,18 +25,12 @@ namespace Mirai.Twitter
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Net;
-    using System.Text;
-    using System.Threading;
-
-    using Mirai.Net.OAuth;
+    using System.Reflection;
+    
     using Mirai.Twitter.Core;
-    using Mirai.Utilities.Text;
-
-    using fastJSON;
-
+    
+    
     public sealed class TwitterSearch
     {
         [TwitterKey("completed_in")]
@@ -65,5 +59,49 @@ namespace Mirai.Twitter
 
         [TwitterKey("since_id")]
         public string SinceId { get; set; }
+
+
+        public static TwitterSearch FromDictionary(Dictionary<string, object> dictionary)
+        {
+            if (dictionary == null)
+                throw new ArgumentNullException("dictionary");
+
+            var search = new TwitterSearch();
+            if (dictionary.Count == 0)
+                return search;
+
+            var pis = search.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo, 
+                                                                                   typeof(TwitterKeyAttribute));
+                object value;
+                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
+                    continue;
+
+                if (propertyInfo.PropertyType == typeof(string))
+                {
+                    propertyInfo.SetValue(search, value, null);
+                }
+                else if (propertyInfo.PropertyType == typeof(int))
+                {
+                    propertyInfo.SetValue(search, value.ToString().ToInt32(), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(double))
+                {
+                    propertyInfo.SetValue(search, value.ToString().ToDouble(), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterSearchResult[]))
+                {
+                    var jsonArray   = (ArrayList)value;
+                    var results     = (from Dictionary<string, object> result in jsonArray
+                                       select TwitterSearchResult.FromDictionary(result)).ToArray();
+
+                    propertyInfo.SetValue(search, results, null);
+                }
+            }
+
+            return search;
+        }
     }
 }

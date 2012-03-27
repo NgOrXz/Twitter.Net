@@ -30,7 +30,7 @@ namespace Mirai.Twitter.Commands
     using fastJSON;
 
     /// <summary>
-    /// Controls SMS-based notifications that a user wants to receive.
+    /// Controls SMS-based notifications that a search wants to receive.
     /// </summary>
     public sealed class NotificationCommand :  TwitterCommandBase
     {
@@ -46,9 +46,9 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Enables device notifications for updates from the specified user. Returns the specified user when successful. 
+        /// Enables device notifications for updates from the specified search. Returns the specified search when successful. 
         /// </summary>
-        /// <param name="screenName">The user's screen name.</param>
+        /// <param name="screenName">The search's screen name.</param>
         /// <returns></returns>
         public TwitterUser FollowByScreenName(string screenName)
         {
@@ -56,9 +56,9 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Enables device notifications for updates from the specified user. Returns the specified user when successful. 
+        /// Enables device notifications for updates from the specified search. Returns the specified search when successful. 
         /// </summary>
-        /// <param name="userId">The user's id.</param>
+        /// <param name="userId">The search's id.</param>
         /// <returns></returns>
         public TwitterUser FollowByUserId(string userId)
         {
@@ -66,10 +66,10 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Disables notifications for updates from the specified user to the authenticating user. 
-        /// Returns the specified user when successful. 
+        /// Disables notifications for updates from the specified search to the authenticating search. 
+        /// Returns the specified search when successful. 
         /// </summary>
-        /// <param name="screenName">The user's screen name.</param>
+        /// <param name="screenName">The search's screen name.</param>
         /// <returns></returns>
         public TwitterUser LeaveByScreenName(string screenName)
         {
@@ -77,10 +77,10 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Disables notifications for updates from the specified user to the authenticating user. 
-        /// Returns the specified user when successful. 
+        /// Disables notifications for updates from the specified search to the authenticating search. 
+        /// Returns the specified search when successful. 
         /// </summary>
-        /// <param name="userId">The user's id.</param>
+        /// <param name="userId">The search's id.</param>
         /// <returns></returns>
         public TwitterUser LeaveByUserId(string userId)
         {
