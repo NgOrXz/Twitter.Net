@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mirai.Twitter</RootNamespace>
+    <AssemblyName>Mirai.Twitter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\AccountCommand.cs" />
+    <Compile Include="Commands\NotificationCommand.cs" />
+    <Compile Include="Commands\SearchCommand.cs" />
+    <Compile Include="Commands\FavoriateCommand.cs" />
+    <Compile Include="Commands\TwitterCommandBase.cs" />
+    <Compile Include="Commands\TimelineCommand.cs" />
+    <Compile Include="DataObjects\TwitterIdCollection.cs" />
+    <Compile Include="Commands\UserCommand.cs" />
+    <Compile Include="Commands\FriendshipCommand.cs" />
+    <Compile Include="DataObjects\TwitterRelationship.cs" />
+    <Compile Include="DataObjects\TwitterRelationshipConnections.cs" />
+    <Compile Include="DataObjects\TwitterRelationshipUser.cs" />
+    <Compile Include="DataObjects\TwitterSuggestedUserCategory.cs" />
+    <Compile Include="Commands\SuggestedUserCommand.cs" />
+    <Compile Include="Core\TwitterLanguage.cs" />
+    <Compile Include="DataObjects\TwitterRateLimitStatus.cs" />
+    <Compile Include="Core\ApiVersion.cs" />
+    <Compile Include="Commands\TweetCommand.cs" />
+    <Compile Include="Core\TwitterConfiguration.cs" />
+    <Compile Include="Core\TwitterError.cs" />
+    <Compile Include="Core\TwitterException.cs" />
+    <Compile Include="DataObjects\TweitterCoordinate.cs" />
+    <Compile Include="DataObjects\TwitterColor.cs" />
+    <Compile Include="DataObjects\TwitterEntity.cs" />
+    <Compile Include="DataObjects\TwitterGeometry.cs" />
+    <Compile Include="DataObjects\TwitterHashTag.cs" />
+    <Compile Include="Core\TwitterHelper.cs" />
+    <Compile Include="Core\TwitterApi.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\TwitterKeyAttribute.cs" />
+    <Compile Include="DataObjects\TwitterMedia.cs" />
+    <Compile Include="DataObjects\TwitterMediaResizeMode.cs" />
+    <Compile Include="DataObjects\TwitterMediaType.cs" />
+    <Compile Include="DataObjects\TwitterPlace.cs" />
+    <Compile Include="DataObjects\TwitterSize.cs" />
+    <Compile Include="DataObjects\TwitterSizes.cs" />
+    <Compile Include="DataObjects\TwitterTweet.cs" />
+    <Compile Include="DataObjects\TwitterUrl.cs" />
+    <Compile Include="DataObjects\TwitterUser.cs" />
+    <Compile Include="DataObjects\TwitterUserMention.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\fastJSON\fastJSON.csproj">
+      <Project>{207E91B1-C9F8-4913-88E1-3549EF5F3273}</Project>
+      <Name>fastJSON</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mirai.Net.OAuth\Mirai.Net.OAuth.csproj">
+      <Project>{60718038-D091-481B-8D08-AC627B38257C}</Project>
+      <Name>Mirai.Net.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mirai.Utilities\Mirai.Utilities.csproj">
+      <Project>{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}</Project>
+      <Name>Mirai.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
