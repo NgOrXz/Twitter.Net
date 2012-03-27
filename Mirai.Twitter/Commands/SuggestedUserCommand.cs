@@ -47,7 +47,7 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Access to Twitter's suggested search list. This returns the list of suggested search category. 
+        /// Access to Twitter's suggested savedSearch list. This returns the list of suggested savedSearch category. 
         /// </summary>
         /// <param name="language">
         /// Restricts the suggested category to the requested language. The language must be specified by 
@@ -56,7 +56,7 @@ namespace Mirai.Twitter.Commands
         /// If you use lang in this request, ensure you also include it when requesting the GET 
         /// users/suggestions/:slug list.
         /// </param>
-        /// <returns>Returns the list of suggested search category.</returns>
+        /// <returns>Returns the list of suggested savedSearch category.</returns>
         public TwitterSuggestedUserCategory[] RetrieveSuggestionCategories(string language = null)
         {
             var queryString = String.IsNullOrEmpty(language) ? String.Empty : String.Format("?lang={0}", language);
@@ -72,7 +72,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Access the users in a given category of the Twitter suggested search list.
+        /// Access the users in a given category of the Twitter suggested savedSearch list.
         /// It is recommended that end clients cache this data for no more than one hour.
         /// </summary>
         /// <param name="slug">The short name of list or a category.</param>
@@ -95,8 +95,8 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Access the users in a given category of the Twitter suggested search list and return their most recent 
-        /// status if they are not a protected search.
+        /// Access the users in a given category of the Twitter suggested savedSearch list and return their most recent 
+        /// status if they are not a protected savedSearch.
         /// </summary>
         /// <param name="slug">The short name of list or a category.</param>
         /// <returns></returns>

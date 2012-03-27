@@ -1,10 +1,10 @@
 Usage:
-	TwitterApi twitterApi = new TwitterApi("consumer key", "consumer secret");
-	twitterApi.AcquireRequestToken("oob");
-	twitterApi.AcquireAccessToken("verifier");
-	twitterApi.TweetCommand.Update("Hello World!");
-	
-	--- OR ---
-	
-	TwitterApi twitterApi = new TwitterApi("consumer key", "consumer secret", "access token", "token secret");
-	twitterApi.TweetCommand.Update("Hello World!");
+    TwitterApi twitterApi = new TwitterApi("consumer key", "consumer secret");
+    twitterApi.AcquireRequestToken("oob");
+    twitterApi.AcquireAccessToken("verifier");
+    twitterApi.TweetCommand.Update("Hello World!");
+    
+    --- OR ---
+    
+    TwitterApi twitterApi = new TwitterApi("consumer key", "consumer secret", "access token", "token secret");
+    twitterApi.TweetCommand.Update("Hello World!");

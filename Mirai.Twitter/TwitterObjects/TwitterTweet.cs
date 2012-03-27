@@ -30,7 +30,7 @@ namespace Mirai.Twitter
     using Mirai.Twitter.Core;
 
     /// <summary>
-    /// The twitter search.
+    /// The twitter savedSearch.
     /// </summary>
     public sealed class TwitterTweet
     {

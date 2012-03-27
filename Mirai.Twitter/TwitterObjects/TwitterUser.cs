@@ -22,9 +22,7 @@
 namespace Mirai.Twitter
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Reflection;
 
     using Mirai.Twitter.Core;

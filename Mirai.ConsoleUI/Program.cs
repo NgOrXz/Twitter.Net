@@ -82,13 +82,18 @@ namespace Mirai.ConsoleUI
                 //twitterObj.TimelineCommand.RetweetedToUser(screenName: "nokia");
                 //twitterObj.TimelineCommand.RetweetedByUser(screenName: "nokia");
 
-                twitterObj.SearchCommand.Search("月亮", new SearchCommandOptions
-                    {
-                        //GeoCode = new TwitterGeoCode(37.781157, -122.398720, 10),
-                        IncludeEntities = true,
-                        Page = 1, ShowUser = true, ReusltType = TwitterSearchReusltType.Mixed,
-                        TweetsPerPage = 20, Until = DateTime.Now
-                    });
+                //twitterObj.SearchCommand.Search("月亮", new SearchOptions
+                //    {
+                //        //GeoCode = new TwitterGeoCode(37.781157, -122.398720, 10),
+                //        IncludeEntities = true,
+                //        Page = 1, ShowUser = true, ReusltType = TwitterSearchReusltType.Mixed,
+                //        TweetsPerPage = 20, Until = DateTime.Now
+                //    });
+
+                //twitterObj.SavedSearchCommand.RetrieveSavedSearches();
+                twitterObj.SavedSearchCommand.Show("86615025");
+                //twitterObj.SavedSearchCommand.Create("@space");
+                //twitterObj.SavedSearchCommand.Destroy("86615025");
             }
             catch (TwitterException e)
             {

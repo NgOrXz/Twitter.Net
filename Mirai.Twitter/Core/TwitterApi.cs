@@ -161,6 +161,17 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public SavedSearchCommand SavedSearchCommand
+        {
+            get
+            {
+                SavedSearchCommand savedSearchCmd = null;
+                LazyInitializer.EnsureInitialized(ref savedSearchCmd, () => new SavedSearchCommand(this));
+
+                return savedSearchCmd;
+            }
+        }
+
         public SearchCommand SearchCommand
         {
             get

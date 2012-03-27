@@ -27,7 +27,7 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Twitter.Core;
 
-    public sealed class SearchCommandOptions
+    public sealed class SearchOptions
     {
         //[TwitterKey("callback")]
         //public string Callback { get; set; }
@@ -70,7 +70,7 @@ namespace Mirai.Twitter.Commands
         {
             var sb = new StringBuilder();
 
-            var pis = typeof(SearchCommandOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = typeof(SearchOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,

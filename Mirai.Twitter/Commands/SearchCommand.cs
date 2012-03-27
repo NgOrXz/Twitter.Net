@@ -21,14 +21,14 @@
 
 namespace Mirai.Twitter.Commands
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
-    using Mirai.Twitter.Core;
+	using Mirai.Twitter.Core;
 
-    using fastJSON;
+	using fastJSON;
 
-    public sealed class SearchCommand : TwitterCommandBase
+	public sealed class SearchCommand : TwitterCommandBase
 	{
 		private readonly string _CommandBaseUri;
 
@@ -47,19 +47,19 @@ namespace Mirai.Twitter.Commands
 			this._CommandBaseUri = TwitterApi.SearchApiUri + "/" + "search.json";
 		}
 
-		public TwitterSearch Search(string q, SearchCommandOptions searchCommandOptions)
+		public TwitterSearch Search(string q, SearchOptions searchCommandOptions)
 		{
-            if (String.IsNullOrEmpty(q))
-                throw new ArgumentException();
+			if (String.IsNullOrEmpty(q))
+				throw new ArgumentException();
 
 			var uri         = new Uri(this.CommandBaseUri + String.Format("?q={0}{1}", q, 
-                                      searchCommandOptions != null ? "&" + searchCommandOptions : ""));
-            var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+									  searchCommandOptions != null ? "&" + searchCommandOptions : ""));
+			var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var search      = TwitterSearch.FromDictionary(jsonObj);
+			var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+			var search      = TwitterSearch.FromDictionary(jsonObj);
 
-            return search;
+			return search;
 		}
 	}
 }
