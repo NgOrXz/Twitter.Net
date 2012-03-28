@@ -50,11 +50,16 @@
     <Compile Include="Commands\TwitterGeoCode.cs" />
     <Compile Include="Commands\SavedSearchCommand.cs" />
     <Compile Include="Commands\DirectMessageCommand.cs" />
+    <Compile Include="Commands\ListCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterCursorPagedCollection.cs" />
+    <Compile Include="TwitterObjects\TwitterCursorPagedListCollection.cs" />
     <Compile Include="TwitterObjects\TwitterDirectMessage.cs" />
+    <Compile Include="TwitterObjects\TwitterList.cs" />
+    <Compile Include="TwitterObjects\TwitterListMode.cs" />
     <Compile Include="TwitterObjects\TwitterSavedSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearchResult.cs" />
-    <Compile Include="TwitterObjects\TwitterIdCollection.cs" />
+    <Compile Include="TwitterObjects\TwitterCursorPagedIdCollection.cs" />
     <Compile Include="Commands\UserCommand.cs" />
     <Compile Include="Commands\FriendshipCommand.cs" />
     <Compile Include="TwitterObjects\TwitterRelationship.cs" />
