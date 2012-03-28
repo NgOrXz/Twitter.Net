@@ -151,8 +151,8 @@ namespace Mirai.Twitter.Commands
         /// <param name="cursor"></param>
         /// <param name="ownedList"></param>
         /// <returns></returns>
-        public TwitterCursorPagedListCollection RetrieveMembership(string screenName = null, string userId = null,
-                                                                   string cursor = "-1", bool ownedList = false)
+        public TwitterCursorPagedListCollection RetrieveMemberships(string screenName = null, string userId = null,
+                                                                    string cursor = "-1", bool ownedList = false)
         {
             if (String.IsNullOrEmpty(cursor))
                 throw new ArgumentException();
@@ -296,6 +296,36 @@ namespace Mirai.Twitter.Commands
             var list    = TwitterList.FromDictionary(jsonObj);
 
             return list;
+        }
+
+        private TwitterCursorPagedUserCollection RetrieveSubscribers(string listId, string slug, string ownerId,
+                                                                     string ownerScreenName, string cursor = "-1",
+                                                                     bool includeEntities = true, bool skipStatus = false)
+        {
+            var queryBuilder = new StringBuilder();
+            queryBuilder.AppendFormat("?cursor={0}&include_entities={1}&skip_status={2}&",
+                cursor, includeEntities ? "true" : "false", skipStatus ? "true" : "false");
+
+            if (!String.IsNullOrEmpty(listId))
+                queryBuilder.AppendFormat("list_id={0}&", listId);
+            if (!String.IsNullOrEmpty(slug))
+                queryBuilder.AppendFormat("slug={0}&", slug);
+            if (!String.IsNullOrEmpty(ownerId))
+                queryBuilder.AppendFormat("owner_id={0}&", ownerId);
+            if (!String.IsNullOrEmpty(ownerScreenName))
+                queryBuilder.AppendFormat("owner_screen_name={0}&", ownerScreenName);
+
+            var uri         = new Uri(this.CommandBaseUri + String.Format("/subscribers.json{0}",
+                                      queryBuilder.ToString().TrimEnd('&')));
+
+            var response    = this.TwitterApi.Authenticated ?
+                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
+                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
+            var users   = TwitterCursorPagedUserCollection.FromDictionary(jsonObj);
+
+            return users;
         }
         
         private TwitterTweet[] RetrieveTweetsOfListMembers(string listId, string slug,

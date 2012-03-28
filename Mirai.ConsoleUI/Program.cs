@@ -104,7 +104,7 @@ namespace Mirai.ConsoleUI
                 //twitterObj.ListCommand.RetrieveUserLists("yukinoyume");
                 //twitterObj.ListCommand.RetrieveSubscriptions("yukinoyume");
                 //twitterObj.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
-                //twitterObj.ListCommand.RetrieveMembership("twitter");
+                //twitterObj.ListCommand.RetrieveMemberships("twitter");
             }
             catch (TwitterException e)
             {
