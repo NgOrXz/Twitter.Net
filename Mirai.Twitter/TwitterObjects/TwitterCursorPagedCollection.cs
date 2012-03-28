@@ -21,28 +21,33 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
 
     using Mirai.Twitter.Core;
 
-    public abstract class TwitterCursorPagedCollection<T> : IList<T> where T : class 
+    /// <summary>
+    /// The twitter cursor paged collection.
+    /// </summary>
+    /// <typeparam name="T">
+    /// </typeparam>
+    public abstract class TwitterCursorPagedCollection<T> : IList<T>
+        where T : class
     {
-        private List<T> _Elements;
+        #region Constants and Fields
 
+        /// <summary>
+        /// The _ elements.
+        /// </summary>
+        private readonly List<T> _Elements;
 
-        [TwitterKey("next_cursor_str")]
-        public string NextCursor { get; set; }
-
-        [TwitterKey("previous_cursor_str")]
-        public string PreviousCursor { get; set; }
-
+        #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterCursorPagedCollection{T}"/> class.
+        /// </summary>
         protected TwitterCursorPagedCollection()
         {
             this._Elements = new List<T>();
@@ -50,88 +55,203 @@ namespace Mirai.Twitter.TwitterObjects
 
         #endregion
 
-        #region Public Methods
+        #region Public Properties
 
-        public int IndexOf(T item)
-        {
-            return this._Elements.IndexOf(item);
-        }
-
-        public void Insert(int index, T item)
-        {
-            this._Elements.Insert(index, item);
-        }
-
-        public void RemoveAt(int index)
-        {
-            this._Elements.RemoveAt(index);
-        }
-
-        public T this[int index]
-        {
-            get
-            {
-                return this._Elements[index];
-            }
-            set
-            {
-                this._Elements[index] = value;
-            }
-        }
-
-        public void Add(T item)
-        {
-            this._Elements.Add(item);
-        }
-
-        public void AddRange(IEnumerable<T> collection)
-        {
-            this._Elements.AddRange(collection);
-        }
-
-        public void Clear()
-        {
-            this._Elements.Clear();
-        }
-
-        public bool Contains(T item)
-        {
-            return this._Elements.Contains(item);
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            this._Elements.CopyTo(array, arrayIndex);
-        }
-
+        /// <summary>
+        /// Gets Count.
+        /// </summary>
         public int Count
         {
             get { return this._Elements.Count; }
         }
 
-        public bool IsReadOnly
+        /// <summary>
+        /// Gets or sets NextCursor.
+        /// </summary>
+        [TwitterKey("next_cursor_str")]
+        public string NextCursor { get; set; }
+
+        /// <summary>
+        /// Gets or sets PreviousCursor.
+        /// </summary>
+        [TwitterKey("previous_cursor_str")]
+        public string PreviousCursor { get; set; }
+
+        #endregion
+
+        #region Explicit Interface Properties
+
+        /// <summary>
+        /// Gets a value indicating whether IsReadOnly.
+        /// </summary>
+        bool ICollection<T>.IsReadOnly
         {
             get { return ((IList)this._Elements).IsReadOnly; }
         }
 
-        public bool Remove(T item)
+        #endregion
+
+        #region Public Indexers
+
+        /// <summary>
+        /// The this.
+        /// </summary>
+        /// <param name="index">
+        /// The index.
+        /// </param>
+        public T this[int index]
         {
-            return this._Elements.Remove(item);
+            get { return this._Elements[index]; }
+            set { this._Elements[index] = value; }
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// The add.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        public void Add(T item)
+        {
+            this._Elements.Add(item);
+        }
+
+        /// <summary>
+        /// The add range.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        public void AddRange(IEnumerable<T> collection)
+        {
+            this._Elements.AddRange(collection);
+        }
+
+        /// <summary>
+        /// The clear.
+        /// </summary>
+        public void Clear()
+        {
+            this._Elements.Clear();
+        }
+
+        /// <summary>
+        /// The contains.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <returns>
+        /// The contains.
+        /// </returns>
+        public bool Contains(T item)
+        {
+            return this._Elements.Contains(item);
+        }
+
+        /// <summary>
+        /// The copy to.
+        /// </summary>
+        /// <param name="array">
+        /// The array.
+        /// </param>
+        /// <param name="arrayIndex">
+        /// The array index.
+        /// </param>
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            this._Elements.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// The get enumerator.
+        /// </summary>
+        /// <returns>
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
             return this._Elements.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <summary>
+        /// The index of.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <returns>
+        /// The index of.
+        /// </returns>
+        public int IndexOf(T item)
         {
-            return ((IList)this._Elements).GetEnumerator();
+            return this._Elements.IndexOf(item);
         }
 
+        /// <summary>
+        /// The insert.
+        /// </summary>
+        /// <param name="index">
+        /// The index.
+        /// </param>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        public void Insert(int index, T item)
+        {
+            this._Elements.Insert(index, item);
+        }
+
+        /// <summary>
+        /// The remove.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <returns>
+        /// The remove.
+        /// </returns>
+        public bool Remove(T item)
+        {
+            return this._Elements.Remove(item);
+        }
+
+        /// <summary>
+        /// The remove at.
+        /// </summary>
+        /// <param name="index">
+        /// The index.
+        /// </param>
+        public void RemoveAt(int index)
+        {
+            this._Elements.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// The to array.
+        /// </summary>
+        /// <returns>
+        /// </returns>
         public T[] ToArray()
         {
             return this._Elements.ToArray();
+        }
+
+        #endregion
+
+        #region Explicit Interface Methods
+
+        /// <summary>
+        /// The get enumerator.
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IList)this._Elements).GetEnumerator();
         }
 
         #endregion
