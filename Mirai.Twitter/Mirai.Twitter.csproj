@@ -49,6 +49,8 @@
     <Compile Include="Commands\TimelineCommand.cs" />
     <Compile Include="Commands\TwitterGeoCode.cs" />
     <Compile Include="Commands\SavedSearchCommand.cs" />
+    <Compile Include="Commands\DirectMessageCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterDirectMessage.cs" />
     <Compile Include="TwitterObjects\TwitterSavedSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearchResult.cs" />

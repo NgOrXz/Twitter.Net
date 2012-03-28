@@ -27,6 +27,8 @@ namespace Mirai.Twitter.Commands
     using System.Linq;
     using System.Text;
 
+    using Mirai.Twitter.TwitterObjects;
+
     using fastJSON;
 
     using Mirai.Net.OAuth;
@@ -46,11 +48,11 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Allows the authenticating users to follow the savedSearch specified in the ID parameter.
+        /// Allows the authenticating users to follow the dm specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
-        /// <param name="follow">Enable notifications for the target savedSearch.</param>
+        /// <param name="follow">Enable notifications for the target dm.</param>
         /// <returns></returns>
         public TwitterUser Create(string screenName, string userId = null, bool follow = true)
         {
@@ -85,12 +87,12 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows the authenticating users to unfollow the savedSearch specified in the ID parameter.
+        /// Allows the authenticating users to unfollow the dm specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
         /// <param name="includeEntities"></param>
-        /// <returns>Returns the unfollowed savedSearch when successful.</returns>
+        /// <returns>Returns the unfollowed dm when successful.</returns>
         public TwitterUser Destroy(string screenName, string userId = null, bool includeEntities = true)
         {
             if (!this.TwitterApi.Authenticated)
@@ -150,7 +152,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every savedSearch the specified savedSearch is following.
+        /// Returns an array of numeric IDs for every dm the specified dm is following.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -162,7 +164,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every savedSearch following the specified savedSearch.
+        /// Returns an array of numeric IDs for every dm following the specified dm.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -174,7 +176,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every savedSearch who has a pending request to follow the authenticating savedSearch.
+        /// Returns an array of numeric IDs for every dm who has a pending request to follow the authenticating dm.
         /// </summary>
         /// <param name="cursor"></param>
         /// <returns></returns>
@@ -184,7 +186,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every protected savedSearch for whom the authenticating savedSearch has a pending 
+        /// Returns an array of numeric IDs for every protected dm for whom the authenticating dm has a pending 
         /// follow request.
         /// </summary>
         /// <param name="cursor"></param>
@@ -195,7 +197,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of user_ids that the currently authenticated savedSearch does not want to see retweets from.
+        /// Returns an array of user_ids that the currently authenticated dm does not want to see retweets from.
         /// </summary>
         /// <returns></returns>
         public string[] RetrieveNoRetweetIds()
@@ -252,7 +254,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows one to enable or disable retweets and device notifications from the specified savedSearch. 
+        /// Allows one to enable or disable retweets and device notifications from the specified dm. 
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>

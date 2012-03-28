@@ -91,9 +91,14 @@ namespace Mirai.ConsoleUI
                 //    });
 
                 //twitterObj.SavedSearchCommand.RetrieveSavedSearches();
-                twitterObj.SavedSearchCommand.Show("86615025");
+                //twitterObj.SavedSearchCommand.Show("86615025");
                 //twitterObj.SavedSearchCommand.Create("@space");
                 //twitterObj.SavedSearchCommand.Destroy("86615025");
+
+                //twitterObj.DirectMessageCommand.RetrieveDirectMessages();
+                //twitterObj.DirectMessageCommand.Show("1900822745");
+                //twitterObj.DirectMessageCommand.Destroy("1900822745");
+                //twitterObj.DirectMessageCommand.Sent();
             }
             catch (TwitterException e)
             {

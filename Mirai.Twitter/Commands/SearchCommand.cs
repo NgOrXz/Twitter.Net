@@ -25,6 +25,7 @@ namespace Mirai.Twitter.Commands
 	using System.Collections.Generic;
 
 	using Mirai.Twitter.Core;
+	using Mirai.Twitter.TwitterObjects;
 
 	using fastJSON;
 

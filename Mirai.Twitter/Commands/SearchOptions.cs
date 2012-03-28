@@ -26,6 +26,7 @@ namespace Mirai.Twitter.Commands
     using System.Text;
 
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     public sealed class SearchOptions
     {

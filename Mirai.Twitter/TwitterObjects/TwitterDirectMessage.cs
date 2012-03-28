@@ -1,4 +1,4 @@
-// ------------------------------------------------------------------------------------------------------
+﻿// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -27,56 +27,70 @@ namespace Mirai.Twitter.TwitterObjects
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterPlace
+    public sealed class TwitterDirectMessage
     {
-        [TwitterKey("country")]
-        public string Country { get; set; }
-
-        [TwitterKey("country_code")]
-        public string CountryCode { get; set; }
-
-        [TwitterKey("full_name")]
-        public string FullName { get; set; }
+        [TwitterKey("created_at")]
+        public DateTime CreatedAt { get; set; }
 
         [TwitterKey("id_str")]
         public string Id { get; set; }
 
-        [TwitterKey("name")]
-        public string Name { get; set; }
+        [TwitterKey("recipient")]
+        public TwitterUser Recipient { get; set; }
 
-        [TwitterKey("url")]
-        public Uri Url { get; set; }
+        [TwitterKey("recipient_id")]
+        public string RecipientId { get; set; }
+
+        [TwitterKey("recipient_screen_name")]
+        public string RecipientScreenName { get; set; }
+
+        [TwitterKey("sender")]
+        public TwitterUser Sender { get; set; }
+
+        [TwitterKey("sender_id")]
+        public string SenderId { get; set; }
+
+        [TwitterKey("sender_screen_name")]
+        public string SenderScreenName { get; set; }
+
+        [TwitterKey("text")]
+        public string Text { get; set; }
 
 
-        public static TwitterPlace FromDictionary(Dictionary<string, object> dictionary)
+        public static TwitterDirectMessage FromDictionary(Dictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var twitterPlace = new TwitterPlace();
+            var dm = new TwitterDirectMessage();
             if (dictionary.Count == 0)
-                return twitterPlace;
+                return dm;
 
-            var pis = twitterPlace.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = dm.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
                                                                                    typeof(TwitterKeyAttribute));
+
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
                     continue;
 
-                if (propertyInfo.PropertyType == typeof(String))
+                if (propertyInfo.PropertyType == typeof(string))
                 {
-                    propertyInfo.SetValue(twitterPlace, value, null);
+                    propertyInfo.SetValue(dm, value, null);
                 }
-                else if (propertyInfo.PropertyType == typeof(Uri))
+                else if (propertyInfo.PropertyType == typeof(DateTime))
                 {
-                    propertyInfo.SetValue(twitterPlace, new Uri(value.ToString()), null);
+                    propertyInfo.SetValue(dm, value.ToString().ToDateTime(), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterUser))
+                {
+                    propertyInfo.SetValue(dm, TwitterUser.FromDictionary(value as Dictionary<string, object>), null);
                 }
             }
 
-            return twitterPlace;
+            return dm;
         }
     }
 }

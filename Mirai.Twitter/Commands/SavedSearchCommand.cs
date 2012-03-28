@@ -7,6 +7,7 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     using fastJSON;
 

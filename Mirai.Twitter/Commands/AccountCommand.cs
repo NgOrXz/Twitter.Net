@@ -28,6 +28,7 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     using fastJSON;
 
@@ -235,7 +236,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Retrieves the current count of friends, followers, updates (statuses) and favorites of the authenticating savedSearch.
+        /// Retrieves the current count of friends, followers, updates (statuses) and favorites of the authenticating dm.
         /// </summary>
         /// <param name="friends"></param>
         /// <param name="statuses"></param>

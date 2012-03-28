@@ -26,6 +26,8 @@ namespace Mirai.Twitter.Core
     using System.Collections.Generic;
     using System.Reflection;
 
+    using Mirai.Twitter.TwitterObjects;
+
     public sealed class TwitterConfiguration
     {
         [TwitterKey("characters_reserved_per_media")]

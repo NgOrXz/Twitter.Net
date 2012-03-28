@@ -19,7 +19,7 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Twitter
+namespace Mirai.Twitter.TwitterObjects
 {
     using System;
     using System.Collections;
@@ -30,7 +30,7 @@ namespace Mirai.Twitter
     using Mirai.Twitter.Core;
 
     /// <summary>
-    /// The twitter savedSearch.
+    /// The twitter dm.
     /// </summary>
     public sealed class TwitterTweet
     {

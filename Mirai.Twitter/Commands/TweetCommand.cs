@@ -29,11 +29,12 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     using fastJSON;
 
     /// <summary>
-    /// The savedSearch command.
+    /// The dm command.
     /// </summary>
     public sealed class TweetCommand : TwitterCommandBase
     {
@@ -63,7 +64,7 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Show savedSearch objects of up to 100 members who retweeted the status. 
+        /// Show dm objects of up to 100 members who retweeted the status. 
         /// </summary>
         /// <param name="id">The numerical ID of the desired status.</param>
         /// <param name="count">
@@ -95,7 +96,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Show savedSearch ids of up to 100 users who retweeted the status.
+        /// Show dm ids of up to 100 users who retweeted the status.
         /// </summary>
         /// <param name="id">The numerical ID of the desired status.</param>
         /// <param name="count">
@@ -132,7 +133,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="id">The numerical ID of the desired status.</param>
         /// <param name="count">Specifies the number of records to retrieve. Must be less than or equal to 100.</param>
         /// <param name="trimUser">
-        /// When set to either true, each tweet returned in a timeline will include a savedSearch object including 
+        /// When set to either true, each tweet returned in a timeline will include a dm object including 
         /// only the status authors numerical ID. 
         /// </param>
         /// <param name="includeEntities"></param>
@@ -189,7 +190,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Destroys the status specified by the required ID parameter. The authenticating savedSearch must be 
+        /// Destroys the status specified by the required ID parameter. The authenticating dm must be 
         /// the author of the specified status. Returns the destroyed status if successful. 
         /// </summary>
         /// <param name="id"></param>
@@ -254,7 +255,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Updates the authenticating savedSearch's status, also known as tweeting.
+        /// Updates the authenticating dm's status, also known as tweeting.
         /// To upload an image to accompany the tweet, use UpdateWithMedia method.
         /// </summary>
         /// <param name="status"></param>
@@ -324,7 +325,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Updates the authenticating savedSearch's status and attaches media for upload. 
+        /// Updates the authenticating dm's status and attaches media for upload. 
         /// </summary>
         /// <param name="status"></param>
         /// <param name="inReplyToStatusId"></param>

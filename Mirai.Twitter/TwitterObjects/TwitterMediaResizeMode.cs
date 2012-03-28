@@ -19,7 +19,7 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Twitter
+namespace Mirai.Twitter.TwitterObjects
 {
     public enum TwitterMediaResizeMode
     {

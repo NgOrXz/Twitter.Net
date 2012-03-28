@@ -30,6 +30,7 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     using fastJSON;
 
@@ -71,7 +72,7 @@ namespace Mirai.Twitter.Commands
 
         /// <summary>
         /// Return up to 100 users worth of extended information, specified by either ID, screen name, or 
-        /// combination of the two. The author's most recent status (if the authenticating savedSearch has permission) 
+        /// combination of the two. The author's most recent status (if the authenticating dm has permission) 
         /// will be returned inline.
         /// </summary>
         /// <param name="screenNames"></param>
@@ -112,7 +113,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Access the profile image in various sizes for the savedSearch with the indicated screenName. 
+        /// Access the profile image in various sizes for the dm with the indicated screenName. 
         /// If no size is provided the normal image is returned.
         /// </summary>
         /// <param name="screenName"></param>
@@ -120,7 +121,7 @@ namespace Mirai.Twitter.Commands
         /// <returns></returns>
         /// <remarks>
         /// This method should only be used by application developers to lookup or check the profile image URL 
-        /// for a savedSearch. This method must not be used as the image source URL presented to users of your application.
+        /// for a dm. This method must not be used as the image source URL presented to users of your application.
         /// </remarks>
         public Uri RetrieveProfileImageUri(string screenName, ProfileImageSize profileImageSize = ProfileImageSize.Normal)
         {
@@ -141,7 +142,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of users that the specified savedSearch can contribute to.
+        /// Returns an array of users that the specified dm can contribute to.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -177,7 +178,7 @@ namespace Mirai.Twitter.Commands
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="q">The savedSearch query to run against people savedSearch.</param>
+        /// <param name="q">The dm query to run against people dm.</param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="includeEntities"></param>
@@ -205,7 +206,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns extended information of a given savedSearch, specified by ID or screen name as per the 
+        /// Returns extended information of a given dm, specified by ID or screen name as per the 
         /// required id parameter. The author's most recent status will be returned inline.
         /// </summary>
         /// <param name="screenName"></param>

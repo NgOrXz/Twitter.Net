@@ -128,6 +128,17 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public DirectMessageCommand DirectMessageCommand
+        {
+            get
+            {
+                DirectMessageCommand directMessageCmd = null;
+                LazyInitializer.EnsureInitialized(ref directMessageCmd, () => new DirectMessageCommand(this));
+
+                return directMessageCmd;
+            }
+        }
+
         public FavoriteCommand FavoriteCommand
         {
             get

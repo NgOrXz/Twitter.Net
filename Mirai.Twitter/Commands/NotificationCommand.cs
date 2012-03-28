@@ -26,11 +26,12 @@ namespace Mirai.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
     using fastJSON;
 
     /// <summary>
-    /// Controls SMS-based notifications that a savedSearch wants to receive.
+    /// Controls SMS-based notifications that a dm wants to receive.
     /// </summary>
     public sealed class NotificationCommand :  TwitterCommandBase
     {
@@ -46,9 +47,9 @@ namespace Mirai.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Enables device notifications for updates from the specified savedSearch. Returns the specified savedSearch when successful. 
+        /// Enables device notifications for updates from the specified dm. Returns the specified dm when successful. 
         /// </summary>
-        /// <param name="screenName">The savedSearch's screen name.</param>
+        /// <param name="screenName">The dm's screen name.</param>
         /// <returns></returns>
         public TwitterUser FollowByScreenName(string screenName)
         {
@@ -56,9 +57,9 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Enables device notifications for updates from the specified savedSearch. Returns the specified savedSearch when successful. 
+        /// Enables device notifications for updates from the specified dm. Returns the specified dm when successful. 
         /// </summary>
-        /// <param name="userId">The savedSearch's id.</param>
+        /// <param name="userId">The dm's id.</param>
         /// <returns></returns>
         public TwitterUser FollowByUserId(string userId)
         {
@@ -66,10 +67,10 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Disables notifications for updates from the specified savedSearch to the authenticating savedSearch. 
-        /// Returns the specified savedSearch when successful. 
+        /// Disables notifications for updates from the specified dm to the authenticating dm. 
+        /// Returns the specified dm when successful. 
         /// </summary>
-        /// <param name="screenName">The savedSearch's screen name.</param>
+        /// <param name="screenName">The dm's screen name.</param>
         /// <returns></returns>
         public TwitterUser LeaveByScreenName(string screenName)
         {
@@ -77,10 +78,10 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Disables notifications for updates from the specified savedSearch to the authenticating savedSearch. 
-        /// Returns the specified savedSearch when successful. 
+        /// Disables notifications for updates from the specified dm to the authenticating dm. 
+        /// Returns the specified dm when successful. 
         /// </summary>
-        /// <param name="userId">The savedSearch's id.</param>
+        /// <param name="userId">The dm's id.</param>
         /// <returns></returns>
         public TwitterUser LeaveByUserId(string userId)
         {
