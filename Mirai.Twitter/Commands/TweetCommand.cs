@@ -96,7 +96,7 @@ namespace Mirai.Twitter.Commands
         }
 
         /// <summary>
-        /// Show dm ids of up to 100 users who retweeted the status.
+        /// Show user ids of up to 100 users who retweeted the status.
         /// </summary>
         /// <param name="id">The numerical ID of the desired status.</param>
         /// <param name="count">
