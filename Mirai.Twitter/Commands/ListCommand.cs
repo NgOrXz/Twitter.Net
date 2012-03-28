@@ -269,7 +269,7 @@ namespace Mirai.Twitter.Commands
         #region Private Methods
 
         private TwitterList RemoveMemberFromList(string listId, string slug, string userId, string screenName,
-                                          string ownerId, string ownerScreenName)
+                                                 string ownerId, string ownerScreenName)
         {
             if (!this.TwitterApi.Authenticated)
                 throw new InvalidOperationException("Authentication required.");
@@ -293,7 +293,7 @@ namespace Mirai.Twitter.Commands
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
             var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var list   = TwitterList.FromDictionary(jsonObj);
+            var list    = TwitterList.FromDictionary(jsonObj);
 
             return list;
         }
