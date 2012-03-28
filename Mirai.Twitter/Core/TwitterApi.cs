@@ -161,6 +161,17 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public ListCommand ListCommand
+        {
+            get
+            {
+                ListCommand listCmd = null;
+                LazyInitializer.EnsureInitialized(ref listCmd, () => new ListCommand(this));
+
+                return listCmd;
+            }
+        }
+
         public NotificationCommand NotificationCommand
         {
             get
