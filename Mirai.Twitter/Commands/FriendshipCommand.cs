@@ -158,7 +158,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="userId"></param>
         /// <param name="cursor"></param>
         /// <returns></returns>
-        public TwitterIdCollection RetrieveIdsForFriends(string screenName, string userId = null, string cursor = "-1")
+        public TwitterCursorPagedIdCollection RetrieveIdsForFriends(string screenName, string userId = null, string cursor = "-1")
         {
             return this.RetrieveIds(screenName, userId, cursor, "friends");
         }
@@ -170,7 +170,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="userId"></param>
         /// <param name="cursor"></param>
         /// <returns></returns>
-        public TwitterIdCollection RetrieveIdsForFollowers(string screenName, string userId = null, string cursor = "-1")
+        public TwitterCursorPagedIdCollection RetrieveIdsForFollowers(string screenName, string userId = null, string cursor = "-1")
         {
             return this.RetrieveIds(screenName, userId, cursor, "followers");
         }
@@ -180,7 +180,7 @@ namespace Mirai.Twitter.Commands
         /// </summary>
         /// <param name="cursor"></param>
         /// <returns></returns>
-        public TwitterIdCollection RetrieveIdsForIncomingRequests(string cursor = "-1")
+        public TwitterCursorPagedIdCollection RetrieveIdsForIncomingRequests(string cursor = "-1")
         {
             return this.RetrieveIdsForFollowingRequests(cursor, "incoming");
         }
@@ -191,7 +191,7 @@ namespace Mirai.Twitter.Commands
         /// </summary>
         /// <param name="cursor"></param>
         /// <returns></returns>
-        public TwitterIdCollection RetrieveIdsForOutgoingRequests(string cursor = "-1")
+        public TwitterCursorPagedIdCollection RetrieveIdsForOutgoingRequests(string cursor = "-1")
         {
             return this.RetrieveIdsForFollowingRequests(cursor, "outgoing");
         }
@@ -292,7 +292,7 @@ namespace Mirai.Twitter.Commands
 
         #endregion
 
-        private TwitterIdCollection RetrieveIdsForFollowingRequests(string cursor, string type)
+        private TwitterCursorPagedIdCollection RetrieveIdsForFollowingRequests(string cursor, string type)
         {
             if (String.IsNullOrEmpty(cursor))
                 throw new ArgumentException();
@@ -303,12 +303,12 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/{0}.json?cursor={1}", type, cursor));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
             var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var ids         = TwitterIdCollection.FromDictionary(jsonObj);
+            var ids         = TwitterCursorPagedIdCollection.FromDictionary(jsonObj);
 
             return ids;
         }
 
-        private TwitterIdCollection RetrieveIds(string screenName, string userId, string cursor, string userType)
+        private TwitterCursorPagedIdCollection RetrieveIds(string screenName, string userId, string cursor, string userType)
         {
             if (String.IsNullOrEmpty(screenName) && String.IsNullOrEmpty(userId))
                 throw new ArgumentException("Either a userId or screenName is required for this method.");
@@ -331,7 +331,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
             var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var ids         = TwitterIdCollection.FromDictionary(jsonObj);
+            var ids         = TwitterCursorPagedIdCollection.FromDictionary(jsonObj);
 
             return ids;
         }
