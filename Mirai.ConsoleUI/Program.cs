@@ -99,6 +99,12 @@ namespace Mirai.ConsoleUI
                 //twitterObj.DirectMessageCommand.Show("1900822745");
                 //twitterObj.DirectMessageCommand.Destroy("1900822745");
                 //twitterObj.DirectMessageCommand.Sent();
+
+                //twitterObj.ListCommand.RetrieveAllLists("yukinoyume");
+                //twitterObj.ListCommand.RetrieveUserLists("yukinoyume");
+                //twitterObj.ListCommand.RetrieveSubscriptions("yukinoyume");
+                //twitterObj.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
+                //twitterObj.ListCommand.RetrieveMembership("twitter");
             }
             catch (TwitterException e)
             {

@@ -48,7 +48,7 @@ namespace Mirai.Twitter.TwitterObjects
         public int MemberCount { get; set; }
 
         [TwitterKey("mode")]
-        public TwitterListMode Mode { get; set; }
+        public TwitterListMode? Mode { get; set; }
 
         [TwitterKey("name")]
         public string Name { get; set; }
@@ -100,6 +100,12 @@ namespace Mirai.Twitter.TwitterObjects
                 else if (propertyInfo.PropertyType == typeof(DateTime?))
                 {
                     propertyInfo.SetValue(list, value.ToString().ToDateTime(), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterListMode?))
+                {
+                    TwitterListMode resultType;
+                    if (Enum.TryParse(value.ToString(), true, out resultType))
+                        propertyInfo.SetValue(list, resultType, null);
                 }
             }
 
