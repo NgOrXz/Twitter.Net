@@ -35,19 +35,16 @@
                 //files.Add(data);
                 //files.Add(data2);
                 //twitterObj.TweetCommand.UpdateWithMedia("update with two picture for test~~~~~", mediaList: files);
-                //Console.WriteLine("Updated!");
-
                 //twitterObj.TweetCommand.RetweetedBy("21947795900469248");
                 //twitterObj.TweetCommand.Update("hello theredsfsfasaf againnnnxxxxxnnnnn!!");
 
                 //twitterObj.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
-
                 //int friends, statuses, followers, favorites;
                 //twitterObj.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
 
                 //twitterObj.GetSupportedLanguages();
-                //twitterObj.NotificationCommand.LeaveByScreenName("twitterapi");
 
+                //twitterObj.NotificationCommand.LeaveByScreenName("twitterapi");
                 //twitterObj.NotificationCommand.FollowByScreenName("twitterapi");
 
                 //twitterObj.FavoriteCommand.RetrieveFavorites("twitterapi");
@@ -59,20 +56,15 @@
                 //twitterObj.UserCommand.Show("yukinoyume", "11046332");
                 //twitterObj.UserCommand.RetrieveContributees("themattharris");
                 //twitterObj.UserCommand.RetrieveContributors("twitterapi");
-
                 //twitterObj.FriendshipCommand.RetrieveIdsForFollowers("twitterapi");
                 //twitterObj.FriendshipCommand.RetrieveIdsForFriends("twitterapi");
-
                 //twitterObj.FriendshipCommand.RetrieveIdsForIncomingRequests();
                 //twitterObj.FriendshipCommand.RetrieveIdsForOutgoingRequests();
-
                 //twitterObj.FriendshipCommand.Create("episod");
                 //twitterObj.FriendshipCommand.Destroy("AncientProverbs");
-
                 //twitterObj.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
                 //twitterObj.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
                 //twitterObj.FriendshipCommand.Update("yukinoyume");
-
                 //twitterObj.FriendshipCommand.RetrieveNoRetweetIds();
 
                 //twitterObj.TimelineCommand.RetrieveHomeTimeline();
@@ -80,7 +72,6 @@
                 //twitterObj.TimelineCommand.RetweetedByMe();
                 //twitterObj.TimelineCommand.RetweetedToMe();
                 //twitterObj.TimelineCommand.RetweetsOfMe();
-
                 //twitterObj.TimelineCommand.RetrieveUserTimeline(screenName: "nokia");
                 //twitterObj.TimelineCommand.RetweetedToUser(screenName: "nokia");
                 //twitterObj.TimelineCommand.RetweetedByUser(screenName: "nokia");
@@ -111,7 +102,18 @@
                 //twitterObj.ListCommand.RetrieveSubscribersBySlug("team", "twitter");
                 //twitterObj.ListCommand.RetrieveSubscribersById("8044403");
                 //twitterObj.ListCommand.SubscribeToListBySlug("team", "twitter");
-                twitterObj.ListCommand.UnsubscribeFromListBySlug("team", "twitter");
+                //twitterObj.ListCommand.UnsubscribeFromListBySlug("team", "twitter");
+                //twitterObj.ListCommand.AddMembersToListBySlug("tech", "yukinoyume", new[] { "FairyLGotay", "Apigee" });
+                //twitterObj.ListCommand.RetrieveMembersBySlug("tech", "yukinoyume");
+                //twitterObj.ListCommand.AddMemberToListById("53415010", "twitterapi");
+                //twitterObj.ListCommand.RemoveMemberFromListById("53415010", "twitter");
+                //twitterObj.ListCommand.RemoveMembersFromListBySlug("tech", "yukinoyume", new[] { "twitterapi" });
+                //twitterObj.ListCommand.CreateList("new list");
+                //twitterObj.ListCommand.UpdateListBySlug("new-list", "yukinoyume", description: "just a test list");
+                //twitterObj.ListCommand.DestroyListBySlug("new-list", "yukinoyume");
+                //twitterObj.ListCommand.RetrieveUserCreatedListBySlug("tech1", "yukinoyume");
+                //twitterObj.ListCommand.Contains("tech", "yukinoyume", "apige");
+                //twitterObj.ListCommand.Subscribes("tech", "yukinoyume", "twitter");
             }
             catch (TwitterException e)
             {

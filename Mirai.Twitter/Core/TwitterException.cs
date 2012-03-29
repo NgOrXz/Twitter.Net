@@ -33,6 +33,8 @@ namespace Mirai.Twitter.Core
     {
         public TwitterError Error { get; internal set; }
 
+        public HttpStatusCode StatusCode { get; internal set; }
+
 
         public TwitterException(string message) : this(message, null)
         {
@@ -48,7 +50,9 @@ namespace Mirai.Twitter.Core
                 return;
             }
 
-            var response = (HttpWebResponse)webException.Response;
+            var response    = (HttpWebResponse)webException.Response;
+            this.StatusCode = response.StatusCode;
+
             using (var streamReader = new StreamReader(response.GetResponseStream()))
             {
                 var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(streamReader.ReadToEnd());
