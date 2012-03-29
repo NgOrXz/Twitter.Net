@@ -11,10 +11,10 @@ namespace Mirai.ConsoleUI
         static void Main(string[] args)
         {
             var twitterObj = new TwitterApi(
-                                            "",
-                                            "",
-                                            "",
-                                            "");
+                                            "H1eRltWyujV54wV5DpVQQ",
+                                            "Njg4YH4hKboYiO5f1haZKH4ODljhwcPGkqWX5BCovck",
+                                            "11046312-egjx9U7pUHq4UJpoGb76K4TsdhWMPS9IgdzwTvYiz",
+                                            "1EFqdonQDmtbS98Dj8GNeH8xCnnTkum6xH2xWBwGU");
 
             try
             {
@@ -105,6 +105,10 @@ namespace Mirai.ConsoleUI
                 //twitterObj.ListCommand.RetrieveSubscriptions("yukinoyume");
                 //twitterObj.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
                 //twitterObj.ListCommand.RetrieveMemberships("twitter");
+                //twitterObj.ListCommand.RetrieveSubscribersBySlug("team", "twitter");
+                //twitterObj.ListCommand.RetrieveSubscribersById("8044403");
+                //twitterObj.ListCommand.SubscribeToListBySlug("team", "twitter");
+                twitterObj.ListCommand.UnsubscribeFromListBySlug("team", "twitter");
             }
             catch (TwitterException e)
             {
