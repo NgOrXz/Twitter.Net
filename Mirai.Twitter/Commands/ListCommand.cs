@@ -354,10 +354,10 @@ namespace Mirai.Twitter.Commands
             if (!String.IsNullOrEmpty(ownerScreenName))
                 postData.Add("owner_screen_name", ownerScreenName);
 
-            if (!String.IsNullOrEmpty(userId))
-                postData.Add("owner_id", userId);
-            if (!String.IsNullOrEmpty(screenName))
-                postData.Add("screen_name", screenName);
+            //if (!String.IsNullOrEmpty(userId))
+            //    postData.Add("owner_id", userId);
+            //if (!String.IsNullOrEmpty(screenName))
+            //    postData.Add("screen_name", screenName);
 
             var uri         = new Uri(this.CommandBaseUri + "/members/create_all.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);

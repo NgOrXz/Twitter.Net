@@ -1,7 +1,9 @@
-﻿using System;
-
-namespace Mirai.ConsoleUI
+﻿namespace Mirai.ConsoleUI
 {
+    using System;
+    using System.Linq;
+    using System.Xml.Linq;
+
     using Mirai.Twitter;
     using Mirai.Twitter.Commands;
     using Mirai.Twitter.Core;
@@ -10,11 +12,12 @@ namespace Mirai.ConsoleUI
     {
         static void Main(string[] args)
         {
-            var twitterObj = new TwitterApi(
-                                            "H1eRltWyujV54wV5DpVQQ",
-                                            "Njg4YH4hKboYiO5f1haZKH4ODljhwcPGkqWX5BCovck",
-                                            "11046312-egjx9U7pUHq4UJpoGb76K4TsdhWMPS9IgdzwTvYiz",
-                                            "1EFqdonQDmtbS98Dj8GNeH8xCnnTkum6xH2xWBwGU");
+            var keys = XElement.Load(".\\Keys.xml");
+
+            var twitterObj = new TwitterApi(keys.Element("consumerKey").Value,
+                                            keys.Element("consumerSecret").Value,
+                                            keys.Element("token").Value,
+                                            keys.Element("tokenSecret").Value);
 
             try
             {
@@ -115,7 +118,7 @@ namespace Mirai.ConsoleUI
                 Console.WriteLine(e.Error.Message);
             }
 
-            Console.ReadLine();            
+            Console.ReadLine();
         }
     }
 }
