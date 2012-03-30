@@ -119,8 +119,10 @@
                 //twitterApi.BlockCommand.RetrieveBlockedUsers();
                 //twitterApi.BlockCommand.IsBlocked("twitter");
                 //twitterApi.BlockCommand.RetrieveIdsOfBlockedUsers();
-                twitterApi.BlockCommand.UnblockUser("twitter");
+                //twitterApi.BlockCommand.UnblockUser("twitter");
                 //twitterApi.BlockCommand.IsBlocked("twitter");
+
+                twitterApi.SpamReportingCommand.ReportSpam("2423423rerfwexfsr2342");
             }
             catch (TwitterException e)
             {

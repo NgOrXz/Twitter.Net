@@ -48,6 +48,8 @@
     <Compile Include="Commands\TwitterCommandBase.cs" />
     <Compile Include="Commands\TimelineCommand.cs" />
     <Compile Include="Commands\BlockCommand.cs" />
+    <Compile Include="Commands\SpamReportingCommand.cs" />
+    <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedUserCollection.cs" />
     <Compile Include="Commands\TwitterGeoCode.cs" />
     <Compile Include="Commands\SavedSearchCommand.cs" />

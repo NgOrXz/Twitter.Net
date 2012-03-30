@@ -22,9 +22,7 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Text;
 
@@ -185,7 +183,7 @@ namespace Mirai.Twitter.Commands
             }
             catch (TwitterException e)
             {
-                if (e.StatusCode == HttpStatusCode.NotFound)
+                if (e.StatusCode != HttpStatusCode.NotFound)
                     throw;
             }
 

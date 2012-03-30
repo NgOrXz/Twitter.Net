@@ -216,6 +216,17 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public SpamReportingCommand SpamReportingCommand
+        {
+            get
+            {
+                SpamReportingCommand spanReportingCmd = null;
+                LazyInitializer.EnsureInitialized(ref spanReportingCmd, () => new SpamReportingCommand(this));
+
+                return spanReportingCmd;
+            }
+        }
+
         public SuggestedUserCommand SuggestedUserCommand
         {
             get
@@ -235,6 +246,17 @@ namespace Mirai.Twitter.Core
                 LazyInitializer.EnsureInitialized(ref timelineCmd, () => new TimelineCommand(this));
 
                 return timelineCmd;
+            }
+        }
+
+        public TrendCommand TrendCommand
+        {
+            get
+            {
+                TrendCommand trendCmd = null;
+                LazyInitializer.EnsureInitialized(ref trendCmd, () => new TrendCommand(this));
+
+                return trendCmd;
             }
         }
 

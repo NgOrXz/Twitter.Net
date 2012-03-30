@@ -1,4 +1,4 @@
-// ------------------------------------------------------------------------------------------------------
+﻿// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -21,31 +21,34 @@
 
 namespace Mirai.Twitter.Commands
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+
+    using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
+    using Mirai.Twitter.TwitterObjects;
 
-    public abstract class TwitterCommandBase
+    using fastJSON;
+
+    public sealed class TrendCommand : TwitterCommandBase
     {
-        private readonly string _CommandBaseUri;
+        #region Constructors and Destructors
 
-        private readonly TwitterApi _TwitterApi;
-
-
-        protected virtual string CommandBaseUri
+        internal TrendCommand(TwitterApi twitterApi)
+            : base(twitterApi, "trends")
         {
-            get { return this._CommandBaseUri; }
         }
 
-        protected TwitterApi TwitterApi
-        {
-            get { return this._TwitterApi; }
-        }
+        #endregion
 
-        protected TwitterCommandBase(TwitterApi twitterApi, string command)
-        {
-            this._TwitterApi        = twitterApi;
+        #region Public Methods
 
-            this._CommandBaseUri    = TwitterApi.ApiBaseUri + "/" + this._TwitterApi.ApiVersion.ToString("D") +
-                                      "/" + command;
-        }
+
+
+        #endregion
     }
 }
