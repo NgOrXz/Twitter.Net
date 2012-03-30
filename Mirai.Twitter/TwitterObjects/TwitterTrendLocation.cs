@@ -22,41 +22,44 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterTrend
+    public sealed class TwitterTrendLocation
     {
-        [TwitterKey("events")]
-        public string Events { get; set; }
+        [TwitterKey("country")]
+        public string Country { get; set; }
+
+        [TwitterKey("countryCode")]
+        public string CountryCode { get; set; }
 
         [TwitterKey("name")]
         public string Name { get; set; }
 
-        [TwitterKey("promoted_content")]
-        public string PromotedContent { get; set; }
+        [TwitterKey("parentid")]
+        public string ParentId { get; set; }
 
-        [TwitterKey("query")]
-        public string Query { get; set; }
+        public string PlaceType { get; set; }
 
         [TwitterKey("url")]
         public Uri Url { get; set; }
 
+        [TwitterKey("woeid")]
+        public string WoeId { get; set; }
 
-        public static TwitterTrend FromDictonary(Dictionary<string, object> dictionary)
+
+        public static TwitterTrendLocation FromDictionary(Dictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var trend = new TwitterTrend();
+            var location = new TwitterTrendLocation();
             if (dictionary.Count == 0)
-                return trend;
+                return location;
 
-            var pis = trend.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = location.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -68,15 +71,15 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(trend, value, null);
+                    propertyInfo.SetValue(location, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(Uri))
                 {
-                    propertyInfo.SetValue(trend, new Uri(value.ToString()), null);
+                    propertyInfo.SetValue(location, new Uri(value.ToString()), null);
                 }
             }
 
-            return trend;
+            return location;
         }
     }
 }

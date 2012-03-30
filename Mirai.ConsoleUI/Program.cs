@@ -122,7 +122,12 @@
                 //twitterApi.BlockCommand.UnblockUser("twitter");
                 //twitterApi.BlockCommand.IsBlocked("twitter");
 
-                twitterApi.SpamReportingCommand.ReportSpam("2423423rerfwexfsr2342");
+                //twitterApi.SpamReportingCommand.ReportSpam("2423423rerfwexfsr2342");
+
+                //twitterApi.TrendCommand.RetrieveDailyTrends();
+                //twitterApi.TrendCommand.RetrieveWeeklyTrends();
+                //twitterApi.TrendCommand.RetrieveTrendLocations(37.781157, -122.400612831116);
+                twitterApi.TrendCommand.RetrieveTrendTopics("2442047");
             }
             catch (TwitterException e)
             {

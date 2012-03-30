@@ -22,9 +22,7 @@
 namespace Mirai.Twitter.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
-    using System.Text;
 
     internal static class TwitterHelper
     {

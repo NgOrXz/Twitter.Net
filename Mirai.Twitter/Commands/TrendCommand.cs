@@ -24,7 +24,9 @@ namespace Mirai.Twitter.Commands
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
 
@@ -47,7 +49,82 @@ namespace Mirai.Twitter.Commands
 
         #region Public Methods
 
-        
+        public TwitterTrendTopic RetrieveDailyTrends(bool exclude = false)
+        {
+            return this.RetrieveTrends("daily");
+        }
+
+        public TwitterTrendTopic[] RetrieveTrendTopics(string woeid, bool exclude = false)
+        {
+            if (String.IsNullOrEmpty(woeid))
+                throw new ArgumentException();
+
+            var uri         = new Uri(this.CommandBaseUri + String.Format("/{0}.json?exclude={1}",
+                                                                          woeid,
+                                                                          exclude ? "true" : "false"));
+
+            TwitterTrendTopic[] topics = null;
+            try
+            {
+                var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+                var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
+                topics          = (from Dictionary<string, object> topic in jsonArray
+                          select TwitterTrendTopic.FromDictionary(topic)).ToArray();
+            }
+            catch (TwitterException e)
+            {
+                if (e.StatusCode != HttpStatusCode.NotFound)
+                    throw;
+            }
+
+            return topics;
+        }
+
+        public TwitterTrendLocation[] RetrieveTrendLocations(double? latitude = null, double? longitude = null)
+        {
+            var queryBuilder = new StringBuilder();
+            if (latitude.HasValue && (latitude.Value >= -180 && latitude.Value <= 180))
+                queryBuilder.AppendFormat("lat={0}&", latitude.Value);
+            if (longitude.HasValue && (longitude.Value >= -180 && longitude.Value <= 180))
+                queryBuilder.AppendFormat("long={0}", longitude.Value);
+            if (queryBuilder.Length > 0)
+                queryBuilder.Insert(0, "?");
+
+            var uri         = new Uri(this.CommandBaseUri + "/available.json" + queryBuilder);
+            var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
+            var locations   = (from Dictionary<string, object> loc in jsonArray
+                               select TwitterTrendLocation.FromDictionary(loc)).ToArray();
+
+            return locations;
+        }
+
+        public TwitterTrendTopic RetrieveWeeklyTrends(bool exclude = false)
+        {
+            return this.RetrieveTrends("weekly");
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private TwitterTrendTopic RetrieveTrends(string method, bool exclude = false)
+        {
+            var uri         = new Uri(this.CommandBaseUri + 
+                                      String.Format("/{0}.json?date={1}&exclude={2}", 
+                                                    method,
+                                                    DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                                                    exclude ? "true" : "false"));
+
+            var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+            var topic       = TwitterTrendTopic.FromDictionary(jsonObj);
+
+            return topic;
+        }
 
         #endregion
     }
