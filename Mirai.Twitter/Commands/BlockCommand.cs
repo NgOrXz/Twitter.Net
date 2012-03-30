@@ -43,7 +43,7 @@ namespace Mirai.Twitter.Commands
         #region PUblic Methods
 
         /// <summary>
-        /// Un-blocks the user specified in the ID parameter for the authenticating user. 
+        /// Blocks the user specified in the ID parameter for the authenticating user. 
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -55,6 +55,14 @@ namespace Mirai.Twitter.Commands
             return this.BlockUnblockUser("/create.json", screenName, userId, includeEntities, skipStatus);
         }
 
+        /// <summary>
+        /// Un-blocks the user specified in the ID parameter for the authenticating user. 
+        /// </summary>
+        /// <param name="screenName"></param>
+        /// <param name="userId"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="skipStatus"></param>
+        /// <returns></returns>
         public TwitterUser UnblockUser(string screenName, string userId = null, bool includeEntities = true, bool skipStatus = false)
         {
             return this.BlockUnblockUser("/destroy.json", screenName, userId, includeEntities, skipStatus);

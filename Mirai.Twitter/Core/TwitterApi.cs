@@ -172,6 +172,17 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public GeoCommand GeoCommand
+        {
+            get
+            {
+                GeoCommand geoCmd = null;
+                LazyInitializer.EnsureInitialized(ref geoCmd, () => new GeoCommand(this));
+
+                return geoCmd;
+            }
+        }
+
         public ListCommand ListCommand
         {
             get

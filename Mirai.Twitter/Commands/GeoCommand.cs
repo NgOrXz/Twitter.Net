@@ -1,4 +1,4 @@
-﻿// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -34,12 +34,12 @@ namespace Mirai.Twitter.Commands
 
     using fastJSON;
 
-    public sealed class TrendCommand : TwitterCommandBase
+    public sealed class GeoCommand : TwitterCommandBase
     {
         #region Constructors and Destructors
 
-        internal TrendCommand(TwitterApi twitterApi)
-            : base(twitterApi, "trends")
+        internal GeoCommand(TwitterApi twitterApi)
+            : base(twitterApi, "geo")
         {
         }
 

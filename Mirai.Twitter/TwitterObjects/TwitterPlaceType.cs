@@ -19,36 +19,14 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Twitter.Commands
+namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-
-    using Mirai.Net.OAuth;
-    using Mirai.Twitter.Core;
-    using Mirai.Twitter.TwitterObjects;
-
-    using fastJSON;
-
-    public sealed class TrendCommand : TwitterCommandBase
+    public enum TwitterPlaceType
     {
-        #region Constructors and Destructors
-
-        internal TrendCommand(TwitterApi twitterApi)
-            : base(twitterApi, "trends")
-        {
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        
-
-        #endregion
+        Poi,
+        Neighborhood,
+        City,
+        Admin,
+        Country
     }
 }

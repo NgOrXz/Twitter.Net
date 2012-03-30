@@ -50,6 +50,9 @@
     <Compile Include="Commands\BlockCommand.cs" />
     <Compile Include="Commands\SpamReportingCommand.cs" />
     <Compile Include="Commands\TrendCommand.cs" />
+    <Compile Include="Commands\GeoCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterPlaceAttributes.cs" />
+    <Compile Include="TwitterObjects\TwitterPlaceType.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedUserCollection.cs" />
     <Compile Include="Commands\TwitterGeoCode.cs" />
     <Compile Include="Commands\SavedSearchCommand.cs" />

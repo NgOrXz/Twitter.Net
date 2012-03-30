@@ -45,7 +45,7 @@ namespace Mirai.Twitter.Commands
 
 		internal SearchCommand(TwitterApi twitterApi) : base(twitterApi, "")
 		{
-			this._CommandBaseUri = TwitterApi.SearchApiUri + "/" + "search.json";
+			this._CommandBaseUri = TwitterApi.SearchApiUri + "/" + "search";
 		}
 
 		public TwitterSearch Search(string q, SearchOptions searchCommandOptions)
@@ -53,7 +53,7 @@ namespace Mirai.Twitter.Commands
 			if (String.IsNullOrEmpty(q))
 				throw new ArgumentException();
 
-			var uri         = new Uri(this.CommandBaseUri + String.Format("?q={0}{1}", q, 
+			var uri         = new Uri(this.CommandBaseUri + String.Format(".json?q={0}{1}", q, 
 									  searchCommandOptions != null ? "&" + searchCommandOptions : ""));
 			var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
