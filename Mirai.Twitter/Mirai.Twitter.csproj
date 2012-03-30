@@ -47,6 +47,7 @@
     <Compile Include="Commands\SearchOptions.cs" />
     <Compile Include="Commands\TwitterCommandBase.cs" />
     <Compile Include="Commands\TimelineCommand.cs" />
+    <Compile Include="Commands\BlockCommand.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedUserCollection.cs" />
     <Compile Include="Commands\TwitterGeoCode.cs" />
     <Compile Include="Commands\SavedSearchCommand.cs" />

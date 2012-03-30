@@ -14,7 +14,7 @@
         {
             var keys = XElement.Load(".\\Keys.xml");
 
-            var twitterObj = new TwitterApi(keys.Element("consumerKey").Value,
+            var twitterApi = new TwitterApi(keys.Element("consumerKey").Value,
                                             keys.Element("consumerSecret").Value,
                                             keys.Element("token").Value,
                                             keys.Element("tokenSecret").Value);
@@ -34,49 +34,49 @@
                 //var files = new List<byte[]>();
                 //files.Add(data);
                 //files.Add(data2);
-                //twitterObj.TweetCommand.UpdateWithMedia("update with two picture for test~~~~~", mediaList: files);
-                //twitterObj.TweetCommand.RetweetedBy("21947795900469248");
-                //twitterObj.TweetCommand.Update("hello theredsfsfasaf againnnnxxxxxnnnnn!!");
+                //twitterApi.TweetCommand.UpdateWithMedia("update with two picture for test~~~~~", mediaList: files);
+                //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
+                //twitterApi.TweetCommand.Update("hello theredsfsfasaf againnnnxxxxxnnnnn!!");
 
-                //twitterObj.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
+                //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
-                //twitterObj.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
+                //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
 
-                //twitterObj.GetSupportedLanguages();
+                //twitterApi.GetSupportedLanguages();
 
-                //twitterObj.NotificationCommand.LeaveByScreenName("twitterapi");
-                //twitterObj.NotificationCommand.FollowByScreenName("twitterapi");
+                //twitterApi.NotificationCommand.LeaveByScreenName("twitterapi");
+                //twitterApi.NotificationCommand.FollowByScreenName("twitterapi");
 
-                //twitterObj.FavoriteCommand.RetrieveFavorites("twitterapi");
-                //twitterObj.FavoriteCommand.Destroy("183536265763897345");
-                //twitterObj.SuggestedUserCommand.RetrieveSuggestionCategories();
-                //twitterObj.SuggestedUserCommand.RetrieveUsersInCategory("ニュース");
-                //twitterObj.UserCommand.Lookup(new[] { "twitter", "twittermobile" }, new[] { "6253282" });
-                //twitterObj.UserCommand.RetrieveProfileImageUri("twitter");
-                //twitterObj.UserCommand.Show("yukinoyume", "11046332");
-                //twitterObj.UserCommand.RetrieveContributees("themattharris");
-                //twitterObj.UserCommand.RetrieveContributors("twitterapi");
-                //twitterObj.FriendshipCommand.RetrieveIdsForFollowers("twitterapi");
-                //twitterObj.FriendshipCommand.RetrieveIdsForFriends("twitterapi");
-                //twitterObj.FriendshipCommand.RetrieveIdsForIncomingRequests();
-                //twitterObj.FriendshipCommand.RetrieveIdsForOutgoingRequests();
-                //twitterObj.FriendshipCommand.Create("episod");
-                //twitterObj.FriendshipCommand.Destroy("AncientProverbs");
-                //twitterObj.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
-                //twitterObj.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
-                //twitterObj.FriendshipCommand.Update("yukinoyume");
-                //twitterObj.FriendshipCommand.RetrieveNoRetweetIds();
+                //twitterApi.FavoriteCommand.RetrieveFavorites("twitterapi");
+                //twitterApi.FavoriteCommand.Destroy("183536265763897345");
+                //twitterApi.SuggestedUserCommand.RetrieveSuggestionCategories();
+                //twitterApi.SuggestedUserCommand.RetrieveUsersInCategory("ニュース");
+                //twitterApi.UserCommand.Lookup(new[] { "twitter", "twittermobile" }, new[] { "6253282" });
+                //twitterApi.UserCommand.RetrieveProfileImageUri("twitter");
+                //twitterApi.UserCommand.Show("yukinoyume", "11046332");
+                //twitterApi.UserCommand.RetrieveContributees("themattharris");
+                //twitterApi.UserCommand.RetrieveContributors("twitterapi");
+                //twitterApi.FriendshipCommand.RetrieveIdsForFollowers("twitterapi");
+                //twitterApi.FriendshipCommand.RetrieveIdsForFriends("twitterapi");
+                //twitterApi.FriendshipCommand.RetrieveIdsForIncomingRequests();
+                //twitterApi.FriendshipCommand.RetrieveIdsForOutgoingRequests();
+                //twitterApi.FriendshipCommand.Create("episod");
+                //twitterApi.FriendshipCommand.Destroy("AncientProverbs");
+                //twitterApi.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
+                //twitterApi.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
+                //twitterApi.FriendshipCommand.Update("yukinoyume");
+                //twitterApi.FriendshipCommand.RetrieveNoRetweetIds();
 
-                //twitterObj.TimelineCommand.RetrieveHomeTimeline();
-                //twitterObj.TimelineCommand.RetrieveMentions();
-                //twitterObj.TimelineCommand.RetweetedByMe();
-                //twitterObj.TimelineCommand.RetweetedToMe();
-                //twitterObj.TimelineCommand.RetweetsOfMe();
-                //twitterObj.TimelineCommand.RetrieveUserTimeline(screenName: "nokia");
-                //twitterObj.TimelineCommand.RetweetedToUser(screenName: "nokia");
-                //twitterObj.TimelineCommand.RetweetedByUser(screenName: "nokia");
+                //twitterApi.TimelineCommand.RetrieveHomeTimeline();
+                //twitterApi.TimelineCommand.RetrieveMentions();
+                //twitterApi.TimelineCommand.RetweetedByMe();
+                //twitterApi.TimelineCommand.RetweetedToMe();
+                //twitterApi.TimelineCommand.RetweetsOfMe();
+                //twitterApi.TimelineCommand.RetrieveUserTimeline(screenName: "nokia");
+                //twitterApi.TimelineCommand.RetweetedToUser(screenName: "nokia");
+                //twitterApi.TimelineCommand.RetweetedByUser(screenName: "nokia");
 
-                //twitterObj.SearchCommand.Search("月亮", new SearchOptions
+                //twitterApi.SearchCommand.Search("月亮", new SearchOptions
                 //    {
                 //        //GeoCode = new TwitterGeoCode(37.781157, -122.398720, 10),
                 //        IncludeEntities = true,
@@ -84,36 +84,43 @@
                 //        TweetsPerPage = 20, Until = DateTime.Now
                 //    });
 
-                //twitterObj.SavedSearchCommand.RetrieveSavedSearches();
-                //twitterObj.SavedSearchCommand.Show("86615025");
-                //twitterObj.SavedSearchCommand.Create("@space");
-                //twitterObj.SavedSearchCommand.Destroy("86615025");
+                //twitterApi.SavedSearchCommand.RetrieveSavedSearches();
+                //twitterApi.SavedSearchCommand.Show("86615025");
+                //twitterApi.SavedSearchCommand.Create("@space");
+                //twitterApi.SavedSearchCommand.Destroy("86615025");
 
-                //twitterObj.DirectMessageCommand.RetrieveDirectMessages();
-                //twitterObj.DirectMessageCommand.Show("1900822745");
-                //twitterObj.DirectMessageCommand.Destroy("1900822745");
-                //twitterObj.DirectMessageCommand.Sent();
+                //twitterApi.DirectMessageCommand.RetrieveDirectMessages();
+                //twitterApi.DirectMessageCommand.Show("1900822745");
+                //twitterApi.DirectMessageCommand.Destroy("1900822745");
+                //twitterApi.DirectMessageCommand.Sent();
 
-                //twitterObj.ListCommand.RetrieveAllLists("yukinoyume");
-                //twitterObj.ListCommand.RetrieveUserLists("yukinoyume");
-                //twitterObj.ListCommand.RetrieveSubscriptions("yukinoyume");
-                //twitterObj.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
-                //twitterObj.ListCommand.RetrieveMemberships("twitter");
-                //twitterObj.ListCommand.RetrieveSubscribersBySlug("team", "twitter");
-                //twitterObj.ListCommand.RetrieveSubscribersById("8044403");
-                //twitterObj.ListCommand.SubscribeToListBySlug("team", "twitter");
-                //twitterObj.ListCommand.UnsubscribeFromListBySlug("team", "twitter");
-                //twitterObj.ListCommand.AddMembersToListBySlug("tech", "yukinoyume", new[] { "FairyLGotay", "Apigee" });
-                //twitterObj.ListCommand.RetrieveMembersBySlug("tech", "yukinoyume");
-                //twitterObj.ListCommand.AddMemberToListById("53415010", "twitterapi");
-                //twitterObj.ListCommand.RemoveMemberFromListById("53415010", "twitter");
-                //twitterObj.ListCommand.RemoveMembersFromListBySlug("tech", "yukinoyume", new[] { "twitterapi" });
-                //twitterObj.ListCommand.CreateList("new list");
-                //twitterObj.ListCommand.UpdateListBySlug("new-list", "yukinoyume", description: "just a test list");
-                //twitterObj.ListCommand.DestroyListBySlug("new-list", "yukinoyume");
-                //twitterObj.ListCommand.RetrieveUserCreatedListBySlug("tech1", "yukinoyume");
-                //twitterObj.ListCommand.Contains("tech", "yukinoyume", "apige");
-                //twitterObj.ListCommand.Subscribes("tech", "yukinoyume", "twitter");
+                //twitterApi.ListCommand.RetrieveAllLists("yukinoyume");
+                //twitterApi.ListCommand.RetrieveUserLists("yukinoyume");
+                //twitterApi.ListCommand.RetrieveSubscriptions("yukinoyume");
+                //twitterApi.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
+                //twitterApi.ListCommand.RetrieveMemberships("twitter");
+                //twitterApi.ListCommand.RetrieveSubscribersBySlug("team", "twitter");
+                //twitterApi.ListCommand.RetrieveSubscribersById("8044403");
+                //twitterApi.ListCommand.SubscribeToListBySlug("team", "twitter");
+                //twitterApi.ListCommand.UnsubscribeFromListBySlug("team", "twitter");
+                //twitterApi.ListCommand.AddMembersToListBySlug("tech", "yukinoyume", new[] { "FairyLGotay", "Apigee" });
+                //twitterApi.ListCommand.RetrieveMembersBySlug("tech", "yukinoyume");
+                //twitterApi.ListCommand.AddMemberToListById("53415010", "twitterapi");
+                //twitterApi.ListCommand.RemoveMemberFromListById("53415010", "twitter");
+                //twitterApi.ListCommand.RemoveMembersFromListBySlug("tech", "yukinoyume", new[] { "twitterapi" });
+                //twitterApi.ListCommand.CreateList("new list");
+                //twitterApi.ListCommand.UpdateListBySlug("new-list", "yukinoyume", description: "just a test list");
+                //twitterApi.ListCommand.DestroyListBySlug("new-list", "yukinoyume");
+                //twitterApi.ListCommand.RetrieveUserCreatedListBySlug("tech1", "yukinoyume");
+                //twitterApi.ListCommand.Contains("tech", "yukinoyume", "apige");
+                //twitterApi.ListCommand.Subscribes("tech", "yukinoyume", "twitter");
+
+                //twitterApi.BlockCommand.BlockUser("twitter");
+                //twitterApi.BlockCommand.RetrieveBlockedUsers();
+                //twitterApi.BlockCommand.IsBlocked("twitter");
+                //twitterApi.BlockCommand.RetrieveIdsOfBlockedUsers();
+                twitterApi.BlockCommand.UnblockUser("twitter");
+                //twitterApi.BlockCommand.IsBlocked("twitter");
             }
             catch (TwitterException e)
             {
