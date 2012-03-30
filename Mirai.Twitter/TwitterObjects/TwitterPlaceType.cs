@@ -23,6 +23,9 @@ namespace Mirai.Twitter.TwitterObjects
 {
     public enum TwitterPlaceType
     {
+        /// <summary>
+        /// The point of interest
+        /// </summary>
         Poi,
         Neighborhood,
         City,

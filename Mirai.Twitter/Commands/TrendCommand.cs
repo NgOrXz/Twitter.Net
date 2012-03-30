@@ -59,7 +59,7 @@ namespace Mirai.Twitter.Commands
             if (String.IsNullOrEmpty(woeid))
                 throw new ArgumentException();
 
-            var uri         = new Uri(this.CommandBaseUri + String.Format("/{0}.json?exclude={1}",
+            var uri = new Uri(this.CommandBaseUri + String.Format("/{0}.json?exclude={1}",
                                                                           woeid,
                                                                           exclude ? "true" : "false"));
 
@@ -84,10 +84,20 @@ namespace Mirai.Twitter.Commands
         public TwitterTrendLocation[] RetrieveTrendLocations(double? latitude = null, double? longitude = null)
         {
             var queryBuilder = new StringBuilder();
-            if (latitude.HasValue && (latitude.Value >= -180 && latitude.Value <= 180))
+            if (latitude.HasValue)
+            {
+                if (latitude.Value < -180 || latitude.Value > 180)
+                    throw new ArgumentOutOfRangeException();
+
                 queryBuilder.AppendFormat("lat={0}&", latitude.Value);
-            if (longitude.HasValue && (longitude.Value >= -180 && longitude.Value <= 180))
+            }
+            if (longitude.HasValue)
+            {
+                if (longitude.Value < -180 && longitude.Value > 180)
+                    throw new ArgumentOutOfRangeException();
+
                 queryBuilder.AppendFormat("long={0}", longitude.Value);
+            }
             if (queryBuilder.Length > 0)
                 queryBuilder.Insert(0, "?");
 
