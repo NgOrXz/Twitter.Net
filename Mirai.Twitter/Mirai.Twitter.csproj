@@ -98,6 +98,8 @@
     <Compile Include="TwitterObjects\TwitterPlace.cs" />
     <Compile Include="TwitterObjects\TwitterSize.cs" />
     <Compile Include="TwitterObjects\TwitterSizes.cs" />
+    <Compile Include="TwitterObjects\TwitterTrend.cs" />
+    <Compile Include="TwitterObjects\TwitterTrendTopic.cs" />
     <Compile Include="TwitterObjects\TwitterTweet.cs" />
     <Compile Include="TwitterObjects\TwitterUrl.cs" />
     <Compile Include="TwitterObjects\TwitterUser.cs" />
