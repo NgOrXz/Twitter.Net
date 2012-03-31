@@ -25,10 +25,9 @@ namespace Mirai.Twitter.Commands
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Text;
-    using System.Text.RegularExpressions;
 
-    using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
@@ -47,7 +46,126 @@ namespace Mirai.Twitter.Commands
 
         #region Public Methods
 
-        
+        /// <summary>
+        /// Returns all the information about a known place.
+        /// </summary>
+        /// <param name="placeId">A place in the world. These IDs can be retrieved from ReverseGeocode method.</param>
+        /// <returns></returns>
+        public TwitterPlace RetrievePlaceById(string placeId)
+        {
+            if (String.IsNullOrEmpty(placeId))
+                throw new ArgumentException();
+
+            var uri = new Uri(this.CommandBaseUri + String.Format("/id/{0}.json", placeId));
+
+            TwitterPlace place = null;
+            try
+            {
+                var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+                place           = TwitterPlace.FromDictionary(jsonObj);
+            }
+            catch (TwitterException e)
+            {
+                if (e.StatusCode != HttpStatusCode.NotFound)
+                    throw;
+            }
+
+            return place;
+        }
+
+        /// <summary>
+        /// Locates places near the given coordinates which are similar in name.
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="name"></param>
+        /// <param name="containedWithin">
+        /// This is the place_id which you would like to restrict the search results to. Setting this value means 
+        /// only places within the given place_id will be found.
+        /// </param>
+        /// <param name="streetAddress"></param>
+        /// <returns></returns>
+        public TwitterGeoSimilarPlaces RetrieveSimilarPlaces(string latitude, string longitude, string name,
+                                                             string containedWithin = null, string streetAddress = null)
+        {
+            if (String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude) || String.IsNullOrEmpty(name))
+                throw new ArgumentException();
+
+            var queryBuilder = new StringBuilder();
+            queryBuilder.AppendFormat("?lat={0}&long={1}&name={2}&", latitude, longitude, name);
+
+            if (!String.IsNullOrEmpty(containedWithin))
+                queryBuilder.AppendFormat("contained_within={0}&", containedWithin);
+            if (!String.IsNullOrEmpty(streetAddress))
+                queryBuilder.AppendFormat("attribute:street_address={0}", streetAddress);
+
+            var uri = new Uri(this.CommandBaseUri + "/similar_places.json" + queryBuilder.ToString().TrimEnd('&'));
+
+            TwitterGeoSimilarPlaces similarPlaces = null;
+            try
+            {
+                var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+                similarPlaces   = TwitterGeoSimilarPlaces.FromDictionary((Dictionary<string, object>)jsonObj["result"]);
+            }
+            catch (TwitterException e)
+            {
+                if (e.StatusCode != HttpStatusCode.NotFound)
+                    throw;
+            }
+
+            return similarPlaces;
+        }
+
+        /// <summary>
+        /// Given a latitude and a longitude, searches for up to 20 places that can be used as 
+        /// a placeId when updating a status.
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="accuracy"></param>
+        /// <param name="granularity"></param>
+        /// <param name="maxResults"></param>
+        /// <returns></returns>
+        public TwitterPlace[] ReverseGeoCode(string latitude, string longitude, string accuracy = null,
+                                             TwitterPlaceType granularity = TwitterPlaceType.Neighborhood,
+                                             int? maxResults = null)
+        {
+            if (String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude))
+                throw new ArgumentException();
+
+            var queryBuilder = new StringBuilder();
+            queryBuilder.AppendFormat("?lat={0}&long={1}&granularity={2}&", 
+                                      latitude, longitude, granularity.ToString().ToLowerInvariant());
+
+            if (!String.IsNullOrEmpty(accuracy))
+                queryBuilder.AppendFormat("accuracy={0}&", accuracy);
+            if (maxResults.HasValue)
+                queryBuilder.AppendFormat("max_results={0}", maxResults);
+
+            var uri = new Uri(this.CommandBaseUri + "/reverse_geocode.json" + queryBuilder.ToString().TrimEnd('&'));
+
+            TwitterPlace[] places = null;
+            try
+            {
+                var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+
+                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+                places          = TwitterGeoSimilarPlaces.FromDictionary(
+                                                                    (Dictionary<string, object>)jsonObj["result"]).Places;
+                                   
+            }
+            catch (TwitterException e)
+            {
+                if (e.StatusCode != HttpStatusCode.NotFound)
+                    throw;
+            }
+
+            return places;
+        }
 
         #endregion
     }

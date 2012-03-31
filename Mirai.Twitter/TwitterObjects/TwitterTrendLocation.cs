@@ -35,16 +35,6 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("countryCode")]
         public string CountryCode { get; set; }
 
-        public string LocationType
-        {
-            get { return this.PlaceType.Name; }
-        }
-
-        public string LocationCode
-        {
-            get { return this.PlaceType.Code; }
-        }
-
         [TwitterKey("name")]
         public string Name { get; set; }
 
@@ -57,9 +47,8 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("woeid")]
         public string WoeId { get; set; }
 
-
         [TwitterKey("placeType")]
-        private TwitterTrendLocationType PlaceType { get; set; }
+        public TwitterTrendLocationType PlaceType { get; set; }
 
 
         public static TwitterTrendLocation FromDictionary(Dictionary<string, object> dictionary)
@@ -71,7 +60,7 @@ namespace Mirai.Twitter.TwitterObjects
             if (dictionary.Count == 0)
                 return location;
 
-            var pis = location.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var pis = location.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -97,45 +86,6 @@ namespace Mirai.Twitter.TwitterObjects
             }
 
             return location;
-        }
-    }
-
-    internal sealed class TwitterTrendLocationType
-    {
-        [TwitterKey("name")]
-        public string Name { get; set; }
-
-        [TwitterKey("code")]
-        public string Code { get; set; }
-
-
-        public static TwitterTrendLocationType FromDictionary(Dictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            var locationType = new TwitterTrendLocationType();
-            if (dictionary.Count == 0)
-                return locationType;
-
-            var pis = locationType.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false
-                    || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(String))
-                {
-                    propertyInfo.SetValue(locationType, value, null);
-                }
-            }
-
-            return locationType;
         }
     }
 }

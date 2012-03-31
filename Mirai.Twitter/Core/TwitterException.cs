@@ -22,8 +22,10 @@
 namespace Mirai.Twitter.Core
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net;
 
     using fastJSON;
@@ -31,7 +33,12 @@ namespace Mirai.Twitter.Core
     [Serializable]
     public class TwitterException : Exception
     {
-        public TwitterError Error { get; internal set; }
+        public TwitterError Error
+        {
+            get { return this.Errors != null ? this.Errors[0] : null; }
+        }
+
+        public TwitterError[] Errors { get; internal set; }
 
         public HttpStatusCode StatusCode { get; internal set; }
 
@@ -56,7 +63,14 @@ namespace Mirai.Twitter.Core
             using (var streamReader = new StreamReader(response.GetResponseStream()))
             {
                 var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(streamReader.ReadToEnd());
-                this.Error = TwitterError.FromDictionary(jsonObj);
+
+                if (!jsonObj.ContainsKey("errors"))
+                    this.Errors = new[] { TwitterError.FromDictionary(jsonObj) };
+                else
+                {
+                    this.Errors = (from Dictionary<string, object> err in (ArrayList)jsonObj["errors"]
+                                   select TwitterError.FromDictionary(err)).ToArray();
+                }
             }
         }
     }

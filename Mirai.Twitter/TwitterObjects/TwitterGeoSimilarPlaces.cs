@@ -1,4 +1,4 @@
-// ------------------------------------------------------------------------------------------------------
+﻿// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -22,48 +22,32 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterPlace
+    public sealed class TwitterGeoSimilarPlaces
     {
-        [TwitterKey("attributes")]
-        public TwitterPlaceAttributes Attributes { get; set; }
+        [TwitterKey("places")]
+        public TwitterPlace[] Places { get; set; }
 
-        [TwitterKey("country")]
-        public string Country { get; set; }
-
-        [TwitterKey("country_code")]
-        public string CountryCode { get; set; }
-
-        [TwitterKey("full_name")]
-        public string FullName { get; set; }
-
-        [TwitterKey("id")]
-        public string Id { get; set; }
-
-        [TwitterKey("name")]
-        public string Name { get; set; }
-
-        [TwitterKey("place_type")]
-        public TwitterPlaceType? PlaceType { get; set; }
-
-        [TwitterKey("url")]
-        public Uri Url { get; set; }
+        [TwitterKey("token")]
+        public string Token { get; set; }
 
 
-        public static TwitterPlace FromDictionary(Dictionary<string, object> dictionary)
+        public static TwitterGeoSimilarPlaces FromDictionary(Dictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var twitterPlace = new TwitterPlace();
+            var similarPlaces = new TwitterGeoSimilarPlaces();
             if (dictionary.Count == 0)
-                return twitterPlace;
+                return similarPlaces;
 
-            var pis = twitterPlace.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = similarPlaces.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -75,26 +59,19 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(twitterPlace, value, null);
+                    propertyInfo.SetValue(similarPlaces, value, null);
                 }
-                else if (propertyInfo.PropertyType == typeof(Uri))
+                else if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
                 {
-                    propertyInfo.SetValue(twitterPlace, new Uri(value.ToString()), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterPlaceType?))
-                {
-                    TwitterPlaceType placeType;
-                    if (Enum.TryParse(value.ToString(), true, out placeType))
-                        propertyInfo.SetValue(twitterPlace, placeType, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterPlaceAttributes))
-                {
-                    propertyInfo.SetValue(twitterPlace, 
-                        TwitterPlaceAttributes.FromDictionary(value as Dictionary<string, object>), null);
+                    var jsonArray   = (ArrayList)value;
+                    var places      = (from Dictionary<string, object> place in jsonArray
+                                       select TwitterPlace.FromDictionary(place)).ToArray();
+
+                    propertyInfo.SetValue(similarPlaces, places, null);
                 }
             }
 
-            return twitterPlace;
+            return similarPlaces;
         }
     }
 }

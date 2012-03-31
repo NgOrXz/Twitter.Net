@@ -47,6 +47,11 @@ namespace Mirai.Twitter.Commands
 
         #region Public Methods
 
+        /// <summary>
+        /// Returns the top 20 trending topics for each hour in a given day.
+        /// </summary>
+        /// <param name="exclude"></param>
+        /// <returns></returns>
         public TwitterTrendGroup[] RetrieveDailyTrends(bool exclude = false)
         {
             var trendTopic =  this.RetrieveTrends("daily");
@@ -54,6 +59,12 @@ namespace Mirai.Twitter.Commands
             return trendTopic.TrendGroups;
         }
 
+        /// <summary>
+        /// Returns the top 10 trending topics for a specific WOEID, if trending information is available for it. 
+        /// </summary>
+        /// <param name="woeid"></param>
+        /// <param name="exclude"></param>
+        /// <returns></returns>
         public TwitterTrend[] RetrieveTrendsByWoeId(string woeid, bool exclude = false)
         {
             if (String.IsNullOrEmpty(woeid))
@@ -83,6 +94,12 @@ namespace Mirai.Twitter.Commands
             return trends;
         }
 
+        /// <summary>
+        /// Returns the locations that Twitter has trending topic information for. 
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <returns></returns>
         public TwitterTrendLocation[] RetrieveTrendLocations(double? latitude = null, double? longitude = null)
         {
             var queryBuilder = new StringBuilder();
@@ -113,6 +130,11 @@ namespace Mirai.Twitter.Commands
             return locations;
         }
 
+        /// <summary>
+        /// Returns the top 30 trending topics for each day in a given week.
+        /// </summary>
+        /// <param name="exclude"></param>
+        /// <returns></returns>
         public TwitterTrendGroup[] RetrieveWeeklyTrends(bool exclude = false)
         {
             var trendTopic = this.RetrieveTrends("weekly");

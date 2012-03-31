@@ -23,7 +23,7 @@ namespace Mirai.Twitter.Core
 {
     using System;
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     internal sealed class TwitterKeyAttribute : Attribute
     {
         private readonly string _Key;

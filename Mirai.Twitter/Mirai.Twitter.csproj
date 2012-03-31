@@ -51,6 +51,7 @@
     <Compile Include="Commands\SpamReportingCommand.cs" />
     <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="Commands\GeoCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterGeoSimilarPlaces.cs" />
     <Compile Include="TwitterObjects\TwitterPlaceAttributes.cs" />
     <Compile Include="TwitterObjects\TwitterPlaceType.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedUserCollection.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="TwitterObjects\TwitterTrend.cs" />
     <Compile Include="TwitterObjects\TwitterTrendGroup.cs" />
     <Compile Include="TwitterObjects\TwitterTrendLocation.cs" />
+    <Compile Include="TwitterObjects\TwitterTrendLocationType.cs" />
     <Compile Include="TwitterObjects\TwitterTrendTopic.cs" />
     <Compile Include="TwitterObjects\TwitterTweet.cs" />
     <Compile Include="TwitterObjects\TwitterUrl.cs" />

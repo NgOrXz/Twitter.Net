@@ -25,45 +25,6 @@ namespace Mirai.Twitter.Core
     using System.Collections.Generic;
     using System.Reflection;
 
-    //public sealed class TwitterErrorResponse
-    //{
-    //    [TwitterKey("errors")]
-    //    public List<TwitterError> Errors { get; set; }
-
-
-    //    public static TwitterErrorResponse FromDictionary(Dictionary<string, object> dictionary)
-    //    {
-    //        if (dictionary == null)
-    //            throw new ArgumentNullException("dictionary");
-
-    //        var errResp = new TwitterErrorResponse();
-    //        if (dictionary.Count == 0)
-    //            return errResp;
-
-    //        var pis = errResp.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-    //        foreach (var propertyInfo in pis)
-    //        {
-    //            var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(
-    //                                                                                propertyInfo,
-    //                                                                                typeof(TwitterKeyAttribute));
-    //            object value;
-    //            if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-    //                continue;
-
-    //            if (propertyInfo.PropertyType == typeof(List<TwitterError>))
-    //            {
-    //                var arrList = (ArrayList)value;
-    //                var errors  = (from Dictionary<string, object> jsonObj in arrList
-    //                               select TwitterError.FromDictionary(jsonObj)).ToList();
-
-    //                propertyInfo.SetValue(errResp, errors, null);
-    //            }
-    //        }
-
-    //        return errResp;
-    //    }
-    //}
-
     [Serializable]
     public sealed class TwitterError
     {
@@ -71,6 +32,7 @@ namespace Mirai.Twitter.Core
         public string Code { get; set; }
 
         [TwitterKey("error")]
+        [TwitterKey("message")]
         public string Message { get; set; }
 
         [TwitterKey("request")]
@@ -89,11 +51,17 @@ namespace Mirai.Twitter.Core
             var pis = error.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(
-                                                                                    propertyInfo,
-                                                                                    typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
+                object value = null;
+                foreach (TwitterKeyAttribute twitterKey in 
+                                                 Attribute.GetCustomAttributes(propertyInfo, typeof(TwitterKeyAttribute)))
+                {
+                    if (dictionary.TryGetValue(twitterKey.Key, out value) == false)
+                        continue;
+
+                    break;
+                }
+
+                if (value == null)
                     continue;
 
                 if (propertyInfo.PropertyType == typeof(string))
