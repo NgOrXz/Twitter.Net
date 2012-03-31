@@ -74,7 +74,7 @@ namespace fastJSON
 							// :
 							if (NextToken() != Token.Colon)
 							{
-								throw new Exception("Expected colon at index " + index);
+								throw new JsonParseException("Expected colon at index " + index);
 							}
 
 							// value
@@ -149,7 +149,7 @@ namespace fastJSON
 					return null;
 			}
 
-			throw new Exception("Unrecognized token at index" + index);
+			throw new JsonParseException("Unrecognized token at index" + index);
 		}
 
 		private string ParseString()
@@ -242,7 +242,7 @@ namespace fastJSON
 				}
 			}
 
-			throw new Exception("Unexpectedly reached end of string");
+			throw new JsonParseException("Unexpectedly reached end of string");
 		}
 
 		private uint ParseSingleChar(char c1, uint multipliyer)
@@ -280,7 +280,7 @@ namespace fastJSON
 
 				if ((c >= '0' && c <= '9') || c == '.' || c == '-' || c == '+' || c == 'e' || c == 'E')
 				{
-					if (++index == json.Length) throw new Exception("Unexpected end of string whilst parsing number");
+					if (++index == json.Length) throw new JsonParseException("Unexpected end of string whilst parsing number");
 					continue;
 				}
 
@@ -327,7 +327,7 @@ namespace fastJSON
 
 			if (index == json.Length)
 			{
-				throw new Exception("Reached end of string unexpectedly");
+				throw new JsonParseException("Reached end of string unexpectedly");
 			}
 
 			c = json[index];
@@ -401,7 +401,7 @@ namespace fastJSON
 
 			}
 
-			throw new Exception("Could not find token at index " + --index);
+			throw new JsonParseException("Could not find token at index " + --index);
 		}
 	}
 }
