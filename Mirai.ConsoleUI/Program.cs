@@ -124,11 +124,18 @@
 
                 //twitterApi.SpamReportingCommand.ReportSpam("2423423rerfwexfsr2342");
 
-                //twitterApi.TrendCommand.RetrieveDailyTrends();
+                //foreach (var grp in twitterApi.TrendCommand.RetrieveDailyTrends())
+                //{
+                //    Console.WriteLine("---{0}---", grp.Key);
+                //    foreach (var trend in grp)
+                //    {
+                //        Console.WriteLine("\tEvents: {0}\n\tName: {1}\n\tQuery: {2}\n\tUrl: {3}", 
+                //            trend.Events, trend.Name, trend.Query, trend.Url);
+                //    }
+                //}
                 //twitterApi.TrendCommand.RetrieveWeeklyTrends();
-                //twitterApi.TrendCommand.RetrieveTrendLocations();
-                var topics = twitterApi.TrendCommand.RetrieveTrendTopics("2442047");
                 twitterApi.TrendCommand.RetrieveTrendLocations();
+                //twitterApi.TrendCommand.RetrieveTrendsByWoeId("2442047"); // LA
             }
             catch (TwitterException e)
             {

@@ -30,7 +30,7 @@ namespace Mirai.Twitter.TwitterObjects
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterTrendTopic
+    internal sealed class TwitterTrendTopic
     {
         [TwitterKey("as_of")]
         public DateTime? AsOf { get; set; }
@@ -49,11 +49,9 @@ namespace Mirai.Twitter.TwitterObjects
         {
             get
             {
-                TwitterTrend[] trends = null;
-                if (!this.TrendGroups.Any())
-                    trends = new TwitterTrend[0];
-                else
-                    trends = this.TrendGroups.First().ToArray();
+                var trends = !this.TrendGroups.Any() ?
+                                new TwitterTrend[0] :
+                                this.TrendGroups.First().ToArray();
 
                 return trends;
             }
@@ -114,12 +112,14 @@ namespace Mirai.Twitter.TwitterObjects
                                          select TwitterTrend.FromDictonary(trend)).ToArray())
                                 };
                     }
-                    else
+                    else // json object
                     {
                         trendGroups = (from jsonObj in (Dictionary<string, object>)value
                                        select new TwitterTrendGroup(DateTime.Parse(jsonObj.Key, CultureInfo.InvariantCulture),
                                                                     (from Dictionary<string, object> trend in (ArrayList)jsonObj.Value
-                                                                     select TwitterTrend.FromDictonary(trend)))).ToArray();
+                                                                     select TwitterTrend.FromDictonary(trend))))
+                                       .OrderBy(t => t.Key)
+                                       .ToArray();
                     }
 
                     propertyInfo.SetValue(trendTopic, trendGroups, null);

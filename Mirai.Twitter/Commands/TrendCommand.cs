@@ -28,9 +28,7 @@ namespace Mirai.Twitter.Commands
     using System.Linq;
     using System.Net;
     using System.Text;
-    using System.Text.RegularExpressions;
 
-    using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
@@ -49,28 +47,32 @@ namespace Mirai.Twitter.Commands
 
         #region Public Methods
 
-        public TwitterTrendTopic RetrieveDailyTrends(bool exclude = false)
+        public TwitterTrendGroup[] RetrieveDailyTrends(bool exclude = false)
         {
-            return this.RetrieveTrends("daily");
+            var trendTopic =  this.RetrieveTrends("daily");
+
+            return trendTopic.TrendGroups;
         }
 
-        public TwitterTrendTopic[] RetrieveTrendTopics(string woeid, bool exclude = false)
+        public TwitterTrend[] RetrieveTrendsByWoeId(string woeid, bool exclude = false)
         {
             if (String.IsNullOrEmpty(woeid))
                 throw new ArgumentException();
 
             var uri = new Uri(this.CommandBaseUri + String.Format("/{0}.json?exclude={1}",
-                                                                          woeid,
-                                                                          exclude ? "true" : "false"));
+                                                                  woeid,
+                                                                  exclude ? "true" : "false"));
 
-            TwitterTrendTopic[] topics = null;
+            TwitterTrend[] trends = null;
             try
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
                 var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-                topics          = (from Dictionary<string, object> topic in jsonArray
-                          select TwitterTrendTopic.FromDictionary(topic)).ToArray();
+                var topics      = (from Dictionary<string, object> topic in jsonArray
+                                   select TwitterTrendTopic.FromDictionary(topic)).ToArray();
+
+                trends          = topics[0].Trends;
             }
             catch (TwitterException e)
             {
@@ -78,7 +80,7 @@ namespace Mirai.Twitter.Commands
                     throw;
             }
 
-            return topics;
+            return trends;
         }
 
         public TwitterTrendLocation[] RetrieveTrendLocations(double? latitude = null, double? longitude = null)
@@ -111,9 +113,11 @@ namespace Mirai.Twitter.Commands
             return locations;
         }
 
-        public TwitterTrendTopic RetrieveWeeklyTrends(bool exclude = false)
+        public TwitterTrendGroup[] RetrieveWeeklyTrends(bool exclude = false)
         {
-            return this.RetrieveTrends("weekly");
+            var trendTopic = this.RetrieveTrends("weekly");
+
+            return trendTopic.TrendGroups;
         }
 
         #endregion

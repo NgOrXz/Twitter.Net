@@ -26,7 +26,6 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
 
-
     public sealed class TwitterTrendGroup : IGrouping<DateTime?, TwitterTrend>
     {
         private readonly DateTime? _Key;
