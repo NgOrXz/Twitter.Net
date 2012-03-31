@@ -41,6 +41,24 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("locations")]
         public TwitterTrendLocation[] Locations { get; set; }
 
+        /// <summary>
+        /// Gets the trends of the trend topic, or the trends of the first trend group if there are 
+        /// multiple trend groups in the trend topic.
+        /// </summary>
+        public TwitterTrend[] Trends
+        {
+            get
+            {
+                TwitterTrend[] trends = null;
+                if (!this.TrendGroups.Any())
+                    trends = new TwitterTrend[0];
+                else
+                    trends = this.TrendGroups.First().ToArray();
+
+                return trends;
+            }
+        }
+
         [TwitterKey("trends")]
         public TwitterTrendGroup[] TrendGroups { get; set; }
 
@@ -99,10 +117,9 @@ namespace Mirai.Twitter.TwitterObjects
                     else
                     {
                         trendGroups = (from jsonObj in (Dictionary<string, object>)value
-                                       select new TwitterTrendGroup(
-                                            DateTime.Parse(jsonObj.Key, CultureInfo.InvariantCulture),
-                                            (from Dictionary<string, object> trend in (ArrayList)jsonObj.Value
-                                             select TwitterTrend.FromDictonary(trend)))).ToArray();
+                                       select new TwitterTrendGroup(DateTime.Parse(jsonObj.Key, CultureInfo.InvariantCulture),
+                                                                    (from Dictionary<string, object> trend in (ArrayList)jsonObj.Value
+                                                                     select TwitterTrend.FromDictonary(trend)))).ToArray();
                     }
 
                     propertyInfo.SetValue(trendTopic, trendGroups, null);
@@ -114,50 +131,9 @@ namespace Mirai.Twitter.TwitterObjects
 
                     propertyInfo.SetValue(trendTopic, locations, null);
                 }
-                
             }
 
             return trendTopic;
-        }
-    }
-
-    public sealed class TwitterTrendGroup : IGrouping<DateTime?, TwitterTrend>
-    {
-        private readonly DateTime? _Key;
-        
-        internal readonly List<TwitterTrend> Elements; 
-
-
-        internal TwitterTrendGroup(DateTime key)
-            : this(key, null)
-        {
-            
-        }   
-
-        internal TwitterTrendGroup(DateTime? key, IEnumerable<TwitterTrend> trends)
-        {
-            this._Key       = key;
-            this.Elements   = new List<TwitterTrend>();
-
-            if (trends != null)
-                this.Elements.AddRange(trends);
-        }
-
-
-        public DateTime? Key
-        {
-            get { return this._Key; }
-        }
-
-
-        public IEnumerator<TwitterTrend> GetEnumerator()
-        {
-            return this.Elements.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IList)this.Elements).GetEnumerator();
         }
     }
 }

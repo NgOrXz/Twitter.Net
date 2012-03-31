@@ -127,7 +127,8 @@
                 //twitterApi.TrendCommand.RetrieveDailyTrends();
                 //twitterApi.TrendCommand.RetrieveWeeklyTrends();
                 //twitterApi.TrendCommand.RetrieveTrendLocations();
-                //twitterApi.TrendCommand.RetrieveTrendTopics("2442047");
+                var topics = twitterApi.TrendCommand.RetrieveTrendTopics("2442047");
+                twitterApi.TrendCommand.RetrieveTrendLocations();
             }
             catch (TwitterException e)
             {
