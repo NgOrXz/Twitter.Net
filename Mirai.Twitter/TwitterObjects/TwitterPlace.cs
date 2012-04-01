@@ -22,7 +22,9 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using Mirai.Twitter.Core;
@@ -31,6 +33,9 @@ namespace Mirai.Twitter.TwitterObjects
     {
         [TwitterKey("attributes")]
         public TwitterPlaceAttributes Attributes { get; set; }
+
+        [TwitterKey("contained_within")]
+        public TwitterPlace[] ContainedWithin { get; set; }
 
         [TwitterKey("country")]
         public string Country { get; set; }
@@ -91,6 +96,14 @@ namespace Mirai.Twitter.TwitterObjects
                 {
                     propertyInfo.SetValue(twitterPlace, 
                         TwitterPlaceAttributes.FromDictionary(value as Dictionary<string, object>), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
+                {
+                    var jsonArray   = (ArrayList)value;
+                    var places      = (from Dictionary<string, object> place in jsonArray
+                                       select TwitterPlace.FromDictionary(place)).ToArray();
+
+                    propertyInfo.SetValue(twitterPlace, places, null);
                 }
             }
 
