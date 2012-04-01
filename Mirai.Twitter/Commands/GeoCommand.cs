@@ -28,6 +28,7 @@ namespace Mirai.Twitter.Commands
     using System.Net;
     using System.Text;
 
+    using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
@@ -45,6 +46,33 @@ namespace Mirai.Twitter.Commands
         #endregion
 
         #region Public Methods
+
+        public TwitterPlace CreatePlace(string name, string containedWithin, string token, string latitude, string longitude, string streetAddress = null)
+        {
+            if (String.IsNullOrEmpty(name) || String.IsNullOrEmpty(containedWithin) || String.IsNullOrEmpty(token) ||
+                String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude))
+                throw new ArgumentException();
+
+            var postData = new Dictionary<string, string>
+                {
+                    { "name", name },
+                    { "contained_within", containedWithin },
+                    { "token", token },
+                    { "lat", latitude },
+                    { "long", longitude }
+                };
+
+            if (!String.IsNullOrEmpty(streetAddress))
+                postData.Add("attribute:street_address", streetAddress);
+
+            var uri         = new Uri(this.CommandBaseUri + "/place.json");
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
+
+            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+            var place       = TwitterPlace.FromDictionary(jsonObj);
+
+            return place; 
+        }
 
         /// <summary>
         /// Returns all the information about a known place.
