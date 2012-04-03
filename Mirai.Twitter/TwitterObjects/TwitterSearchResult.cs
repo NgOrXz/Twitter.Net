@@ -25,16 +25,19 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Globalization;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterSearchResult
+    public sealed class TwitterSearchResult : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("created_at")]
         public DateTime CreatedAt { get; set; }
 
         [TwitterKey("geo")]
-        public TwitterGeometry Geometry { get; set; }
+        public TwitterPointGeometry Geometry { get; set; }
 
         [TwitterKey("entities")]
         public TwitterEntity Entities { get; set; }
@@ -78,20 +81,39 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("to_user_name")]
         public string ToUserName { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterSearchResult FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterSearchResult>(dictionary);
+        }
+
+        public static TwitterSearchResult Parse(string jsonString)
+        {
+            return Parse<TwitterSearchResult>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var searchResult = new TwitterSearchResult();
             if (dictionary.Count == 0)
-                return searchResult;
+                return;
 
-            var pis = searchResult.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo, 
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
                                                                                    typeof(TwitterKeyAttribute));
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
@@ -99,7 +121,7 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(string))
                 {
-                    propertyInfo.SetValue(searchResult, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(DateTime))
                 {
@@ -110,28 +132,65 @@ namespace Mirai.Twitter.TwitterObjects
                                            DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
                                            out dt);
 
-                    propertyInfo.SetValue(searchResult, dt, null);
+                    propertyInfo.SetValue(this, dt, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterEntity))
                 {
-                    propertyInfo.SetValue(searchResult, TwitterEntity.FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, TwitterEntity.FromDictionary(value as Dictionary<string, object>), null);
                 }
-                else if (propertyInfo.PropertyType == typeof(TwitterGeometry))
+                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
                 {
-                    propertyInfo.SetValue(searchResult, TwitterGeometry.Create(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, TwitterPointGeometry.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(Uri))
                 {
-                    propertyInfo.SetValue(searchResult, new Uri(value.ToString()), null);
+                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterSearchResultMetadata))
                 {
-                    propertyInfo.SetValue(searchResult, 
+                    propertyInfo.SetValue(this,
                         TwitterSearchResultMetadata.FromDictionary(value as Dictionary<string, object>), null);
                 }
             }
-
-            return searchResult;
         }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(string))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(Uri))
+                    jsonBuilder.AppendFormat("\"{0}\",", value);
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd, dd MMM yyyy HH:mm:ss +0000"));
+                else if (propertyInfo.PropertyType == typeof(TwitterEntity))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterEntity)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterPointGeometry)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterSearchResultMetadata))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterSearchResultMetadata)value).ToJsonString());
+            }
+
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
+        }
+
+        #endregion
     }
 }

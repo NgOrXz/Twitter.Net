@@ -90,12 +90,11 @@ namespace Mirai.Twitter.TwitterObjects
                         dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds);
                         propertyInfo.SetValue(trendTopic, dateTime, null);
                     }
-                    else if (DateTime.TryParseExact(
-                        value.ToString(),
-                        "yyyy-MM-ddTHH:mm:ssZ",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
-                        out dateTime))
+                    else if (DateTime.TryParseExact(value.ToString(),
+                                                    "yyyy-MM-ddTHH:mm:ssZ",
+                                                    CultureInfo.InvariantCulture,
+                                                    DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
+                                                    out dateTime))
                     {
                         propertyInfo.SetValue(trendTopic, dateTime, null);
                     }

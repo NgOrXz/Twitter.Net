@@ -24,11 +24,14 @@ namespace Mirai.Twitter.TwitterObjects
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterSavedSearch
+    public sealed class TwitterSavedSearch : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("created_at")]
         public DateTime CreatedAt { get; set; }
 
@@ -44,17 +47,36 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("query")]
         public string Query { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterSavedSearch FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterSavedSearch>(dictionary);
+        }
+
+        public static TwitterSavedSearch Parse(string jsonString)
+        {
+            return Parse<TwitterSavedSearch>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var savedSearch = new TwitterSavedSearch();
             if (dictionary.Count == 0)
-                return savedSearch;
+                return;
 
-            var pis = savedSearch.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -66,15 +88,44 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(string))
                 {
-                    propertyInfo.SetValue(savedSearch, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(DateTime))
                 {
-                    propertyInfo.SetValue(savedSearch, value.ToString().ToDateTime(), null);
+                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
                 }
             }
-
-            return savedSearch;
         }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(String))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
+            }
+
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
+        }
+
+        #endregion
     }
 }

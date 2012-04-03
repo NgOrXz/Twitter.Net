@@ -47,7 +47,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>CUSTOMTYPE-</DefineConstants>
+    <DefineConstants>CUSTOMTYPE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -79,6 +79,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Getters.cs" />
     <Compile Include="JsonParseException.cs" />
+    <Compile Include="JsonPropertyAttribute.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="JsonParser.cs" />

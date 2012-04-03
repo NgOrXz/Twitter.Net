@@ -31,7 +31,7 @@ namespace Mirai.Twitter.TwitterObjects
     /// </summary>
     /// <typeparam name="T">
     /// </typeparam>
-    public abstract class TwitterCursorPagedCollection<T> : IList<T>
+    public abstract class TwitterCursorPagedCollection<T> : TwitterObject, IList<T>
         where T : class
     {
         #region Constants and Fields

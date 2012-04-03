@@ -22,74 +22,96 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Reflection;
 
     using Mirai.Twitter.Core;
+
+    using fastJSON;
 
     /// <summary>
     /// The twitter coordinate.
     /// </summary>
-    public sealed class TwitterCoordinate
+    public sealed class TwitterCoordinate : TwitterObject
     {
-        #region Constants and Fields
+        #region Public Properties
 
         /// <summary>
-        /// The latitude.
+        /// Gets or sets the latitude.
         /// </summary>
         [TwitterKey("lat")]
         public double Latitude { get; set; }
 
         /// <summary>
-        /// The longitude.
+        /// Gets or sets the longitude.
         /// </summary>
         [TwitterKey("long")]
         public double Longitude { get; set; }
 
         #endregion
 
-        public TwitterCoordinate() { }
+        #region Constructors and Destructors
 
-        public TwitterCoordinate(double latitude, double longitude)
+        public TwitterCoordinate()
+        {
+        }
+
+        public TwitterCoordinate(double longitude, double latitude)
         {
             this.Latitude   = latitude;
             this.Longitude  = longitude;
         }
 
-        public static TwitterCoordinate FromDictionary(Dictionary<string, object> dictionary)
+        #endregion
+
+        #region Public Methods
+        
+        /// <summary>
+        /// Assume the first element is longitude, second is latitude.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static TwitterCoordinate FromList(IList list)
         {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            var coordinate   = new TwitterCoordinate();
-            if (dictionary.Count == 0)
-                return coordinate;
-
-            var pis = coordinate.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                propertyInfo.SetValue(coordinate, value.ToString().ToDouble(), null);
-            }
+            var coordinate = new TwitterCoordinate
+                {
+                    Longitude   = list[0].ToString().ToDouble(),
+                    Latitude    = list[1].ToString().ToDouble()
+                };
 
             return coordinate;
         }
 
         /// <summary>
-        /// [latitude, longitude]
+        /// [,]
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonParseException"></exception>
+        public static TwitterCoordinate Parse(string jsonString)
+        {
+            var jsonArray = (ArrayList)JSON.Instance.Parse(jsonString);
+
+            return FromList(jsonArray);
+        }
+
+        /// <summary>
+        /// [longitude, latitude]
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToJsonString()
         {
-            return String.Format("[{0}, {1}]", 
-                this.Latitude.ToString(CultureInfo.InvariantCulture),
-                this.Longitude.ToString(CultureInfo.InvariantCulture));
+            return String.Format("[{0},{1}]",
+                this.Longitude.ToString(CultureInfo.InvariantCulture),
+                this.Latitude.ToString(CultureInfo.InvariantCulture));
+        }
+
+        #endregion
+
+        internal override void Init(IDictionary<string, object> dictionary)
+        {
+            throw new NotSupportedException();
         }
     }
 }

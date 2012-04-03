@@ -24,11 +24,14 @@ namespace Mirai.Twitter.TwitterObjects
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterPlaceAttributes
+    public sealed class TwitterPlaceAttributes : TwitterObject
     {
+        #region Public Properties
+
         /// <summary>
         /// The country code
         /// </summary>
@@ -71,17 +74,36 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("url")]
         public Uri Url { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterPlaceAttributes FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterPlaceAttributes>(dictionary);
+        }
+
+        public static TwitterPlaceAttributes Parse(string jsonString)
+        {
+            return Parse<TwitterPlaceAttributes>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var attributes = new TwitterPlaceAttributes();
             if (dictionary.Count == 0)
-                return attributes;
+                return;
 
-            var pis = attributes.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -93,15 +115,46 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(attributes, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(Uri))
                 {
-                    propertyInfo.SetValue(attributes, new Uri(value.ToString()), null);
+                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
                 }
             }
-
-            return attributes;
         }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(String))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(Uri))
+                    jsonBuilder.AppendFormat("\"{0}\",", value);
+            }
+
+            if (jsonBuilder[jsonBuilder.Length - 1] == ',')
+                jsonBuilder.Length -= 1; // Remove trailing ',' char.
+
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
+        }
+
+        #endregion
     }
 }

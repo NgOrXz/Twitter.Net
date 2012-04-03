@@ -75,7 +75,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="userId"></param>
         /// <param name="includeEntities"></param>
         /// <param name="skipStatus"></param>
-        /// <returns>Return the blocked user's object if a block exists. Otherwise, null.</returns>
+        /// <returns>Return the blocked user if a block exists. Otherwise, null.</returns>
         public TwitterUser IsBlocked(string screenName, string userId = null, bool includeEntities = true, bool skipStatus = false)
         {
             if (String.IsNullOrEmpty(screenName) && String.IsNullOrEmpty(userId))

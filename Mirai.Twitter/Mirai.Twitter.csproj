@@ -51,7 +51,10 @@
     <Compile Include="Commands\SpamReportingCommand.cs" />
     <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="Commands\GeoCommand.cs" />
+    <Compile Include="TwitterObjects\ITwitterObject.cs" />
     <Compile Include="TwitterObjects\TwitterGeoSimilarPlaces.cs" />
+    <Compile Include="TwitterObjects\TwitterObject.cs" />
+    <Compile Include="TwitterObjects\TwitterPhotoRateLimitStatus.cs" />
     <Compile Include="TwitterObjects\TwitterPlaceAttributes.cs" />
     <Compile Include="TwitterObjects\TwitterPlaceType.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedUserCollection.cs" />
@@ -64,6 +67,9 @@
     <Compile Include="TwitterObjects\TwitterDirectMessage.cs" />
     <Compile Include="TwitterObjects\TwitterList.cs" />
     <Compile Include="TwitterObjects\TwitterListMode.cs" />
+    <Compile Include="TwitterObjects\TwitterPointGeometry.cs" />
+    <Compile Include="TwitterObjects\TwitterPolygonGeometry.cs" />
+    <Compile Include="TwitterObjects\TwitterRateLimitStatusBase.cs" />
     <Compile Include="TwitterObjects\TwitterSavedSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearchResult.cs" />
@@ -84,7 +90,7 @@
     <Compile Include="Core\TwitterConfiguration.cs" />
     <Compile Include="Core\TwitterError.cs" />
     <Compile Include="Core\TwitterException.cs" />
-    <Compile Include="TwitterObjects\TweitterCoordinate.cs" />
+    <Compile Include="TwitterObjects\TwitterCoordinate.cs" />
     <Compile Include="TwitterObjects\TwitterColor.cs" />
     <Compile Include="TwitterObjects\TwitterEntity.cs" />
     <Compile Include="TwitterObjects\TwitterGeometry.cs" />

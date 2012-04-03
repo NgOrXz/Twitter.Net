@@ -28,15 +28,12 @@ namespace Mirai.Twitter.TwitterObjects
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterSearchResultMetadata : TwitterObject
+    public sealed class TwitterPhotoRateLimitStatus : TwitterRateLimitStatusBase
     {
         #region Public Properties
 
-        [TwitterKey("recent_retweets")]
-        public int? RecentRetweets { get; set; }
-
-        [TwitterKey("result_type")]
-        public TwitterSearchReusltType? ReusltType { get; set; }
+        [TwitterKey("daily_limit")]
+        public int DailyLimit { get; internal set; }
 
         #endregion
 
@@ -44,14 +41,14 @@ namespace Mirai.Twitter.TwitterObjects
 
         #region Public Methods
 
-        public static TwitterSearchResultMetadata FromDictionary(Dictionary<string, object> dictionary)
+        public static TwitterPhotoRateLimitStatus FromDictionary(Dictionary<string, object> dictionary)
         {
-            return FromDictionary<TwitterSearchResultMetadata>(dictionary);
+            return FromDictionary<TwitterPhotoRateLimitStatus>(dictionary);
         }
 
-        public static TwitterSearchResultMetadata Parse(string jsonString)
+        public static TwitterPhotoRateLimitStatus Parse(string jsonString)
         {
-            return Parse<TwitterSearchResultMetadata>(jsonString);
+            return Parse<TwitterPhotoRateLimitStatus>(jsonString);
         }
 
         #endregion
@@ -71,20 +68,19 @@ namespace Mirai.Twitter.TwitterObjects
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
+                    typeof(TwitterKeyAttribute));
+
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
                     continue;
 
-                if (propertyInfo.PropertyType == typeof(TwitterSearchReusltType?))
-                {
-                    TwitterSearchReusltType resultType;
-                    if (Enum.TryParse(value.ToString(), true, out resultType))
-                        propertyInfo.SetValue(this, resultType, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int?))
+                if (propertyInfo.PropertyType == typeof(int))
                 {
                     propertyInfo.SetValue(this, value.ToString().ToInt32(), null);
+                }
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                {
+                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
                 }
             }
         }
@@ -98,7 +94,7 @@ namespace Mirai.Twitter.TwitterObjects
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
+                    typeof(TwitterKeyAttribute));
 
                 object value;
                 if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
@@ -106,10 +102,10 @@ namespace Mirai.Twitter.TwitterObjects
 
                 jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
 
-                if (propertyInfo.PropertyType == typeof(int?))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-                else if (propertyInfo.PropertyType == typeof(TwitterSearchReusltType?))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterSearchReusltType)value).ToString().ToLowerInvariant());
+                if (propertyInfo.PropertyType == typeof(Int32))
+                    jsonBuilder.AppendFormat("{0},", value);
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
             }
 
             jsonBuilder.Length -= 1; // Remove trailing ',' char.

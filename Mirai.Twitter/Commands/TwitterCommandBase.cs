@@ -21,6 +21,12 @@
 
 namespace Mirai.Twitter.Commands
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Runtime.ExceptionServices;
+
     using Mirai.Twitter.Core;
 
     public abstract class TwitterCommandBase
@@ -28,6 +34,21 @@ namespace Mirai.Twitter.Commands
         private readonly string _CommandBaseUri;
 
         private readonly TwitterApi _TwitterApi;
+
+        //private Stream _LogStream;
+
+        //public Stream Log
+        //{
+        //    get { return this._LogStream; } 
+        //    set
+        //    {
+        //        AppDomain.CurrentDomain.FirstChanceException += delegate(object sender, FirstChanceExceptionEventArgs args)
+        //            {
+        //                if (args.Exception is TwitterException || args.Exception is JsonParseException)
+        //                    this._LogStream.Write();
+        //            };
+        //    }
+        //}
 
 
         protected virtual string CommandBaseUri

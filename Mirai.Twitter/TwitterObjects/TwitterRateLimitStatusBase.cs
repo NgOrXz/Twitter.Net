@@ -21,55 +21,19 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System.Collections.Generic;
+    using System;
 
-    public abstract class TwitterGeometry : TwitterObject
+    using Mirai.Twitter.Core;
+
+    public abstract class TwitterRateLimitStatusBase : TwitterObject
     {
-        #region Constants and Fields
+        [TwitterKey("remaining_hits")]
+        public int RemainingHits { get; internal set; }
 
-        private bool _IsCoordinate;
+        [TwitterKey("reset_time")]
+        public DateTime ResetTime { get; internal set; }
 
-        protected readonly List<TwitterCoordinate> CoordinatesList;
-
-        #endregion
-
-
-        protected TwitterGeometry()
-        {
-            this._IsCoordinate      = false;
-            this.CoordinatesList    = new List<TwitterCoordinate>();
-        }
-
-        /// <summary>
-        /// If there are no coordinate, return an empty array not null.
-        /// </summary>
-        public TwitterCoordinate[] Coordinates
-        {
-            get { return this.CoordinatesList != null ? this.CoordinatesList.ToArray() : new TwitterCoordinate[] { }; }
-        }
-
-
-        internal bool IsCoordinate
-        {
-            get { return this._IsCoordinate; }
-            set
-            {
-                if (this._IsCoordinate == value)
-                    return;
-
-                this._IsCoordinate = value;
-                this.SwapLatAndLong();
-            }
-        }
-
-        private void SwapLatAndLong()
-        {
-            foreach (var coordinate in CoordinatesList)
-            {
-                var tmp                 = coordinate.Latitude;
-                coordinate.Latitude     = coordinate.Longitude;
-                coordinate.Longitude    = tmp;
-            }
-        }
+        [TwitterKey("reset_time_in_seconds")]
+        public int ResetTimeInSeconds { get; internal set; }
     }
 }

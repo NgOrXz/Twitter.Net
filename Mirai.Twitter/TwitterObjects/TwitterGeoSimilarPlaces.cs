@@ -26,28 +26,50 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterGeoSimilarPlaces
+    public sealed class TwitterGeoSimilarPlaces : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("places")]
         public TwitterPlace[] Places { get; set; }
 
         [TwitterKey("token")]
         public string Token { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterGeoSimilarPlaces FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterGeoSimilarPlaces>(dictionary);
+        }
+
+        public static TwitterGeoSimilarPlaces Parse(string jsonString)
+        {
+            return Parse<TwitterGeoSimilarPlaces>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var similarPlaces = new TwitterGeoSimilarPlaces();
             if (dictionary.Count == 0)
-                return similarPlaces;
+                return;
 
-            var pis = similarPlaces.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -59,7 +81,7 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(similarPlaces, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
                 {
@@ -67,11 +89,50 @@ namespace Mirai.Twitter.TwitterObjects
                     var places      = (from Dictionary<string, object> place in jsonArray
                                        select TwitterPlace.FromDictionary(place)).ToArray();
 
-                    propertyInfo.SetValue(similarPlaces, places, null);
+                    propertyInfo.SetValue(this, places, null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
+                {
+                    jsonBuilder.Append("[");
+                    foreach (var place in (TwitterPlace[])value)
+                    {
+                        jsonBuilder.AppendFormat("{0},", place.ToJsonString());
+                    }
+                    jsonBuilder.Length -= 1; // Remove trailing ',' char.
+                    jsonBuilder.Append("],");
+                }
+                else if (propertyInfo.PropertyType == typeof(String))
+                {
+                    jsonBuilder.AppendFormat("{0},", value.ToString().ToJsonString());
                 }
             }
 
-            return similarPlaces;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }

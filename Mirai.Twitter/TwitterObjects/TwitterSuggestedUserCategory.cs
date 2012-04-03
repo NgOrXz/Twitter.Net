@@ -26,11 +26,14 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterSuggestedUserCategory
+    public sealed class TwitterSuggestedUserCategory : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("name")]
         public string Name { get; set; }
 
@@ -43,29 +46,48 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("users")]
         public TwitterUser[] Users { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterSuggestedUserCategory FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterSuggestedUserCategory>(dictionary);
+        }
+
+        public static TwitterSuggestedUserCategory Parse(string jsonString)
+        {
+            return Parse<TwitterSuggestedUserCategory>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var category = new TwitterSuggestedUserCategory();
             if (dictionary.Count == 0)
-                return category;
+                return;
 
-            var pis = category.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(
-                    propertyInfo,
-                    typeof(TwitterKeyAttribute));
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
                     continue;
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(category, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterUser[]))
                 {
@@ -73,11 +95,50 @@ namespace Mirai.Twitter.TwitterObjects
                     var users   = (from Dictionary<string, object> user in jsonArr
                                    select TwitterUser.FromDictionary(user)).ToArray();
 
-                    propertyInfo.SetValue(category, users, null);
+                    propertyInfo.SetValue(this, users, null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(string))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterUser[]))
+                {
+                    jsonBuilder.Append("[");
+                    foreach (var user in (TwitterUser[])value)
+                    {
+                        jsonBuilder.AppendFormat("{0},", user.ToJsonString());
+                    }
+                    if (jsonBuilder[jsonBuilder.Length - 1] == ',')
+                        jsonBuilder.Length -= 1; // Remove trailing ',' char.
+
+                    jsonBuilder.Append("],");
                 }
             }
 
-            return category;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }

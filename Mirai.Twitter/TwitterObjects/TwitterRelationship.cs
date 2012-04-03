@@ -29,8 +29,10 @@ namespace Mirai.Twitter.TwitterObjects
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterRelationship
+    public sealed class TwitterRelationship : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("connections")]
         public TwitterRelationshipConnections? Connections { get; set; }
 
@@ -49,32 +51,52 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("target")]
         public TwitterRelationshipUser Target { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterRelationship FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterRelationship>(dictionary);
+        }
+
+        public static TwitterRelationship Parse(string jsonString)
+        {
+            return Parse<TwitterRelationship>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var relationship = new TwitterRelationship();
             if (dictionary.Count == 0)
-                return relationship;
+                return;
 
-            var pis = relationship.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
                                                                                    typeof(TwitterKeyAttribute));
+
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
                     continue;
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(relationship, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterRelationshipUser))
                 {
-                    propertyInfo.SetValue(relationship, 
+                    propertyInfo.SetValue(this,
                         TwitterRelationshipUser.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterRelationshipConnections?))
@@ -87,11 +109,57 @@ namespace Mirai.Twitter.TwitterObjects
 
                     TwitterRelationshipConnections connections;
                     if (Enum.TryParse(sb.ToString(), true, out connections))
-                        propertyInfo.SetValue(relationship, connections, null);
+                        propertyInfo.SetValue(this, connections, null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(String))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterRelationshipUser))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterRelationshipUser)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterRelationshipConnections?))
+                {
+                    jsonBuilder.Append("[");
+
+                    var conn = (TwitterRelationshipConnections)value;
+                    if ((conn & TwitterRelationshipConnections.FollowingRequested) == TwitterRelationshipConnections.FollowingRequested)
+                        jsonBuilder.AppendFormat("\"{0}\",", "following_requested");
+                    if ((conn & TwitterRelationshipConnections.FollowedBy) == TwitterRelationshipConnections.FollowedBy)
+                        jsonBuilder.AppendFormat("\"{0}\",", "followed_by");
+                    if ((conn & TwitterRelationshipConnections.Following) == TwitterRelationshipConnections.Following)
+                        jsonBuilder.AppendFormat("\"{0}\",", "following");
+                    
+                    if (jsonBuilder[jsonBuilder.Length - 1] == ',')
+                        jsonBuilder.Length -= 1;
+
+                    jsonBuilder.Append("],");
                 }
             }
 
-            return relationship;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }

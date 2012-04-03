@@ -26,13 +26,19 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterPlace
+    public sealed class TwitterPlace : TwitterObject
     {
+        #region Public Properties
+
         [TwitterKey("attributes")]
         public TwitterPlaceAttributes Attributes { get; set; }
+
+        [TwitterKey("bounding_box")]
+        public TwitterPolygonGeometry BoundingBox { get; set; }
 
         [TwitterKey("contained_within")]
         public TwitterPlace[] ContainedWithin { get; set; }
@@ -58,17 +64,36 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("url")]
         public Uri Url { get; set; }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterPlace FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterPlace>(dictionary);
+        }
+
+        public static TwitterPlace Parse(string jsonString)
+        {
+            return Parse<TwitterPlace>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var twitterPlace = new TwitterPlace();
             if (dictionary.Count == 0)
-                return twitterPlace;
+                return;
 
-            var pis = twitterPlace.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -80,34 +105,84 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(String))
                 {
-                    propertyInfo.SetValue(twitterPlace, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(Uri))
                 {
-                    propertyInfo.SetValue(twitterPlace, new Uri(value.ToString()), null);
+                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterPlaceType?))
                 {
                     TwitterPlaceType placeType;
                     if (Enum.TryParse(value.ToString(), true, out placeType))
-                        propertyInfo.SetValue(twitterPlace, placeType, null);
+                        propertyInfo.SetValue(this, placeType, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterPlaceAttributes))
                 {
-                    propertyInfo.SetValue(twitterPlace, 
+                    propertyInfo.SetValue(this,
                         TwitterPlaceAttributes.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
                 {
                     var jsonArray   = (ArrayList)value;
                     var places      = (from Dictionary<string, object> place in jsonArray
-                                       select TwitterPlace.FromDictionary(place)).ToArray();
+                                       select FromDictionary(place)).ToArray();
 
-                    propertyInfo.SetValue(twitterPlace, places, null);
+                    propertyInfo.SetValue(this, places, null);
+                }
+                else if (propertyInfo.PropertyType == typeof(TwitterPolygonGeometry))
+                {
+                    propertyInfo.SetValue(this,
+                        TwitterPolygonGeometry.FromDictionary(value as Dictionary<string, object>), null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(String))
+                    jsonBuilder.AppendFormat("{0},", value.ToString().ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(Uri))
+                    jsonBuilder.AppendFormat("\"{0}\",", value);
+                else if (propertyInfo.PropertyType == typeof(TwitterPlaceType?))
+                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterPlaceType)value).ToString().ToLowerInvariant());
+                else if (propertyInfo.PropertyType == typeof(TwitterPlaceAttributes))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterPlaceAttributes)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterPolygonGeometry))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterPolygonGeometry)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterPlace[]))
+                {
+                    jsonBuilder.Append("[");
+                    foreach (var place in (TwitterPlace[])value)
+                    {
+                        jsonBuilder.AppendFormat("{0},", place.ToJsonString());
+                    }
+                    jsonBuilder.Length -= 1; // Remove trailing ',' char.
+                    jsonBuilder.Append("],");
                 }
             }
 
-            return twitterPlace;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }

@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-#if SILVERLIGHT
-
-#else
-using System.Data;
-#endif
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Xml;
+﻿
 
 namespace fastJSON
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+#if SILVERLIGHT
+
+#else
+    using System.Data;
+#endif
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Xml;
+
     public delegate string Serialize(object data);
     public delegate object Deserialize(string data);
 
@@ -212,19 +214,23 @@ namespace fastJSON
                 PropertyInfo[] pr = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 foreach (PropertyInfo p in pr)
                 {
-                    myPropInfo d = CreateMyProp(p.PropertyType, p.Name);
+                    var jsonProp = (JsonPropertyAttribute)Attribute.GetCustomAttribute(p, typeof(JsonPropertyAttribute));
+
+                    myPropInfo d = CreateMyProp(p.PropertyType, jsonProp != null ? jsonProp.Name : p.Name);
                     d.CanWrite = p.CanWrite;
                     d.setter = CreateSetMethod(p);
                     d.getter = CreateGetMethod(p);
-                    sd.Add(p.Name, d);
+                    sd.Add(jsonProp != null ? jsonProp.Name : p.Name, d);
                 }
                 FieldInfo[] fi = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
                 foreach (FieldInfo f in fi)
                 {
-                    myPropInfo d = CreateMyProp(f.FieldType, f.Name);
+                    var jsonProp = (JsonPropertyAttribute)Attribute.GetCustomAttribute(f, typeof(JsonPropertyAttribute));
+
+                    myPropInfo d = CreateMyProp(f.FieldType, jsonProp != null ? jsonProp.Name : f.Name);
                     d.setter = CreateSetField(type, f);
                     d.getter = CreateGetField(type, f);
-                    sd.Add(f.Name, d);
+                    sd.Add(jsonProp != null ? jsonProp.Name : f.Name, d);
                 }
 
                 _propertycache.Add(typename, sd);

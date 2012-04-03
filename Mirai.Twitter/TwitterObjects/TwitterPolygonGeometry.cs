@@ -22,42 +22,39 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Text;
 
     using Mirai.Twitter.Core;
 
-    public sealed class TwitterSizes : TwitterObject
+    public sealed class TwitterPolygonGeometry : TwitterGeometry
     {
-        #region Public Properties
-
-        [TwitterKey("large")]
-        public TwitterSize Large { get; set; }
-
-        [TwitterKey("medium")]
-        public TwitterSize Medium { get; set; }
-
-        [TwitterKey("small")]
-        public TwitterSize Small { get; set; }
-
-        [TwitterKey("thumb")]
-        public TwitterSize Thumb { get; set; }
-
-        #endregion
-
-
-
         #region Public Methods
 
-        public static TwitterSizes FromDictionary(Dictionary<string, object> dictionary)
+        public void Add(TwitterCoordinate coordinate)
         {
-            return FromDictionary<TwitterSizes>(dictionary);
+            this.CoordinatesList.Add(coordinate);
         }
 
-        public static TwitterSizes Parse(string jsonString)
+        public void Clear()
         {
-            return Parse<TwitterSizes>(jsonString);
+            this.CoordinatesList.Clear();
+        }
+
+        public static TwitterPolygonGeometry FromDictionary(IDictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterPolygonGeometry>(dictionary);
+        }
+
+        public static TwitterPolygonGeometry Parse(string jsonString)
+        {
+            return Parse<TwitterPolygonGeometry>(jsonString);
+        }
+
+        public bool Remove(TwitterCoordinate coordinate)
+        {
+            return this.CoordinatesList.Remove(coordinate);
         }
 
         #endregion
@@ -73,39 +70,40 @@ namespace Mirai.Twitter.TwitterObjects
             if (dictionary.Count == 0)
                 return;
 
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
+            object typeValue;
+            if (dictionary.TryGetValue("type", out typeValue) == false || typeValue == null)
+                throw new FormatException();
 
-                propertyInfo.SetValue(this, TwitterSize.FromDictinonary(value as Dictionary<string, object>), null);
+            object coordinatesValue;
+            if (dictionary.TryGetValue("coordinates", out coordinatesValue) == false || coordinatesValue == null)
+                throw new FormatException();
+
+            if (!((string)typeValue).Equals("Polygon", StringComparison.OrdinalIgnoreCase))
+                throw new FormatException();
+
+            foreach (ArrayList polyArray in (ArrayList)coordinatesValue)
+            {
+                foreach (ArrayList c in polyArray)
+                {
+                    this.CoordinatesList.Add(new TwitterCoordinate(c[0].ToString().ToDouble(),
+                                                                   c[1].ToString().ToDouble()));
+                }
+                
             }
         }
 
         public override string ToJsonString()
         {
+            if (this.IsCoordinate)
+                throw new NotImplementedException();
+
             var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
+            jsonBuilder.Append("{\"type\":\"Polygon\",\"coordinates\":[[");
+            this.CoordinatesList.ForEach(c => jsonBuilder.AppendFormat("{0},", c.ToJsonString()));
+            if (jsonBuilder[jsonBuilder.Length - 1] == ',')
+                jsonBuilder.Length -= 1;
 
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":{1},", twitterKey.Key, ((TwitterSize)value).ToJsonString());
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
+            jsonBuilder.Append("]]}");
 
             return jsonBuilder.ToString();
         }

@@ -26,11 +26,14 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
     public sealed class TwitterCursorPagedListCollection : TwitterCursorPagedCollection<TwitterList>
     {
+        #region Public Properties
+
         [TwitterKey("lists")]
         public TwitterList[] Lists
         {
@@ -39,20 +42,39 @@ namespace Mirai.Twitter.TwitterObjects
             {
                 this.Clear();
                 this.AddRange(value);
-            } 
+            }
         }
 
+        #endregion
+
+
+
+        #region Public Methods
 
         public static TwitterCursorPagedListCollection FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterCursorPagedListCollection>(dictionary);
+        }
+
+        public static TwitterCursorPagedListCollection Parse(string jsonString)
+        {
+            return Parse<TwitterCursorPagedListCollection>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var lists = new TwitterCursorPagedListCollection();
             if (dictionary.Count == 0)
-                return lists;
+                return;
 
-            var pis = lists.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
@@ -64,7 +86,7 @@ namespace Mirai.Twitter.TwitterObjects
 
                 if (propertyInfo.PropertyType == typeof(string))
                 {
-                    propertyInfo.SetValue(lists, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterList[]))
                 {
@@ -72,11 +94,50 @@ namespace Mirai.Twitter.TwitterObjects
                     var data        = (from Dictionary<string, object> list in jsonArray
                                        select TwitterList.FromDictionary(list)).ToArray();
 
-                    propertyInfo.SetValue(lists, data, null);
+                    propertyInfo.SetValue(this, data, null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(string))
+                    jsonBuilder.AppendFormat("\"{0}\",", value);
+                else if (propertyInfo.PropertyType == typeof(TwitterList[]))
+                {
+                    jsonBuilder.Append("[");
+                    foreach (var list in (TwitterList[])value)
+                    {
+                        jsonBuilder.AppendFormat("{0},", list.ToJsonString());
+                    }
+                    if (jsonBuilder[jsonBuilder.Length - 1] == ',')
+                        jsonBuilder.Length -= 1; // Remove trailing ',' char.
+
+                    jsonBuilder.Append("],");
                 }
             }
 
-            return lists;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }

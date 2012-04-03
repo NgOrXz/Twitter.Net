@@ -1,4 +1,4 @@
-// ------------------------------------------------------------------------------------------------------
+﻿// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -23,53 +23,35 @@ namespace Mirai.Twitter.TwitterObjects
 {
     using System.Collections.Generic;
 
-    public abstract class TwitterGeometry : TwitterObject
+    using fastJSON;
+
+    public abstract class TwitterObject : ITwitterObject
     {
-        #region Constants and Fields
+        internal abstract void Init(IDictionary<string, object> dictionary);
 
-        private bool _IsCoordinate;
+        internal static T FromDictionary<T>(IDictionary<string, object> dictionary) where T: TwitterObject, new()
+        {
+            var twitterObj = new T();
+            twitterObj.Init(dictionary);
 
-        protected readonly List<TwitterCoordinate> CoordinatesList;
+            return twitterObj;
+        }
+
+        internal static T Parse<T>(string jsonString) where T: TwitterObject, new()
+        {
+            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(jsonString);
+
+            var twitterObj  = new T();
+            twitterObj.Init(jsonObj);
+
+            return twitterObj;
+        }
+
+
+        #region Implementation of ITwitterObject
+
+        public abstract string ToJsonString();
 
         #endregion
-
-
-        protected TwitterGeometry()
-        {
-            this._IsCoordinate      = false;
-            this.CoordinatesList    = new List<TwitterCoordinate>();
-        }
-
-        /// <summary>
-        /// If there are no coordinate, return an empty array not null.
-        /// </summary>
-        public TwitterCoordinate[] Coordinates
-        {
-            get { return this.CoordinatesList != null ? this.CoordinatesList.ToArray() : new TwitterCoordinate[] { }; }
-        }
-
-
-        internal bool IsCoordinate
-        {
-            get { return this._IsCoordinate; }
-            set
-            {
-                if (this._IsCoordinate == value)
-                    return;
-
-                this._IsCoordinate = value;
-                this.SwapLatAndLong();
-            }
-        }
-
-        private void SwapLatAndLong()
-        {
-            foreach (var coordinate in CoordinatesList)
-            {
-                var tmp                 = coordinate.Latitude;
-                coordinate.Latitude     = coordinate.Longitude;
-                coordinate.Longitude    = tmp;
-            }
-        }
     }
 }

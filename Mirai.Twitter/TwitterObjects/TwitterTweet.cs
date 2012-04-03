@@ -26,13 +26,14 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Mirai.Twitter.Core;
 
     /// <summary>
-    /// The twitter dm.
+    /// The twitter .
     /// </summary>
-    public sealed class TwitterTweet
+    public sealed class TwitterTweet : TwitterObject
     {
         #region Public Properties
 
@@ -46,7 +47,7 @@ namespace Mirai.Twitter.TwitterObjects
         /// Gets or sets Coordinates.
         /// </summary>
         [TwitterKey("coordinates")]
-        public TwitterCoordinate Coordinates { get; set; }
+        public TwitterPointGeometry Coordinates { get; set; }
 
         /// <summary>
         /// Gets or sets CreatedAt.
@@ -66,11 +67,10 @@ namespace Mirai.Twitter.TwitterObjects
         [TwitterKey("favorited")]
         public bool Favorited { get; set; }
 
-        // This property ignored currently.
         // About geo see: http://www.geojson.org/geojson-spec.html and 
         // https://dev.twitter.com/docs/api/1/get/statuses/show/%3Aid
         [TwitterKey("geo")]
-        public TwitterGeometry Geometry { get; set; }
+        public TwitterPointGeometry Geometry { get; set; }
 
         /// <summary>
         /// Gets or sets Id.
@@ -119,14 +119,12 @@ namespace Mirai.Twitter.TwitterObjects
 
         /// <summary>
         /// Gets or sets Source.
-        /// Format: <a href="http://testtweet.codeplex.com" rel="nofollow">TestTweet2011</a>
         /// </summary>
         [TwitterKey("source")]
         public string Source { get; set; }
 
         /// <summary>
         /// Gets or sets Text.
-        /// Format: update with a picture~~~~~ http://t.co/ngUKvcT
         /// </summary>
         [TwitterKey("text")]
         public string Text { get; set; }
@@ -145,67 +143,128 @@ namespace Mirai.Twitter.TwitterObjects
 
         #endregion
 
+        #region Public Methods
+
         public static TwitterTweet FromDictionary(Dictionary<string, object> dictionary)
+        {
+            return FromDictionary<TwitterTweet>(dictionary);
+        }
+
+        public static TwitterTweet Parse(string jsonString)
+        {
+            return Parse<TwitterTweet>(jsonString);
+        }
+
+        #endregion
+
+
+        #region Overrides of TwitterObject
+
+        internal override void Init(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            var tweet = new TwitterTweet();
             if (dictionary.Count == 0)
-                return tweet;
+                return;
 
-            var pis = tweet.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
                 var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
                                                                                    typeof(TwitterKeyAttribute));
-                
+
                 object value;
                 if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
                     continue;
 
                 if (propertyInfo.PropertyType == typeof(String) || propertyInfo.PropertyType == typeof(Boolean))
                 {
-                    propertyInfo.SetValue(tweet, value, null);
+                    propertyInfo.SetValue(this, value, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(DateTime))
                 {
-                    propertyInfo.SetValue(tweet, value.ToString().ToDateTime(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterCoordinate))
-                {
-                    propertyInfo.SetValue(tweet, TwitterCoordinate.FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterPlace))
                 {
-                    propertyInfo.SetValue(tweet, TwitterPlace.FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, TwitterPlace.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterUser))
                 {
-                    propertyInfo.SetValue(tweet, TwitterUser.FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, TwitterUser.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterEntity))
                 {
-                    propertyInfo.SetValue(tweet, TwitterEntity.FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, TwitterEntity.FromDictionary(value as Dictionary<string, object>), null);
                 }
                 else if (propertyInfo.PropertyType == typeof(string[]))
                 {
                     var arrList = value as ArrayList;
                     var ids     = (from string id in arrList select id).ToArray();
 
-                    propertyInfo.SetValue(tweet, ids, null);
+                    propertyInfo.SetValue(this, ids, null);
                 }
                 else if (propertyInfo.PropertyType == typeof(TwitterTweet))
                 {
-                    propertyInfo.SetValue(tweet, FromDictionary(value as Dictionary<string, object>), null);
+                    propertyInfo.SetValue(this, FromDictionary(value as Dictionary<string, object>), null);
                 }
-                else if (propertyInfo.PropertyType == typeof(TwitterGeometry))
+                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
                 {
-                    propertyInfo.SetValue(tweet, TwitterGeometry.Create(value as Dictionary<string, object>), null);
+                    var pointGeometry = TwitterPointGeometry.FromDictionary(value as Dictionary<string, object>);
+                    if (twitterKey.Key == "coordinates")
+                        pointGeometry.IsCoordinate = true; 
+
+                    propertyInfo.SetValue(this, pointGeometry, null);
+                }
+            }
+        }
+
+        public override string ToJsonString()
+        {
+            var jsonBuilder = new StringBuilder();
+            jsonBuilder.Append("{");
+
+            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in pis)
+            {
+                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                   typeof(TwitterKeyAttribute));
+
+                object value;
+                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
+                    continue;
+
+                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
+
+                if (propertyInfo.PropertyType == typeof(String))
+                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
+                else if (propertyInfo.PropertyType == typeof(TwitterUser))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterUser)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterPlace))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterPlace)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterEntity))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterEntity)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterPointGeometry)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(TwitterTweet))
+                    jsonBuilder.AppendFormat("{0},", ((TwitterTweet)value).ToJsonString());
+                else if (propertyInfo.PropertyType == typeof(Boolean))
+                    jsonBuilder.AppendFormat("{0},", value.ToString().ToLowerInvariant());
+                else if (propertyInfo.PropertyType == typeof(String[]))
+                {
+                    jsonBuilder.AppendFormat("[{0}],", String.Join(",", (string[])value));
                 }
             }
 
-            return tweet;
+            jsonBuilder.Length -= 1; // Remove trailing ',' char.
+            jsonBuilder.Append("}");
+
+            return jsonBuilder.ToString();
         }
+
+        #endregion
     }
 }
