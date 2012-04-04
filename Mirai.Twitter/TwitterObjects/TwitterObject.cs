@@ -21,36 +21,29 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System.Collections.Generic;
-
-    using fastJSON;
+    using Newtonsoft.Json;
 
     public abstract class TwitterObject : ITwitterObject
     {
-        internal abstract void Init(IDictionary<string, object> dictionary);
+        #region Public Methods
 
-        internal static T FromDictionary<T>(IDictionary<string, object> dictionary) where T: TwitterObject, new()
+        public static T Parse<T>(string value) where T : TwitterObject, new()
         {
-            var twitterObj = new T();
-            twitterObj.Init(dictionary);
+            var twitterObj = JsonConvert.DeserializeObject<T>(value);
 
             return twitterObj;
         }
 
-        internal static T Parse<T>(string jsonString) where T: TwitterObject, new()
-        {
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(jsonString);
+        #endregion
 
-            var twitterObj  = new T();
-            twitterObj.Init(jsonObj);
-
-            return twitterObj;
-        }
 
 
         #region Implementation of ITwitterObject
 
-        public abstract string ToJsonString();
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
 
         #endregion
     }

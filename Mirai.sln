@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Net.OAuth", "Mirai.Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Utilities", "Mirai.Utilities\Mirai.Utilities.csproj", "{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastJSON", "fastJSON\fastJSON.csproj", "{207E91B1-C9F8-4913-88E1-3549EF5F3273}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Mirai.vsmdi
@@ -71,16 +69,6 @@ Global
 		{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}.Release|x86.ActiveCfg = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Any CPU.Build.0 = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{207E91B1-C9F8-4913-88E1-3549EF5F3273}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -92,14 +92,14 @@ namespace Mirai.Twitter.TwitterObjects
             }
         }
 
-        public override string ToJsonString()
+        public override string ToJson()
         {
             if (this.IsCoordinate)
                 throw new NotImplementedException();
 
             var jsonBuilder = new StringBuilder();
             jsonBuilder.Append("{\"type\":\"Polygon\",\"coordinates\":[[");
-            this.CoordinatesList.ForEach(c => jsonBuilder.AppendFormat("{0},", c.ToJsonString()));
+            this.CoordinatesList.ForEach(c => jsonBuilder.AppendFormat("{0},", c.ToJson()));
             if (jsonBuilder[jsonBuilder.Length - 1] == ',')
                 jsonBuilder.Length -= 1;
 

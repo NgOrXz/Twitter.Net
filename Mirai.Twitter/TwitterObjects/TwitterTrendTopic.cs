@@ -28,17 +28,19 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Linq;
     using System.Reflection;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     internal sealed class TwitterTrendTopic
     {
-        [TwitterKey("as_of")]
+        [JsonProperty("as_of")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime? AsOf { get; set; }
 
-        [TwitterKey("created_at")]
+        [JsonProperty("created_at")]
         public DateTime? CreatedAt { get; set; }
 
-        [TwitterKey("locations")]
+        [JsonProperty("locations")]
         public TwitterTrendLocation[] Locations { get; set; }
 
         /// <summary>
@@ -57,82 +59,8 @@ namespace Mirai.Twitter.TwitterObjects
             }
         }
 
-        [TwitterKey("trends")]
+        [JsonProperty("trends")]
         public TwitterTrendGroup[] TrendGroups { get; set; }
 
-
-        public static TwitterTrendTopic FromDictionary(Dictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            var trendTopic = new TwitterTrendTopic();
-            if (dictionary.Count == 0)
-                return trendTopic;
-
-            var pis = trendTopic.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(DateTime?))
-                {
-                    DateTime dateTime;
-                    double seconds;
-                    if (Double.TryParse(
-                        value.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out seconds))
-                    {
-                        dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds);
-                        propertyInfo.SetValue(trendTopic, dateTime, null);
-                    }
-                    else if (DateTime.TryParseExact(value.ToString(),
-                                                    "yyyy-MM-ddTHH:mm:ssZ",
-                                                    CultureInfo.InvariantCulture,
-                                                    DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
-                                                    out dateTime))
-                    {
-                        propertyInfo.SetValue(trendTopic, dateTime, null);
-                    }
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterTrendGroup[]))
-                {
-                    TwitterTrendGroup[] trendGroups = null;
-                    if (value is ArrayList)
-                    {
-                        trendGroups = new[] 
-                                {
-                                    new TwitterTrendGroup(null, 
-                                        (from Dictionary<string, object> trend in (ArrayList)value
-                                         select TwitterTrend.FromDictonary(trend)).ToArray())
-                                };
-                    }
-                    else // json object
-                    {
-                        trendGroups = (from jsonObj in (Dictionary<string, object>)value
-                                       select new TwitterTrendGroup(DateTime.Parse(jsonObj.Key, CultureInfo.InvariantCulture),
-                                                                    (from Dictionary<string, object> trend in (ArrayList)jsonObj.Value
-                                                                     select TwitterTrend.FromDictonary(trend))))
-                                       .OrderBy(t => t.Key)
-                                       .ToArray();
-                    }
-
-                    propertyInfo.SetValue(trendTopic, trendGroups, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterTrendLocation[]))
-                {
-                    var locations = (from Dictionary<string, object> loc in (ArrayList)value
-                                     select TwitterTrendLocation.FromDictionary(loc)).ToArray();
-
-                    propertyInfo.SetValue(trendTopic, locations, null);
-                }
-            }
-
-            return trendTopic;
-        }
     }
 }

@@ -22,63 +22,60 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Globalization;
+
+    using Mirai.Utilities.Reflection;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
-    public sealed class TwitterSearchResult : TwitterObject
+    internal class TwitterDateTimeConverter : DateTimeConverterBase
     {
-        #region Public Properties
+        protected string DateTimeFormat;
 
-        [JsonProperty("created_at")]
-        [JsonConverter(typeof(TwitterSearchReaultDateTimeConverter))]
-        public DateTime CreatedAt { get; set; }
 
-        [JsonProperty("geo")]
-        public TwitterPointGeometry Geometry { get; set; }
+        public TwitterDateTimeConverter()
+        {
+            this.DateTimeFormat = "ddd MMM dd HH:mm:ss +0000 yyyy";
+        }
 
-        [JsonProperty("entities")]
-        public TwitterEntity Entities { get; set; }
 
-        [JsonProperty("from_user")]
-        public string FromUser { get; set; }
+        public override bool CanConvert(Type typeObject)
+        {
+            return typeObject == typeof(DateTime);
+        }
 
-        [JsonProperty("from_user_id_str")]
-        public string FromUserId { get; set; }
+        public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
+        {
+            if (objectType != typeof(DateTime) && objectType != typeof(DateTime?))
+                throw new ArgumentException();
 
-        [JsonProperty("from_user_id")]
-        public string FromUserName { get; set; }
+            if (reader.TokenType == JsonToken.Null)
+            {
+                if (!reader.ValueType.IsNullableType())
+                    throw new Exception();
 
-        [JsonProperty("id_str")]
-        public string Id { get; set; }
+                return null;
+            }
 
-        [JsonProperty("iso_language_code")]
-        public string IsoLanguageCode { get; set; }
+            DateTime dt;
+            DateTime.TryParseExact(reader.Value.ToString(),
+                                   this.DateTimeFormat,
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
+                                   out dt);
 
-        [JsonProperty("metadata")]
-        public TwitterSearchResultMetadata Metadata { get; set; }
+            return dt;
+        }
 
-        [JsonProperty("profile_image_url")]
-        public Uri ProfileImageUrl { get; set; }
+        public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
+        {
+            string dateTimeString = null;
 
-        [JsonProperty("profile_image_url_https")]
-        public Uri ProfileImageUrlHttps { get; set; }
+            if (value is DateTime)
+                dateTimeString = ((DateTime)value).ToString(this.DateTimeFormat);
 
-        [JsonProperty("source")]
-        public string Source { get; set; }
-
-        [JsonProperty("text")]
-        public string Text { get; set; }
-
-        [JsonProperty("to_uesr")]
-        public string ToUser { get; set; }
-
-        [JsonProperty("to_user_id_str")]
-        public string ToUserId { get; set; }
-
-        [JsonProperty("to_user_name")]
-        public string ToUserName { get; set; }
-
-        #endregion
-
+            writer.WriteValue(dateTimeString);
+        }
     }
 }

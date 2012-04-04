@@ -21,125 +21,43 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
-
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterRelationshipUser : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("all_replies")]
+        [JsonProperty("all_replies")]
         public bool? AllReplies { get; set; }
 
-        [TwitterKey("blocking")]
+        [JsonProperty("blocking")]
         public bool? Blocking { get; set; }
 
-        [TwitterKey("can_dm")]
+        [JsonProperty("can_dm")]
         public bool? CanDM { get; set; }
 
-        [TwitterKey("followed_by")]
+        [JsonProperty("followed_by")]
         public bool FollowedBy { get; set; }
 
-        [TwitterKey("following")]
+        [JsonProperty("following")]
         public bool Following { get; set; }
 
-        [TwitterKey("id_str")]
+        [JsonProperty("id_str")]
         public string Id { get; set; }
 
-        [TwitterKey("marked_spam")]
+        [JsonProperty("marked_spam")]
         public bool? MarkedSpam { get; set; }
 
-        [TwitterKey("notifications_enabled")]
+        [JsonProperty("notifications_enabled")]
         public bool? NotificationsEnabled { get; set; }
 
-        [TwitterKey("screen_name")]
+        [JsonProperty("screen_name")]
         public string ScreenName { get; set; }
 
-        [TwitterKey("want_retweets")]
+        [JsonProperty("want_retweets")]
         public bool? WantRetweets { get; set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterRelationshipUser FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterRelationshipUser>(dictionary);
-        }
-
-        public static TwitterRelationshipUser Parse(string jsonString)
-        {
-            return Parse<TwitterRelationshipUser>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(String))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(Boolean) || propertyInfo.PropertyType == typeof(Boolean?))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Boolean) || propertyInfo.PropertyType == typeof(Boolean?))
-                    jsonBuilder.AppendFormat("{0},", value.ToString().ToLowerInvariant());
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

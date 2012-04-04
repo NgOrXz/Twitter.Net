@@ -22,153 +22,53 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
 
     using Mirai.Twitter.Core;
+
+    using Newtonsoft.Json;
 
     public sealed class TwitterList : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("created_at")]
+        [JsonProperty("created_at")]
+        [JsonConverter(typeof(TwitterDateTimeConverter))]
         public DateTime? CreatedAt { get; set; }
 
-        [TwitterKey("description")]
+        [JsonProperty("description")]
         public string Description { get; set; }
 
-        [TwitterKey("following")]
+        [JsonProperty("following")]
         public bool Following { get; set; }
 
-        [TwitterKey("full_name")]
+        [JsonProperty("full_name")]
         public string FullName { get; set; }
 
-        [TwitterKey("id_str")]
+        [JsonProperty("id_str")]
         public string Id { get; set; }
 
-        [TwitterKey("member_count")]
+        [JsonProperty("member_count")]
         public int MemberCount { get; set; }
 
-        [TwitterKey("mode")]
+        [JsonProperty("mode")]
         public TwitterListMode? Mode { get; set; }
 
-        [TwitterKey("name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [TwitterKey("slug")]
+        [JsonProperty("slug")]
         public string Slug { get; set; }
 
-        [TwitterKey("subscriber_count")]
+        [JsonProperty("subscriber_count")]
         public int SubscriberCount { get; set; }
 
-        [TwitterKey("uri")]
+        [JsonProperty("uri")]
         public string Uri { get; set; }
 
-        [TwitterKey("user")]
+        [JsonProperty("user")]
         public TwitterUser User { get; set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterList FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterList>(dictionary);
-        }
-
-        public static TwitterList Parse(string jsonString)
-        {
-            return Parse<TwitterList>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(String) || propertyInfo.PropertyType == typeof(Boolean))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterUser))
-                {
-                    propertyInfo.SetValue(this, TwitterUser.FromDictionary(value as Dictionary<string, object>), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToInt32(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(DateTime?))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterListMode?))
-                {
-                    TwitterListMode resultType;
-                    if (Enum.TryParse(value.ToString(), true, out resultType))
-                        propertyInfo.SetValue(this, resultType, null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Int32))
-                    jsonBuilder.AppendFormat("{0},", value);
-                else if (propertyInfo.PropertyType == typeof(DateTime?))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
-                else if (propertyInfo.PropertyType == typeof(TwitterUser))
-                    jsonBuilder.AppendFormat("{0},", ((TwitterUser)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Boolean))
-                    jsonBuilder.AppendFormat("{0},", value.ToString().ToLowerInvariant());
-                else if (propertyInfo.PropertyType == typeof(TwitterListMode?))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterListMode)value).ToString().ToLowerInvariant());
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

@@ -21,123 +21,20 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterCursorPagedUserCollection : TwitterCursorPagedCollection<TwitterUser>
     {
         #region Public Properties
 
-        [TwitterKey("users")]
+        [JsonProperty("users")]
         public TwitterUser[] Users
         {
-            get { return this.ToArray(); }
-            set
-            {
-                this.Clear();
-                this.AddRange(value);
-            }
+            get { return this.Elements; }
+            set { this.Elements = value; }
         }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterCursorPagedUserCollection FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterCursorPagedUserCollection>(dictionary);
-        }
-
-        public static TwitterCursorPagedUserCollection Parse(string jsonString)
-        {
-            return Parse<TwitterCursorPagedUserCollection>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(string))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterUser[]))
-                {
-                    var jsonArray   = (ArrayList)value;
-                    var data        = (from Dictionary<string, object> list in jsonArray
-                                       select TwitterUser.FromDictionary(list)).ToArray();
-
-                    propertyInfo.SetValue(this, data, null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(string))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-                else if (propertyInfo.PropertyType == typeof(TwitterUser[]))
-                {
-                    jsonBuilder.Append("[");
-                    foreach (var user in (TwitterUser[])value)
-                    {
-                        jsonBuilder.AppendFormat("{0},", user.ToJsonString());
-                    }
-                    if (jsonBuilder[jsonBuilder.Length - 1] == ',')
-                        jsonBuilder.Length -= 1; // Remove trailing ',' char.
-
-                    jsonBuilder.Append("],");
-                }
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

@@ -25,15 +25,18 @@ namespace Mirai.Twitter.TwitterObjects
 
     using Mirai.Twitter.Core;
 
+    using Newtonsoft.Json;
+
     public abstract class TwitterRateLimitStatusBase : TwitterObject
     {
-        [TwitterKey("remaining_hits")]
+        [JsonProperty("remaining_hits")]
         public int RemainingHits { get; internal set; }
 
-        [TwitterKey("reset_time")]
+        [JsonProperty("reset_time")]
+        [JsonConverter(typeof(TwitterDateTimeConverter))]
         public DateTime ResetTime { get; internal set; }
 
-        [TwitterKey("reset_time_in_seconds")]
+        [JsonProperty("reset_time_in_seconds")]
         public int ResetTimeInSeconds { get; internal set; }
     }
 }

@@ -26,94 +26,16 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Reflection;
     using System.Text;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterPhotoRateLimitStatus : TwitterRateLimitStatusBase
     {
         #region Public Properties
 
-        [TwitterKey("daily_limit")]
+        [JsonProperty("daily_limit")]
         public int DailyLimit { get; internal set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterPhotoRateLimitStatus FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterPhotoRateLimitStatus>(dictionary);
-        }
-
-        public static TwitterPhotoRateLimitStatus Parse(string jsonString)
-        {
-            return Parse<TwitterPhotoRateLimitStatus>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                    typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToInt32(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(DateTime))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                    typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(Int32))
-                    jsonBuilder.AppendFormat("{0},", value);
-                else if (propertyInfo.PropertyType == typeof(DateTime))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

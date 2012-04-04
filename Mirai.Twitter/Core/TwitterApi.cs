@@ -34,7 +34,7 @@ namespace Mirai.Twitter.Core
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Commands;
 
-    using fastJSON;
+    using Newtonsoft.Json;
 
     public sealed class TwitterApi
     {
@@ -427,10 +427,7 @@ namespace Mirai.Twitter.Core
             uriBuilder.Path += "/help/languages.json";
 
             var response    = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
-            var jsonArr     = (ArrayList)JSON.Instance.Parse(response);
-            
-            var languages   = (from Dictionary<string, object> lang in jsonArr
-                               select TwitterLanguage.FromDictionary(lang)).ToArray();
+            var languages   = JsonConvert.DeserializeObject<TwitterLanguage[]>(response);
 
             return languages;
         }
@@ -448,15 +445,11 @@ namespace Mirai.Twitter.Core
             TwitterConfiguration config = null;
             try
             {
-                var response = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
-                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                config = TwitterConfiguration.FromDictionary(jsonObj);
+                var response    = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
+                config          = JsonConvert.DeserializeObject<TwitterConfiguration>(response);
             }
             catch (WebException e)
             {
-#if DEBUG
-                Debug.WriteLine(e.Message);
-#endif
             }
 
             return config;

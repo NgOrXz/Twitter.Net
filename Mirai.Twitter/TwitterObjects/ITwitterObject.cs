@@ -23,6 +23,6 @@ namespace Mirai.Twitter.TwitterObjects
 {
     public interface ITwitterObject
     {
-        string ToJsonString();
+        string ToJson();
     }
 }

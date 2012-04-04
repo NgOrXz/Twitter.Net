@@ -19,19 +19,15 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Twitter.Core
+namespace Mirai.Utilities.Reflection
 {
-    using Newtonsoft.Json;
+    using System;
 
-    public sealed class TwitterLanguage
+    public static class ReflectionUtils
     {
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        public static bool IsNullableType(this Type type)
+        {
+            return type.IsGenericType && type == typeof(Nullable<>);
+        }
     }
 }

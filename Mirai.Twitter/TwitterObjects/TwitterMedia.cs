@@ -22,158 +22,42 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterMedia : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("display_url")]
+        [JsonProperty("display_url")]
         public string DisplayUrl { get; set; }
 
-        [TwitterKey("expanded_url")]
+        [JsonProperty("expanded_url")]
         public Uri ExpanedUrl { get; set; }
 
-        [TwitterKey("id_str")]
+        [JsonProperty("id_str")]
         public string Id { get; set; }
 
-        [TwitterKey("indices")]
+        [JsonProperty("indices")]
         public int[] Indices { get; set; }
 
-        [TwitterKey("type")]
+        [JsonProperty("type")]
         public TwitterMediaType MediaType { get; set; }
 
-        [TwitterKey("media_url")]
+        [JsonProperty("media_url")]
         public Uri MediaUrl { get; set; }
 
-        [TwitterKey("media_url_https")]
+        [JsonProperty("media_url_https")]
         public Uri MediaUrlHttps { get; set; }
 
-        [TwitterKey("sizes")]
+        [JsonProperty("sizes")]
         public TwitterSizes Sizes { get; set; }
 
-        [TwitterKey("url")]
+        [JsonProperty("url")]
         public Uri Url { get; set; }
 
         #endregion
 
 
-
-        #region Public Methods
-
-        public static TwitterMedia FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterMedia>(dictionary);
-        }
-
-        public static TwitterMedia Parse(string jsonString)
-        {
-            return Parse<TwitterMedia>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(string))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                {
-                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int[]))
-                {
-                    var arrList = (ArrayList)value;
-                    var indices = new int[arrList.Count];
-                    for (var i = 0; i < arrList.Count; i++)
-                        indices[i] = arrList[i].ToString().ToInt32();
-
-                    propertyInfo.SetValue(this, indices, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterMediaType))
-                {
-                    TwitterMediaType mediaType;
-                    Enum.TryParse(value.ToString(), true, out mediaType);
-
-                    propertyInfo.SetValue(this, mediaType, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterSizes))
-                {
-                    propertyInfo.SetValue(this, TwitterSizes.FromDictionary(value as Dictionary<string, object>), null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-                else if (propertyInfo.PropertyType == typeof(TwitterMediaType))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterMediaType)value).ToString().ToLowerInvariant());
-                else if (propertyInfo.PropertyType == typeof(int[]))
-                {
-                    jsonBuilder.Append("[");
-                    foreach (var index in (int[])value)
-                    {
-                        jsonBuilder.AppendFormat("{0},", index);
-                    }
-                    if (jsonBuilder[jsonBuilder.Length -1] == ',')
-                        jsonBuilder.Length -= 1; // Remove trailing ',' char.
-
-                    jsonBuilder.Append("],");
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterSizes))
-                    jsonBuilder.AppendFormat("{0},", ((TwitterSizes)value).ToJsonString());
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

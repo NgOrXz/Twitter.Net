@@ -22,11 +22,8 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterPlaceAttributes : TwitterObject
     {
@@ -35,126 +32,46 @@ namespace Mirai.Twitter.TwitterObjects
         /// <summary>
         /// The country code
         /// </summary>
-        [TwitterKey("iso3")]
+        [JsonProperty("iso3")]
         public string CountryCode { get; set; }
 
         /// <summary>
         /// The city the place is in
         /// </summary>
-        [TwitterKey("locality")]
+        [JsonProperty("locality")]
         public string Locality { get; set; }
 
         /// <summary>
         /// In the preferred local format for the place, include long distance code
         /// </summary>
-        [TwitterKey("phone")]
+        [JsonProperty("phone")]
         public string Phone { get; set; }
 
-        [TwitterKey("postal_code")]
+        [JsonProperty("postal_code")]
         public string PostalCode { get; set; }
 
         /// <summary>
         /// The administrative region the place is in
         /// </summary>
-        [TwitterKey("region")]
+        [JsonProperty("region")]
         public string Region { get; set; }
 
-        [TwitterKey("street_address")]
+        [JsonProperty("street_address")]
         public string StreetAddress { get; set; }
 
         /// <summary>
         /// Twitter screen-name, without @
         /// </summary>
-        [TwitterKey("twitter")]
+        [JsonProperty("twitter")]
         public string ScreenName { get; set; }
 
         /// <summary>
         /// Official/canonical URL for place
         /// </summary>
-        [TwitterKey("url")]
+        [JsonProperty("url")]
         public Uri Url { get; set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterPlaceAttributes FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterPlaceAttributes>(dictionary);
-        }
-
-        public static TwitterPlaceAttributes Parse(string jsonString)
-        {
-            return Parse<TwitterPlaceAttributes>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(String))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                {
-                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-            }
-
-            if (jsonBuilder[jsonBuilder.Length - 1] == ',')
-                jsonBuilder.Length -= 1; // Remove trailing ',' char.
-
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

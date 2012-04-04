@@ -28,7 +28,8 @@ namespace Mirai.Twitter.Core
     using System.Linq;
     using System.Net;
 
-    using fastJSON;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [Serializable]
     public class TwitterException : Exception
@@ -39,6 +40,8 @@ namespace Mirai.Twitter.Core
         }
 
         public TwitterError[] Errors { get; internal set; }
+
+        public string Response { get; private set; }
 
         public HttpStatusCode StatusCode { get; internal set; }
 
@@ -57,19 +60,30 @@ namespace Mirai.Twitter.Core
                 return;
             }
 
-            var response    = (HttpWebResponse)webException.Response;
-            this.StatusCode = response.StatusCode;
+            var httpWebRresponse    = (HttpWebResponse)webException.Response;
+            this.StatusCode         = httpWebRresponse.StatusCode;
 
-            using (var streamReader = new StreamReader(response.GetResponseStream()))
+            using (var streamReader = new StreamReader(httpWebRresponse.GetResponseStream()))
             {
-                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(streamReader.ReadToEnd());
+                this.Response   = streamReader.ReadToEnd();
+                var jsonObj     = JObject.Parse(this.Response);
 
-                if (!jsonObj.ContainsKey("errors"))
-                    this.Errors = new[] { TwitterError.FromDictionary(jsonObj) };
+                if (jsonObj["errors"] == null)
+                {
+                    var serializer = new JsonSerializer();
+                    this.Errors = new[]
+                        {
+                            (TwitterError)serializer.Deserialize(new JTokenReader(jsonObj), typeof(TwitterError))
+                        };
+                }
                 else
                 {
-                    this.Errors = (from Dictionary<string, object> err in (ArrayList)jsonObj["errors"]
-                                   select TwitterError.FromDictionary(err)).ToArray();
+                    this.Errors = (from o in jsonObj["errors"]
+                                   select new TwitterError
+                                       {
+                                           Code = (int)o["code"], 
+                                           Message = (string)o["message"]
+                                       }).ToArray();
                 }
             }
         }

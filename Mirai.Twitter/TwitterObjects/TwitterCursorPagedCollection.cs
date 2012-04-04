@@ -24,7 +24,7 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections;
     using System.Collections.Generic;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// The twitter cursor paged collection.
@@ -37,7 +37,7 @@ namespace Mirai.Twitter.TwitterObjects
         #region Constants and Fields
 
         /// <summary>
-        /// The _ elements.
+        /// 
         /// </summary>
         private readonly List<T> _Elements;
 
@@ -55,6 +55,18 @@ namespace Mirai.Twitter.TwitterObjects
 
         #endregion
 
+
+        protected T[] Elements
+        {
+            get { return this._Elements.ToArray(); }
+            set
+            {
+                this._Elements.Clear();
+                this._Elements.AddRange(value);
+            }
+        }
+
+
         #region Public Properties
 
         /// <summary>
@@ -68,13 +80,13 @@ namespace Mirai.Twitter.TwitterObjects
         /// <summary>
         /// Gets or sets NextCursor.
         /// </summary>
-        [TwitterKey("next_cursor_str")]
+        [JsonProperty("next_cursor_str")]
         public string NextCursor { get; set; }
 
         /// <summary>
         /// Gets or sets PreviousCursor.
         /// </summary>
-        [TwitterKey("previous_cursor_str")]
+        [JsonProperty("previous_cursor_str")]
         public string PreviousCursor { get; set; }
 
         #endregion
@@ -228,16 +240,6 @@ namespace Mirai.Twitter.TwitterObjects
         public void RemoveAt(int index)
         {
             this._Elements.RemoveAt(index);
-        }
-
-        /// <summary>
-        /// The to array.
-        /// </summary>
-        /// <returns>
-        /// </returns>
-        public T[] ToArray()
-        {
-            return this._Elements.ToArray();
         }
 
         #endregion

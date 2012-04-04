@@ -21,107 +21,23 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
-
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterSize : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("w")]
+        [JsonProperty("w")]
         public double Width { get; set; }
 
-        [TwitterKey("h")]
+        [JsonProperty("h")]
         public double Height { get; set; }
 
-        [TwitterKey("resize")]
+        [JsonProperty("resize")]
         public TwitterMediaResizeMode ResizeMode { get; set; }
 
         #endregion
 
 
-
-        #region Public Methods
-
-        public static TwitterSize FromDictinonary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterSize>(dictionary);
-        }
-
-        public static TwitterSize Parse(string jsonString)
-        {
-            return Parse<TwitterSize>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(double))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToDouble(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterMediaResizeMode))
-                {
-                    TwitterMediaResizeMode resizeMode;
-                    Enum.TryParse(value.ToString(), true, out resizeMode);
-
-                    propertyInfo.SetValue(this, resizeMode, null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(double))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-                else if (propertyInfo.PropertyType == typeof(TwitterMediaResizeMode))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterMediaResizeMode)value).ToString().ToLowerInvariant());
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

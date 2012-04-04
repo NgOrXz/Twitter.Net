@@ -22,55 +22,19 @@
 namespace Mirai.Twitter.Core
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+
+    using Newtonsoft.Json;
 
     [Serializable]
     public sealed class TwitterError
     {
-        [TwitterKey("code")]
-        public string Code { get; set; }
+        [JsonProperty("code")]
+        public int? Code { get; internal set; }
 
-        [TwitterKey("error")]
-        [TwitterKey("message")]
-        public string Message { get; set; }
+        [JsonProperty("error")]
+        public string Message { get; internal set; }
 
-        [TwitterKey("request")]
-        public string RequestUri { get; set; }
-
-
-        public static TwitterError FromDictionary(Dictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            var error = new TwitterError();
-            if (dictionary.Count == 0)
-                return error;
-
-            var pis = error.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                object value = null;
-                foreach (TwitterKeyAttribute twitterKey in 
-                                                 Attribute.GetCustomAttributes(propertyInfo, typeof(TwitterKeyAttribute)))
-                {
-                    if (dictionary.TryGetValue(twitterKey.Key, out value) == false)
-                        continue;
-
-                    break;
-                }
-
-                if (value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(string))
-                {
-                    propertyInfo.SetValue(error, value, null);
-                }
-            }
-
-            return error;
-        }
+        [JsonProperty("request")]
+        public string RequestUri { get; internal set; }
     }
 }

@@ -100,7 +100,7 @@ namespace Mirai.Twitter.TwitterObjects
         /// [longitude, latitude]
         /// </summary>
         /// <returns></returns>
-        public override string ToJsonString()
+        public override string ToJson()
         {
             return String.Format("[{0},{1}]",
                 this.Longitude.ToString(CultureInfo.InvariantCulture),

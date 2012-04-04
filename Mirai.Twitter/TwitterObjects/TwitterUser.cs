@@ -22,232 +22,120 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterUser : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("contributors_enabled")]
+        [JsonProperty("contributors_enabled")]
         public bool ContributorsEnabled { get; set; }
 
-        [TwitterKey("created_at")]
+        [JsonProperty("created_at")]
+        [JsonConverter(typeof(TwitterDateTimeConverter))]
         public DateTime CreatedAt { get; set; }
 
-        [TwitterKey("description")]
+        [JsonProperty("description")]
         public string Description { get; set; }
 
-        [TwitterKey("geo_enabled")]
+        [JsonProperty("geo_enabled")]
         public bool GeoEnabled { get; set; }
 
-        [TwitterKey("favorites_count")]
+        [JsonProperty("favorites_count")]
         public int FavoritesCount { get; set; }
 
-        [TwitterKey("followers_count")]
+        [JsonProperty("followers_count")]
         public int FollowersCount { get; set; }
 
-        [TwitterKey("following")]
+        [JsonProperty("following")]
         public bool Following { get; set; }
 
-        [TwitterKey("follow_request_sent")]
+        [JsonProperty("follow_request_sent")]
         public bool FollowRequestSent { get; set; }
 
-        [TwitterKey("friends_count")]
+        [JsonProperty("friends_count")]
         public int FriendsCount { get; set; }
 
-        [TwitterKey("geo")]
+        [JsonProperty("geo")]
         public TwitterPointGeometry Geometry { get; set; }
 
-        [TwitterKey("id_str")]
+        [JsonProperty("id_str")]
         public string Id { get; set; }
 
-        [TwitterKey("is_translator")]
+        [JsonProperty("is_translator")]
         public bool IsTranslator { get; set; }
 
-        [TwitterKey("lang")]
+        [JsonProperty("lang")]
         public string Language { get; set; }
 
-        [TwitterKey("listed_count")]
+        [JsonProperty("listed_count")]
         public int ListedCount { get; set; }
 
-        [TwitterKey("location")]
+        [JsonProperty("location")]
         public string Location { get; set; }
 
-        [TwitterKey("name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [TwitterKey("notifications")]
+        [JsonProperty("notifications")]
         public bool Notifications { get; set; }
 
-        [TwitterKey("profile_background_color")]
+        [JsonProperty("profile_background_color")]
         public TwitterColor ProfileBackgroundColor { get; set; }
 
-        [TwitterKey("profile_background_image_url")]
+        [JsonProperty("profile_background_image_url")]
         public Uri ProfileBackgroundImageUrl { get; set; }
 
-        [TwitterKey("profile_background_tile")]
+        [JsonProperty("profile_background_tile")]
         public bool ProfileBackgroundTile { get; set; }
 
-        [TwitterKey("profile_link_color")]
+        [JsonProperty("profile_link_color")]
         public TwitterColor ProfileLinkColor { get; set; }
 
-        [TwitterKey("profile_image_url")]
+        [JsonProperty("profile_image_url")]
         public Uri ProfileImageUrl { get; set; }
 
-        [TwitterKey("profile_sidebar_border_color")]
+        [JsonProperty("profile_sidebar_border_color")]
         public TwitterColor ProfileSidebarBorderColor { get; set; }
 
-        [TwitterKey("profile_sidebar_fill_color")]
+        [JsonProperty("profile_sidebar_fill_color")]
         public TwitterColor ProfileSidebarFillColor { get; set; }
 
-        [TwitterKey("profile_text_color")]
+        [JsonProperty("profile_text_color")]
         public TwitterColor ProfileTextColor { get; set; }
 
-        [TwitterKey("profile_use_background_image")]
+        [JsonProperty("profile_use_background_image")]
         public bool ProfileUseBackgroundImage { get; set; }
 
-        [TwitterKey("protected")]
+        [JsonProperty("protected")]
         public bool Protected { get; set; }
 
-        [TwitterKey("screen_name")]
+        [JsonProperty("screen_name")]
         public string ScreenName { get; set; }
 
-        [TwitterKey("show_all_inline_media")]
+        [JsonProperty("show_all_inline_media")]
         public bool ShowAllInlineMedia { get; set; }
 
-        [TwitterKey("status")]
+        [JsonProperty("status")]
         public TwitterTweet Status { get; set; }
 
-        [TwitterKey("statuses_count")]
+        [JsonProperty("statuses_count")]
         public int StatusesCount { get; set; }
 
-        [TwitterKey("time_zone")]
+        [JsonProperty("time_zone")]
         public string TimeZone { get; set; }
 
-        [TwitterKey("url")]
+        [JsonProperty("url")]
         public Uri Url { get; set; }
 
-        [TwitterKey("utc_offset")]
+        [JsonProperty("utc_offset")]
         public int UtcOffset { get; set; }
 
-        [TwitterKey("verified")]
+        [JsonProperty("verified")]
         public bool Verified { get; set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterUser FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterUser>(dictionary);
-        }
-
-        public static TwitterUser Parse(string jsonString)
-        {
-            return Parse<TwitterUser>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(String) || propertyInfo.PropertyType == typeof(Boolean))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToInt32(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(DateTime))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToDateTime(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                {
-                    propertyInfo.SetValue(this, new Uri(value.ToString()), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterColor))
-                {
-                    propertyInfo.SetValue(this, TwitterColor.FromString(value.ToString()), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
-                {
-                    propertyInfo.SetValue(this, TwitterPointGeometry.FromDictionary(value as Dictionary<string, object>), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterTweet))
-                {
-                    propertyInfo.SetValue(this, TwitterTweet.FromDictionary(value as Dictionary<string, object>), null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Uri))
-                    jsonBuilder.AppendFormat("\"{0}\",", value);
-                else if (propertyInfo.PropertyType == typeof(DateTime))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((DateTime)value).ToString("ddd MMM dd HH:mm:ss +0000 yyyy"));
-                else if (propertyInfo.PropertyType == typeof(TwitterColor))
-                    jsonBuilder.AppendFormat("\"{0}\",", ((TwitterColor)value));
-                else if (propertyInfo.PropertyType == typeof(TwitterPointGeometry))
-                    jsonBuilder.AppendFormat("{0},", ((TwitterPointGeometry)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(TwitterTweet))
-                    jsonBuilder.AppendFormat("{0},", ((TwitterTweet)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(Boolean))
-                    jsonBuilder.AppendFormat("{0},", value.ToString().ToLowerInvariant());
-                else if (propertyInfo.PropertyType == typeof(Int32))
-                    jsonBuilder.AppendFormat("{0},", value);
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

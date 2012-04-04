@@ -54,6 +54,7 @@
     <Compile Include="Commands\SpamReportingCommand.cs" />
     <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="Commands\GeoCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterDateTimeConverter.cs" />
     <Compile Include="TwitterObjects\ITwitterObject.cs" />
     <Compile Include="TwitterObjects\TwitterGeoSimilarPlaces.cs" />
     <Compile Include="TwitterObjects\TwitterObject.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="TwitterObjects\TwitterRateLimitStatusBase.cs" />
     <Compile Include="TwitterObjects\TwitterSavedSearch.cs" />
     <Compile Include="TwitterObjects\TwitterSearch.cs" />
+    <Compile Include="TwitterObjects\TwitterSearchReaultDateTimeConverter.cs" />
     <Compile Include="TwitterObjects\TwitterSearchResult.cs" />
     <Compile Include="TwitterObjects\TwitterCursorPagedIdCollection.cs" />
     <Compile Include="Commands\UserCommand.cs" />
@@ -98,10 +100,8 @@
     <Compile Include="TwitterObjects\TwitterEntity.cs" />
     <Compile Include="TwitterObjects\TwitterGeometry.cs" />
     <Compile Include="TwitterObjects\TwitterHashTag.cs" />
-    <Compile Include="Core\TwitterHelper.cs" />
     <Compile Include="Core\TwitterApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\TwitterKeyAttribute.cs" />
     <Compile Include="TwitterObjects\TwitterMedia.cs" />
     <Compile Include="TwitterObjects\TwitterMediaResizeMode.cs" />
     <Compile Include="TwitterObjects\TwitterMediaType.cs" />
@@ -119,13 +119,13 @@
     <Compile Include="TwitterObjects\TwitterUserMention.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fastJSON\fastJSON.csproj">
-      <Project>{207E91B1-C9F8-4913-88E1-3549EF5F3273}</Project>
-      <Name>fastJSON</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mirai.Net.OAuth\Mirai.Net.OAuth.csproj">
       <Project>{60718038-D091-481B-8D08-AC627B38257C}</Project>
       <Name>Mirai.Net.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mirai.Utilities\Mirai.Utilities.csproj">
+      <Project>{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}</Project>
+      <Name>Mirai.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

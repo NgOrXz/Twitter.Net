@@ -21,36 +21,40 @@
 
 namespace Mirai.Twitter.Core
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Reflection;
-
     using Mirai.Twitter.TwitterObjects;
+
+    using Newtonsoft.Json;
 
     public sealed class TwitterConfiguration
     {
-        [TwitterKey("characters_reserved_per_media")]
+        #region Public Properties
+
+        [JsonProperty("characters_reserved_per_media")]
         public int CharactersReservedPerMedia { get; internal set; }
 
-        [TwitterKey("non_username_paths")]
+        [JsonProperty("non_username_paths")]
         public string[] NonUsernamePaths { get; internal set; }
 
-        [TwitterKey("max_media_per_upload")]
+        [JsonProperty("max_media_per_upload")]
         public int MaxMediaPerUpload { get; internal set; }
 
-        [TwitterKey("photo_size_limit")]
+        [JsonProperty("photo_size_limit")]
         public int PhotoSizeLimit { get; internal set; }
 
-        [TwitterKey("photo_sizes")]
+        [JsonProperty("photo_sizes")]
         public TwitterSizes PhotoSizes { get; internal set; }
 
-        [TwitterKey("short_url_length")]
+        [JsonProperty("short_url_length")]
         public int ShortUrlLength { get; internal set; }
 
-        [TwitterKey("short_url_length_https")]
+        [JsonProperty("short_url_length_https")]
         public int ShortUrlLengthHttps { get; internal set; }
 
+        #endregion
+
+
+
+        #region Constructors and Destructors
 
         internal TwitterConfiguration()
         {
@@ -70,60 +74,20 @@ namespace Mirai.Twitter.Core
                     "translate", "trends", "tweetbutton", "twttr", "update_discoverability", "users", "welcome",
                     "who_to_follow", "widgets", "zendesk_auth", "media_signup", "t1_qunit_tests", "phoenix_qunit_tests"
                 };
-            this.MaxMediaPerUpload  = 1;
-            this.PhotoSizeLimit     = 3145728;
-            this.PhotoSizes         = new TwitterSizes
+            this.MaxMediaPerUpload = 1;
+            this.PhotoSizeLimit = 3145728;
+            this.PhotoSizes = new TwitterSizes
                 {
-                    Large   = new TwitterSize { Width = 1024, Height = 2048, ResizeMode = TwitterMediaResizeMode.Fit },
-                    Medium  = new TwitterSize { Width = 600, Height = 1200, ResizeMode = TwitterMediaResizeMode.Fit },
-                    Small   = new TwitterSize { Width = 340, Height = 480, ResizeMode = TwitterMediaResizeMode.Fit },
-                    Thumb   = new TwitterSize { Width = 150, Height = 150, ResizeMode = TwitterMediaResizeMode.Crop }
+                    Large = new TwitterSize { Width = 1024, Height = 2048, ResizeMode = TwitterMediaResizeMode.Fit },
+                    Medium = new TwitterSize { Width = 600, Height = 1200, ResizeMode = TwitterMediaResizeMode.Fit },
+                    Small = new TwitterSize { Width = 340, Height = 480, ResizeMode = TwitterMediaResizeMode.Fit },
+                    Thumb = new TwitterSize { Width = 150, Height = 150, ResizeMode = TwitterMediaResizeMode.Crop }
                 };
-            this.ShortUrlLength      = 20;
+            this.ShortUrlLength = 20;
             this.ShortUrlLengthHttps = 21;
         }
 
+        #endregion
 
-        internal static TwitterConfiguration FromDictionary(Dictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            var twitterConfig = new TwitterConfiguration();
-            if (dictionary.Count == 0)
-                return twitterConfig;
-
-            var pis = twitterConfig.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(
-                    propertyInfo,
-                    typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(string[]))
-                {
-                    var arrList = (ArrayList)value;
-                    var paths   = new string[arrList.Count];
-                    for (var i = 0; i < arrList.Count; i++)
-                        paths[i] = arrList[i] as string;
-
-                    propertyInfo.SetValue(twitterConfig, paths, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(twitterConfig, value.ToString().ToInt32(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterSizes))
-                {
-                    propertyInfo.SetValue(twitterConfig,
-                        TwitterSizes.FromDictionary(value as Dictionary<string, object>), null);
-                }
-            }
-
-            return twitterConfig;
-        }
     }
 }

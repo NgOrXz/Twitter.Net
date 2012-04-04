@@ -21,146 +21,40 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterSearch : TwitterObject
     {
         #region Public Properties
 
-        [TwitterKey("completed_in")]
+        [JsonProperty("completed_in")]
         public double CompletedIn { get; set; }
 
-        [TwitterKey("max_id_str")]
+        [JsonProperty("max_id_str")]
         public string MaxId { get; set; }
 
-        [TwitterKey("next_page")]
+        [JsonProperty("next_page")]
         public string NextPage { get; set; }
 
-        [TwitterKey("page")]
+        [JsonProperty("page")]
         public int Page { get; set; }
 
-        [TwitterKey("query")]
+        [JsonProperty("query")]
         public string Query { get; set; }
 
-        [TwitterKey("refresh_url")]
+        [JsonProperty("refresh_url")]
         public string RefreshUrl { get; set; }
 
-        [TwitterKey("results")]
+        [JsonProperty("results")]
         public TwitterSearchResult[] Results { get; set; }
 
-        [TwitterKey("results_per_page")]
+        [JsonProperty("results_per_page")]
         public int ResultsPerPage { get; set; }
 
-        [TwitterKey("since_id")]
+        [JsonProperty("since_id")]
         public string SinceId { get; set; }
 
         #endregion
 
-
-
-        #region Public Methods
-
-        public static TwitterSearch FromDictionary(Dictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterSearch>(dictionary);
-        }
-
-        public static TwitterSearch Parse(string jsonString)
-        {
-            return Parse<TwitterSearch>(jsonString);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-                object value;
-                if (twitterKey == null || dictionary.TryGetValue(twitterKey.Key, out value) == false || value == null)
-                    continue;
-
-                if (propertyInfo.PropertyType == typeof(string))
-                {
-                    propertyInfo.SetValue(this, value, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToInt32(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(double))
-                {
-                    propertyInfo.SetValue(this, value.ToString().ToDouble(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(TwitterSearchResult[]))
-                {
-                    var jsonArray   = (ArrayList)value;
-                    var results     = (from Dictionary<string, object> result in jsonArray
-                                       select TwitterSearchResult.FromDictionary(result)).ToArray();
-
-                    propertyInfo.SetValue(this, results, null);
-                }
-            }
-        }
-
-        public override string ToJsonString()
-        {
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{");
-
-            var pis = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var propertyInfo in pis)
-            {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
-
-                object value;
-                if (twitterKey == null || (value = propertyInfo.GetValue(this, null)) == null)
-                    continue;
-
-                jsonBuilder.AppendFormat("\"{0}\":", twitterKey.Key);
-
-                if (propertyInfo.PropertyType == typeof(String))
-                    jsonBuilder.AppendFormat("{0},", ((string)value).ToJsonString());
-                else if (propertyInfo.PropertyType == typeof(int) && propertyInfo.PropertyType == typeof(double))
-                    jsonBuilder.AppendFormat("{0},", value);
-                else if (propertyInfo.PropertyType == typeof(TwitterSearchResult[]))
-                {
-                    jsonBuilder.Append("[");
-                    foreach (var result in (TwitterSearchResult[])value)
-                    {
-                        jsonBuilder.AppendFormat("{0},", result.ToJsonString());
-                    }
-                    jsonBuilder.Length -= 1; // Remove trailing ',' char.
-                    jsonBuilder.Append("],");
-                }
-            }
-
-            jsonBuilder.Length -= 1; // Remove trailing ',' char.
-            jsonBuilder.Append("}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
     }
 }

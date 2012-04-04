@@ -105,7 +105,7 @@ namespace Mirai.Twitter.TwitterObjects
                 new TwitterCoordinate(strArr[0].ToString().ToDouble(), strArr[1].ToString().ToDouble()));
         }
 
-        public override string ToJsonString()
+        public override string ToJson()
         {
             var sb = new StringBuilder();
             if (this.CoordinatesList.Count > 0)
@@ -113,7 +113,7 @@ namespace Mirai.Twitter.TwitterObjects
                 if (!this.IsCoordinate)
                     sb.AppendFormat("[{0},{1}]", this.CoordinatesList[0].Longitude, this.CoordinatesList[0].Latitude);
                 else
-                    sb.Append(this.CoordinatesList[0].ToJsonString());
+                    sb.Append(this.CoordinatesList[0].ToJson());
             }
 
             return String.Format("{{\"type\":\"Point\",\"coordinates\":{0}}}", sb.Length > 0 ? sb.ToString() : "null");
