@@ -101,7 +101,7 @@
                 //twitterApi.DirectMessageCommand.Destroy("1900822745");
                 //twitterApi.DirectMessageCommand.Sent();
 
-                //twitterApi.ListCommand.RetrieveAllLists("yukinoyume");
+                //twitterApi.ListCommand.RetrieveAllLists("yukinoyume43534534645");
                 //twitterApi.ListCommand.RetrieveUserLists("yukinoyume");
                 //twitterApi.ListCommand.RetrieveSubscriptions("yukinoyume");
                 //twitterApi.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");

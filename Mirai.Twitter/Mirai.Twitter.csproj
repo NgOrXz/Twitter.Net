@@ -124,10 +124,6 @@
       <Project>{60718038-D091-481B-8D08-AC627B38257C}</Project>
       <Name>Mirai.Net.OAuth</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mirai.Utilities\Mirai.Utilities.csproj">
-      <Project>{29AC7E0F-2CA7-4E61-857B-5AB97A72E762}</Project>
-      <Name>Mirai.Utilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

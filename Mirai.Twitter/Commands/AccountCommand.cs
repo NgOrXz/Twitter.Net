@@ -140,7 +140,7 @@ namespace Mirai.Twitter.Commands
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
                 var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                twitterUser = TwitterUser.FromDictionary(jsonObj);
+                twitterUser     = TwitterUser.FromDictionary(jsonObj);
             }
             catch (JsonParseException e)
             {
@@ -385,8 +385,8 @@ namespace Mirai.Twitter.Commands
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
                 var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
 
-                twitterUser = TwitterUser.FromDictionary(jsonObj);
-                valid = true;
+                twitterUser     = TwitterUser.FromDictionary(jsonObj);
+                valid           = true;
             }
             catch (TwitterException e)
             {

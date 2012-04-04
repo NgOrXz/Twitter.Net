@@ -29,12 +29,10 @@ namespace Mirai.Twitter.Core
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Text;
     using System.Threading;
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Commands;
-    using Mirai.Utilities.Text;
 
     using fastJSON;
 
@@ -108,7 +106,6 @@ namespace Mirai.Twitter.Core
         #region Public Properties
 
         public ApiVersion ApiVersion { get; internal set; }
-
 
         public bool Authenticated
         {

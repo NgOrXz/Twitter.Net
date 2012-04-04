@@ -32,12 +32,20 @@ namespace Mirai.Twitter.Commands
 
     using fastJSON;
 
+    /// <summary>
+    /// Allows users to block and unblock other users. 
+    /// </summary>
     public sealed class BlockCommand : TwitterCommandBase
     {
+        #region Constructors and Destructors
+
         internal BlockCommand(TwitterApi twitterApi)
             : base(twitterApi, "blocks")
         {
         }
+
+        #endregion
+
 
 
         #region PUblic Methods
@@ -85,7 +93,9 @@ namespace Mirai.Twitter.Commands
                 throw new InvalidOperationException("Authentication required.");
 
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendFormat("?include_entities={0}&skip_status={1}&", includeEntities ? "true" : "false", skipStatus ? "true" : "false");
+            queryBuilder.AppendFormat("?include_entities={0}&skip_status={1}&", 
+                                      includeEntities ? "true" : "false", 
+                                      skipStatus ? "true" : "false");
 
             if (!String.IsNullOrEmpty(screenName))
                 queryBuilder.AppendFormat("screen_name={0}&", screenName);
@@ -141,6 +151,11 @@ namespace Mirai.Twitter.Commands
             return users;
         }
 
+        /// <summary>
+        /// Returns an array of numeric user ids the authenticating user is blocking. 
+        /// </summary>
+        /// <param name="cursor"></param>
+        /// <returns></returns>
         public TwitterCursorPagedIdCollection RetrieveIdsOfBlockedUsers(string cursor = "-1")
         {
             if (!this.TwitterApi.Authenticated)
@@ -158,6 +173,7 @@ namespace Mirai.Twitter.Commands
         }
 
         #endregion
+
 
         #region Private Methods
 

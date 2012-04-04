@@ -37,7 +37,7 @@ namespace Mirai.Net.OAuth
     using Wintellect.PowerCollections;
 
     /// <summary>
-    /// The o auth.
+    /// 
     /// </summary>
     public sealed class OAuth
     {
@@ -131,10 +131,9 @@ namespace Mirai.Net.OAuth
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public OAuth(
-                    ConsumerCredential consumerCredential,
-                    ServiceProviderDescription serviceProviderDescription,
-                    SignatureMethod signatureMethod = SignatureMethod.HmacSha1)
+        public OAuth(ConsumerCredential consumerCredential,
+                     ServiceProviderDescription serviceProviderDescription,
+                     SignatureMethod signatureMethod = SignatureMethod.HmacSha1)
         {
             if (consumerCredential == null)
             {
@@ -350,9 +349,7 @@ namespace Mirai.Net.OAuth
         /// <param name="postData">
         /// The extra postData. This parameter is ignored when HTTP method is set to GET / HEAD.
         /// </param>
-        /// <returns>
-        /// 
-        /// </returns>
+        /// <returns></returns>
         /// <exception cref="ArgumentException">
         /// Thrown when callback hasn'postDataList specified.
         /// </exception>
@@ -661,7 +658,7 @@ namespace Mirai.Net.OAuth
         private void LogException(WebException webException)
         {
             var logBuilder = new StringBuilder();
-            logBuilder.AppendLine("----- WebException -----");
+            logBuilder.AppendLine("+++++ WebException +++++");
             logBuilder.AppendFormat("{0}WebException Status: ({1:D}) {1}{2}", this._LogIndentSpace, webException.Status, Environment.NewLine);
             logBuilder.AppendFormat("{0}Message: {1}{2}", this._LogIndentSpace, webException.Message, Environment.NewLine);
             logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
@@ -674,6 +671,11 @@ namespace Mirai.Net.OAuth
                                         Environment.NewLine);
             }
 
+            var stream = new StreamReader(webException.Response.GetResponseStream());
+            logBuilder.AppendFormat("{0}Body: {1}", this._LogIndentSpace, Environment.NewLine);
+            logBuilder.AppendFormat("  {0}{1}{2}", this._LogIndentSpace, stream.ReadToEnd(), Environment.NewLine);
+            stream.BaseStream.Position = 0;
+            
             this.LogStream.WriteLine(logBuilder.ToString());
         }
 
