@@ -25,6 +25,7 @@ namespace Mirai.Twitter.Core
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -104,6 +105,8 @@ namespace Mirai.Twitter.Core
         }
 
 
+        #region Public Properties
+
         public ApiVersion ApiVersion { get; internal set; }
 
 
@@ -116,6 +119,35 @@ namespace Mirai.Twitter.Core
         {
             get { return this._Configuration; }
         }
+
+        public bool LogEnabled
+        {
+            get { return this._OAuth.LogEnabled; }
+            set { this._OAuth.LogEnabled = value; }
+        }
+
+        public TextWriter LogStream
+        {
+            get { return this._OAuth.LogStream; }
+            set { this._OAuth.LogStream = value; }
+        }
+
+        public IWebProxy Proxy
+        {
+            get { return this._OAuth.Proxy; }
+            set { this._OAuth.Proxy = value; }
+        }
+
+        public string UserAgent
+        {
+            get { return this._OAuth.UserAgent; }
+            set { this._OAuth.UserAgent = value; }
+        }
+
+        #endregion
+
+
+        #region Twitter Commands
 
         public AccountCommand AccountCommand
         {
@@ -293,17 +325,8 @@ namespace Mirai.Twitter.Core
             }
         }
 
-        public IWebProxy Proxy
-        {
-            get { return this._OAuth.Proxy; } 
-            set { this._OAuth.Proxy = value; }
-        }
+        #endregion
 
-        public string UserAgent
-        {
-            get { return this._OAuth.UserAgent; }
-            set { this._OAuth.UserAgent = value; }
-        }
 
         #region Public Methods
         
@@ -383,6 +406,24 @@ namespace Mirai.Twitter.Core
             }
         }
 
+        public string ExecuteUnauthenticatedRequest(Uri resourceUri,
+                                                    HttpMethod httpMethod = HttpMethod.Get,
+                                                    IEnumerable<KeyValuePair<string, string>> postData = null)
+        {
+            try
+            {
+                return this._OAuth.ExecuteUnauthenticatedRequest(resourceUri, httpMethod, postData);
+            }
+            catch (WebException e)
+            {
+                if (e.Status != WebExceptionStatus.ProtocolError)
+                    throw;
+
+                throw new TwitterException(e.Message, e);
+            }
+
+        }
+
         public TwitterLanguage[] GetSupportedLanguages()
         {
             var uriBuilder  = new UriBuilder(ApiBaseUri + "/" + this.ApiVersion.ToString("D"));
@@ -399,85 +440,32 @@ namespace Mirai.Twitter.Core
 
         #endregion
 
-        internal string ExecuteUnauthenticatedRequest(Uri resourceUri, 
-                                                      HttpMethod httpMethod = HttpMethod.Get,
-                                                      IEnumerable<KeyValuePair<string, string>> postData = null)
-        {
-            var webRequest = this.PrepareUnauthenticatedRequest(resourceUri, httpMethod, postData);
 
-            HttpWebResponse webResp;
-            try
-            {
-                webResp = (HttpWebResponse)webRequest.GetResponse();
-            }
-            catch (WebException e)
-            {
-                if (e.Status != WebExceptionStatus.ProtocolError)
-                    throw;
-
-                throw new TwitterException(e.Message, e);
-            }
-
-            string result;
-            using (var streamReader = new StreamReader(webResp.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
-
-            return result;
-        }
-
-        private HttpWebRequest PrepareUnauthenticatedRequest(Uri resourceUri, 
-                                                             HttpMethod httpMethod = HttpMethod.Get,
-                                                             IEnumerable<KeyValuePair<string, string>> postData = null)
-        {
-            if (resourceUri == null)
-                throw new ArgumentException("The resource Uri must be specified.", "resourceUri");
-
-            var webRequest          = (HttpWebRequest)WebRequest.Create(resourceUri);
-            webRequest.Method       = httpMethod.ToString().ToUpperInvariant();
-#if !DEBUG
-            webRequest.Proxy        = this._OAuth.Proxy;
-#endif
-            webRequest.UserAgent    = this.UserAgent;
-            webRequest.ContentType  = "application/x-www-form-urlencoded";
-            webRequest.AllowAutoRedirect = false;
-
-            if (httpMethod == HttpMethod.Get || httpMethod == HttpMethod.Head)
-                return webRequest;
-
-            if (postData != null && postData.Any())
-            {
-                var data = Encoding.UTF8.GetBytes(postData.ToNameValuePairString());
-                using (var stream = webRequest.GetRequestStream())
-                {
-                    stream.Write(data, 0, data.Length);
-                }
-            }
-
-            return webRequest;
-        }
+        #region Private Methods
 
         private TwitterConfiguration RetrieveConfiguration()
         {
-            var uriBuilder  = new UriBuilder(ApiBaseUri + "/" + this.ApiVersion.ToString("D"));
+            var uriBuilder = new UriBuilder(ApiBaseUri + "/" + this.ApiVersion.ToString("D"));
             uriBuilder.Path += "/help/configuration.json";
 
             TwitterConfiguration config = null;
             try
             {
-                var response    = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                config          = TwitterConfiguration.FromDictionary(jsonObj);
+                var response = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
+                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
+                config = TwitterConfiguration.FromDictionary(jsonObj);
             }
             catch (WebException e)
             {
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.Message);
 #endif
             }
 
             return config;
         }
+
+        #endregion
+
     }
 }

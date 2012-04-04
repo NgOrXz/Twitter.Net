@@ -95,6 +95,9 @@ namespace Mirai.Net.OAuth
         /// </summary>
         private readonly ConsumerCredential _ConsumerCredential;
 
+        private int _LogIndentSize;
+        private string _LogIndentSpace;
+
         /// <summary>
         /// The realm.
         /// </summary>
@@ -148,11 +151,14 @@ namespace Mirai.Net.OAuth
             this._SignatureMethod       = signatureMethod;
             this._ServiceProviderDescription = serviceProviderDescription;
 
-            this.UserAgent = "Mirai";
+            this.LogEnabled     = false;
+            this.LogIndentSize  = 4;
+            this.UserAgent      = "Mirai";
         }
 
         #endregion
 
+       
         #region Public Properties
 
         /// <summary>
@@ -178,6 +184,32 @@ namespace Mirai.Net.OAuth
         {
             get { return this._ServiceProviderDescription.AuthorizationEndPoint; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool LogEnabled { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int LogIndentSize
+        {
+            get { return this._LogIndentSize; } 
+            set
+            {
+                if (this._LogIndentSize == value || value < 0)
+                    return;
+
+                this._LogIndentSize     = value;
+                this._LogIndentSpace    = new String(' ', value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TextWriter LogStream { get; set; }
 
         /// <summary>
         /// Gets or sets the Realm.
@@ -241,6 +273,7 @@ namespace Mirai.Net.OAuth
 
         #endregion
 
+
         #region Public Methods
 
         /// <summary>
@@ -292,18 +325,12 @@ namespace Mirai.Net.OAuth
             string oauthParamsString;
             this.PrepareToAcquireAccessToken(oauthVerifier, postData, out oauthParamsString);
 
-            var httpRequest     = this.PrepareRequest(
-                                                        this._ServiceProviderDescription.AccessTokenEndPoint.ResourceUri,
-                                                        this._ServiceProviderDescription.AccessTokenEndPoint.HttpMethod,
-                                                        oauthParamsString,
-                                                        postData);
+            var httpRequest     = this.PrepareRequest(this._ServiceProviderDescription.AccessTokenEndPoint.ResourceUri,
+                                                      this._ServiceProviderDescription.AccessTokenEndPoint.HttpMethod,
+                                                      oauthParamsString,
+                                                      postData);
 
-            var webResp         = (HttpWebResponse)httpRequest.GetResponse();
-            string result;
-            using (var streamReader = new StreamReader(webResp.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
+            var  result = ExecuteRequest(httpRequest);
 
             var pattern = @"oauth_token=(?<token>[^&]+)&oauth_token_secret=(?<secret>[^&]+)";
             var match   = Regex.Match(result, pattern, RegexOptions.IgnoreCase);
@@ -311,10 +338,9 @@ namespace Mirai.Net.OAuth
             {
                 throw new OAuthResponseFormatException("The server returns a unrecognized content.", result);
             }
-            this._ConsumerCredential.SetToken(
-                                                match.Groups["token"].Value,
-                                                match.Groups["secret"].Value,
-                                                TokenType.AccessToken);
+            this._ConsumerCredential.SetToken(match.Groups["token"].Value,
+                                              match.Groups["secret"].Value,
+                                              TokenType.AccessToken);
         }
 
         /// <summary>
@@ -340,18 +366,12 @@ namespace Mirai.Net.OAuth
             string oauthParamsString;
             this.PrepareToAcquireRequestToken(oauthCallback, postData, out oauthParamsString);
 
-            var httpRequest     = this.PrepareRequest(
-                                                this._ServiceProviderDescription.RequestTokenEndPoint.ResourceUri,
-                                                this._ServiceProviderDescription.RequestTokenEndPoint.HttpMethod,
-                                                oauthParamsString, 
-                                                postData);
+            var httpRequest     = this.PrepareRequest(this._ServiceProviderDescription.RequestTokenEndPoint.ResourceUri,
+                                                      this._ServiceProviderDescription.RequestTokenEndPoint.HttpMethod,
+                                                      oauthParamsString, 
+                                                      postData);
 
-            var webResp         = (HttpWebResponse)httpRequest.GetResponse();
-            string result;
-            using (var streamReader = new StreamReader(webResp.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
+            var result  = ExecuteRequest(httpRequest);
 
             var pattern = @"oauth_token=(?<token>[^&]+)&" +
                           @"oauth_token_secret=(?<secret>[^&]+)&" +
@@ -362,10 +382,9 @@ namespace Mirai.Net.OAuth
                 throw new OAuthResponseFormatException("The server returns a unrecognized content.", result);
             }
 
-            this._ConsumerCredential.SetToken(
-                                                match.Groups["token"].Value,
-                                                match.Groups["secret"].Value,
-                                                TokenType.RequestToken);
+            this._ConsumerCredential.SetToken(match.Groups["token"].Value,
+                                              match.Groups["secret"].Value,
+                                              TokenType.RequestToken);
 
             var confirmed = match.Groups["confirmed"].Value;
             if (confirmed.ToUpperInvariant() != "TRUE")
@@ -400,14 +419,7 @@ namespace Mirai.Net.OAuth
 
             var webRequest = this.PrepareRequest(resourceUri, httpMethod, oauthParamsString, postData);
 
-            var webResp         = (HttpWebResponse)webRequest.GetResponse();
-            string result;
-            using (var streamReader = new StreamReader(webResp.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
-
-            return result;
+            return ExecuteRequest(webRequest);
         }
 
         /// <summary>
@@ -416,20 +428,64 @@ namespace Mirai.Net.OAuth
         /// <param name="resourceUrl"></param>
         /// <param name="postData"></param>
         /// <returns></returns>
-        public string ExecuteAuthenticatedRequestForMultipartFormData(
-                                                Uri resourceUrl, IEnumerable<KeyValuePair<string, object>> postData)
+        public string ExecuteAuthenticatedRequestForMultipartFormData(Uri resourceUrl, 
+                                                                      IEnumerable<KeyValuePair<string, object>> postData)
         {
             string oauthParamsString;
             this.PrepareToExecuteAuthenticatedRequest(resourceUrl, HttpMethod.Post, null, true, out oauthParamsString);
 
-            var webRequest  = this.PrepareRequestForMultipartFormData(
-                                                                        resourceUrl,
-                                                                        HttpMethod.Post,
-                                                                        oauthParamsString,
-                                                                        postData,
-                                                                        s_Boundary);
+            var webRequest = this.PrepareRequestForMultipartFormData(resourceUrl,
+                                                                     HttpMethod.Post,
+                                                                     oauthParamsString,
+                                                                     postData,
+                                                                     s_Boundary);
 
-            var webResp         = (HttpWebResponse)webRequest.GetResponse();
+            return ExecuteRequest(webRequest);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resourceUri"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="postData"></param>
+        /// <returns></returns>
+        public string ExecuteUnauthenticatedRequest(Uri resourceUri,
+                                                    HttpMethod httpMethod = HttpMethod.Get,
+                                                    IEnumerable<KeyValuePair<string, string>> postData = null)
+        {
+            var webRequest = this.PrepareRequest(resourceUri, httpMethod, null, postData);
+
+            return ExecuteRequest(webRequest);
+        }
+
+        #endregion
+
+
+        #region Private Methods
+
+        private string ExecuteRequest(HttpWebRequest webRequest)
+        {
+            if (this.LogEnabled && this.LogStream != null)
+                this.LogRequest(webRequest);
+
+            HttpWebResponse webResp;
+            try
+            {
+                webResp = (HttpWebResponse)webRequest.GetResponse();    
+            }
+            catch (WebException e)
+            {
+                if (this.LogEnabled && this.LogStream != null)
+                    this.LogException(e);
+
+                throw;
+            }
+            
+
+            if (this.LogEnabled && this.LogStream != null)
+                this.LogResponse(webResp);
+
             string result;
             using (var streamReader = new StreamReader(webResp.GetResponseStream()))
             {
@@ -438,10 +494,6 @@ namespace Mirai.Net.OAuth
 
             return result;
         }
-
-        #endregion
-
-        #region Methods
 
         private static byte[] GenerateMultipartFormData(IEnumerable<KeyValuePair<string, object>> postData, string boundary)
         {
@@ -457,28 +509,24 @@ namespace Mirai.Net.OAuth
                 var data = kvp.Value as byte[];
                 if (data != null)
                 {
-                    var partHeader = Encoding.UTF8.GetBytes(
-                                                            String.Format(
-                                                                            "--{0}\r\nContent-Disposition: form-data; " +
-                                                                            "name=\"{1}\"; filename=\"{1}\"\r\n" +
-                                                                            "Content-Type: application/octet-stream\r\n" +
-                                                                            "Content-Transfer-Encoding: binary\r\n\r\n",
-                                                                            boundary,
-                                                                            kvp.Key));
+                    var partHeader = Encoding.UTF8.GetBytes(String.Format("--{0}\r\nContent-Disposition: form-data; " +
+                                                                          "name=\"{1}\"; filename=\"{1}\"\r\n" +
+                                                                          "Content-Type: application/octet-stream\r\n" +
+                                                                          "Content-Transfer-Encoding: binary\r\n\r\n",
+                                                                          boundary,
+                                                                          kvp.Key));
                     formDataStream.Write(partHeader, 0, partHeader.Length);
                     formDataStream.Write(data, 0, data.Length);
                     formDataStream.Write(Encoding.UTF8.GetBytes("\r\n"), 0, 2);
                 }
                 else
                 {
-                    var partHeader = Encoding.UTF8.GetBytes(
-                                                            String.Format(
-                                                                            "--{0}\r\nContent-Disposition: form-data; " +
-                                                                            "name=\"{1}\"; \r\n" +
-                                                                            "Content-Type: text/plain\r\n\r\n{2}\r\n",
-                                                                            boundary,
-                                                                            kvp.Key,
-                                                                            kvp.Value));
+                    var partHeader = Encoding.UTF8.GetBytes(String.Format("--{0}\r\nContent-Disposition: form-data; " +
+                                                                          "name=\"{1}\"; \r\n" +
+                                                                          "Content-Type: text/plain\r\n\r\n{2}\r\n",
+                                                                          boundary,
+                                                                          kvp.Key,
+                                                                          kvp.Value));
                     formDataStream.Write(partHeader, 0, partHeader.Length);
                 }
             }
@@ -576,12 +624,11 @@ namespace Mirai.Net.OAuth
         private string GenerateSigningKey()
         {
             var key = new StringBuilder();
-            key.AppendFormat(
-                            "{0}&{1}",
-                            Uri.EscapeDataString(this._ConsumerCredential.ConsumerSecret),
-                            string.IsNullOrEmpty(this._ConsumerCredential.Secret)
-                                ? string.Empty
-                                : Uri.EscapeDataString(this._ConsumerCredential.Secret));
+            key.AppendFormat("{0}&{1}",
+                             Uri.EscapeDataString(this._ConsumerCredential.ConsumerSecret),
+                             String.IsNullOrEmpty(this._ConsumerCredential.Secret) ? 
+                                String.Empty : 
+                                Uri.EscapeDataString(this._ConsumerCredential.Secret));
 
             return key.ToString();
         }
@@ -601,10 +648,9 @@ namespace Mirai.Net.OAuth
             oauthParamString.AppendFormat("OAuth realm={0}, ", this._Realm);
             foreach (var kvp in protocolParams)
             {
-                oauthParamString.AppendFormat(
-                                                "{0}=\"{1}\", ",
-                                                kvp.Key.ToPercentEncode(),
-                                                kvp.Value.SingleOrDefault().ToPercentEncode());
+                oauthParamString.AppendFormat("{0}=\"{1}\", ",
+                                              kvp.Key.ToPercentEncode(),
+                                              kvp.Value.SingleOrDefault().ToPercentEncode());
             }
 
             oauthParamString.Length -= 2;
@@ -612,8 +658,65 @@ namespace Mirai.Net.OAuth
             return oauthParamString.ToString();
         }
 
-        private static Dictionary<string, string> MergeInputParameters(
-                                            Uri resourceUri, IEnumerable<KeyValuePair<string, string>> postData)
+        private void LogException(WebException webException)
+        {
+            var logBuilder = new StringBuilder();
+            logBuilder.AppendLine("----- WebException -----");
+            logBuilder.AppendFormat("{0}WebException Status: ({1:D}) {1}{2}", this._LogIndentSpace, webException.Status, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Message: {1}{2}", this._LogIndentSpace, webException.Message, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
+            foreach (string headerKey in webException.Response.Headers)
+            {
+                logBuilder.AppendFormat("  {0}{1}: {2}{3}", 
+                                        this._LogIndentSpace, 
+                                        headerKey, 
+                                        webException.Response.Headers[headerKey], 
+                                        Environment.NewLine);
+            }
+
+            this.LogStream.WriteLine(logBuilder.ToString());
+        }
+
+        private void LogRequest(HttpWebRequest request)
+        {
+            var logBuilder = new StringBuilder();
+            logBuilder.AppendLine("----- Request -----");
+            logBuilder.AppendFormat("{0}Request Uri: {1}{2}", this._LogIndentSpace, request.RequestUri, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Method: {1}{2}", this._LogIndentSpace, request.Method, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Content Length: {1}{2}", this._LogIndentSpace, request.ContentLength, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
+            foreach (string headerKey in request.Headers)
+            {
+                logBuilder.AppendFormat("  {0}{1}: {2}{3}", 
+                                        this._LogIndentSpace, 
+                                        headerKey, 
+                                        request.Headers[headerKey], 
+                                        Environment.NewLine);
+            }
+            
+            this.LogStream.WriteLine(logBuilder.ToString());
+        }
+
+        private void LogResponse(HttpWebResponse response)
+        {
+            var logBuilder = new StringBuilder();
+            logBuilder.AppendLine("***** Response *****");
+            logBuilder.AppendFormat("{0}Response Uri: {1}{2}", this._LogIndentSpace, response.ResponseUri, Environment.NewLine);
+            logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
+            foreach (string headerKey in response.Headers)
+            {
+                logBuilder.AppendFormat("  {0}{1}: {2}{3}", 
+                                        this._LogIndentSpace, 
+                                        headerKey, 
+                                        response.Headers[headerKey], 
+                                        Environment.NewLine);
+            }
+
+            this.LogStream.WriteLine(logBuilder.ToString());
+        }
+
+        private static Dictionary<string, string> MergeInputParameters(Uri resourceUri, 
+                                                                       IEnumerable<KeyValuePair<string, string>> postData)
         {
             var inputParams = new Dictionary<string, string>();
 
@@ -638,7 +741,7 @@ namespace Mirai.Net.OAuth
         }
 
         /// <summary>
-        /// 
+        /// Prepares an authenticated or unauthenticated request for the non-multipart form data.
         /// </summary>
         /// <param name="resourceUri"></param>
         /// <param name="httpMethod"></param>
@@ -647,11 +750,14 @@ namespace Mirai.Net.OAuth
         /// This parameter is ignored when HTTP method is set to GET / HEAD.
         /// </param>
         /// <returns></returns>
-        private HttpWebRequest PrepareRequest(
-                                                Uri resourceUri,
-                                                HttpMethod httpMethod,
-                                                string protocolParamsString,
-                                                IEnumerable<KeyValuePair<string, string>> postData)
+        /// <remarks>
+        /// If the protocolParamsString parameter is null or empty, 
+        /// then prepare a unauthenticated request.
+        /// </remarks>
+        private HttpWebRequest PrepareRequest(Uri resourceUri,
+                                              HttpMethod httpMethod,
+                                              string protocolParamsString,
+                                              IEnumerable<KeyValuePair<string, string>> postData)
         {
             var webRequest          = this.PrepareRequestCore(resourceUri, httpMethod, protocolParamsString);
             webRequest.ContentType  = "application/x-www-form-urlencoded";
@@ -678,10 +784,9 @@ namespace Mirai.Net.OAuth
         /// </returns>
         private OrderedMultiDictionary<string, string> PrepareCommonProtocolParameters()
         {
-            var requestParams = new OrderedMultiDictionary<string, string>(
-                                                                            false,
-                                                                            StringComparer.Ordinal,
-                                                                            StringComparer.Ordinal)
+            var requestParams = new OrderedMultiDictionary<string, string>(false,
+                                                                           StringComparer.Ordinal,
+                                                                           StringComparer.Ordinal)
                 {
                     { OAuthConsumerKey, this._ConsumerCredential.ConsumerKey }, 
                     { OAuthSignatureMethod, this._SignatureMethod.EnumToString() }, 
@@ -693,12 +798,17 @@ namespace Mirai.Net.OAuth
             return requestParams;
         }
 
+        /// <summary>
+        /// Prepares the common properties of the WebRequest object for an authenticated or unauthenticated request.
+        /// </summary>
+        /// <param name="resourceUri"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="protocolParamsString"></param>
+        /// <returns></returns>
         private HttpWebRequest PrepareRequestCore(Uri resourceUri, HttpMethod httpMethod, string protocolParamsString)
         {
             if (resourceUri == null)
                 throw new ArgumentException("The resource Uri must be specified.", "resourceUri");
-            if (String.IsNullOrEmpty(protocolParamsString))
-                throw new ArgumentException("The oauth protocol's parameters must be provided.", "protocolParamsString");
 
             var webRequest          = (HttpWebRequest)WebRequest.Create(resourceUri);
             webRequest.Method       = httpMethod.ToString().ToUpperInvariant();
@@ -706,17 +816,29 @@ namespace Mirai.Net.OAuth
             webRequest.Proxy        = this.Proxy;
 #endif
             webRequest.UserAgent    = this.UserAgent;
-            webRequest.Headers.Add(HttpRequestHeader.Authorization, protocolParamsString);
+            webRequest.AllowAutoRedirect = false;
+
+            // If the protocolParamsString parameter is null or empty, then prepare a unauthenticated request.
+            if (!String.IsNullOrEmpty(protocolParamsString))
+                webRequest.Headers.Add(HttpRequestHeader.Authorization, protocolParamsString);
 
             return webRequest;
         }
 
-        private HttpWebRequest PrepareRequestForMultipartFormData(
-                                                                    Uri resourceUri,
-                                                                    HttpMethod httpMethod,
-                                                                    string protocolParamsString,
-                                                                    IEnumerable<KeyValuePair<string, object>> postData,
-                                                                    string boundary)
+        /// <summary>
+        /// Prepares an authenticated request for the multipart form data.
+        /// </summary>
+        /// <param name="resourceUri"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="protocolParamsString"></param>
+        /// <param name="postData"></param>
+        /// <param name="boundary"></param>
+        /// <returns></returns>
+        private HttpWebRequest PrepareRequestForMultipartFormData(Uri resourceUri,
+                                                                  HttpMethod httpMethod,
+                                                                  string protocolParamsString,
+                                                                  IEnumerable<KeyValuePair<string, object>> postData,
+                                                                  string boundary)
         {
             if (String.IsNullOrEmpty(boundary))
                 throw new ArgumentException("Multipart form data boundary must be specified.", "boundary");
@@ -740,10 +862,9 @@ namespace Mirai.Net.OAuth
             return webRequest;
         }
 
-        private void PrepareToAcquireAccessToken(
-                                                    string oauthVerifier,
-                                                    IEnumerable<KeyValuePair<string, string>> postData,
-                                                    out string protocolParamsString)
+        private void PrepareToAcquireAccessToken(string oauthVerifier,
+                                                 IEnumerable<KeyValuePair<string, string>> postData,
+                                                 out string protocolParamsString)
         {
             if (string.IsNullOrEmpty(oauthVerifier))
             {
@@ -760,9 +881,8 @@ namespace Mirai.Net.OAuth
             protocolParams.Add(OAuthToken, this._ConsumerCredential.Token);
             protocolParams.Add(OAuthVerifier, oauthVerifier);
 
-            var inputParams = MergeInputParameters(
-                                                    this._ServiceProviderDescription.AccessTokenEndPoint.ResourceUri,
-                                                    postData);
+            var inputParams = MergeInputParameters(this._ServiceProviderDescription.AccessTokenEndPoint.ResourceUri,
+                                                   postData);
 
             var requestParams = protocolParams.Clone();
             if (inputParams.Count > 0)
@@ -784,10 +904,9 @@ namespace Mirai.Net.OAuth
             protocolParamsString = this.GenerateProtocolParametersString(protocolParams);
         }
 
-        private void PrepareToAcquireRequestToken(
-                                                    string oauthCallback,
-                                                    IEnumerable<KeyValuePair<string, string>> postData,
-                                                    out string protocolParamsString)
+        private void PrepareToAcquireRequestToken(string oauthCallback,
+                                                  IEnumerable<KeyValuePair<string, string>> postData,
+                                                  out string protocolParamsString)
         {
             if (String.IsNullOrEmpty(oauthCallback))
             {
@@ -801,9 +920,8 @@ namespace Mirai.Net.OAuth
             var protocolParams  = this.PrepareCommonProtocolParameters();
             protocolParams.Add(OAuthCallback, oauthCallback);
 
-            var inputParams     = MergeInputParameters(
-                                                        this._ServiceProviderDescription.RequestTokenEndPoint.ResourceUri,
-                                                        postData);
+            var inputParams     = MergeInputParameters(this._ServiceProviderDescription.RequestTokenEndPoint.ResourceUri,
+                                                       postData);
 
             string encodedRequestString;
             if (inputParams.Count <= 0)
@@ -830,12 +948,11 @@ namespace Mirai.Net.OAuth
             protocolParamsString = this.GenerateProtocolParametersString(protocolParams);
         }
 
-        private void PrepareToExecuteAuthenticatedRequest(
-                                                            Uri resourceUri,
-                                                            HttpMethod httpMethod,
-                                                            IEnumerable<KeyValuePair<string, string>> postData, 
-                                                            bool isMultipart,
-                                                            out string protocolParamsString)
+        private void PrepareToExecuteAuthenticatedRequest(Uri resourceUri,
+                                                          HttpMethod httpMethod,
+                                                          IEnumerable<KeyValuePair<string, string>> postData, 
+                                                          bool isMultipart,
+                                                          out string protocolParamsString)
         {
             if (resourceUri == null)
             {
@@ -860,10 +977,9 @@ namespace Mirai.Net.OAuth
             // When in multipart/form-data mode, only oauth_* protocol parameters included in signature base string.
 
             var encodedRequestString    = GenerateRequestString(requestParams);
-            var signatureBaseString     = GenerateSignatureBaseString(
-                                                                    httpMethod,
-                                                                    resourceUri.ToBaseUri(),
-                                                                    encodedRequestString);
+            var signatureBaseString     = GenerateSignatureBaseString(httpMethod,
+                                                                      resourceUri.ToBaseUri(),
+                                                                      encodedRequestString);
 
             sharedProtocolParams.Add(OAuthSignature, this.SignSignatureBaseString(signatureBaseString));
 
@@ -871,7 +987,7 @@ namespace Mirai.Net.OAuth
         }
 
         /// <summary>
-        /// The sign signature base string.
+        /// Signs the signature base string.
         /// </summary>
         /// <param name="key">
         /// The key.

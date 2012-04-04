@@ -1,6 +1,8 @@
 ﻿namespace Mirai.ConsoleUI
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Xml.Linq;
@@ -20,10 +22,12 @@
                                             keys.Element("consumerSecret").Value,
                                             keys.Element("token").Value,
                                             keys.Element("tokenSecret").Value);
+            twitterApi.LogEnabled = true;
+            twitterApi.LogStream = Console.Out;
 
             try
             {
-                //var fs = new FileStream(@"C:\Users\Kevin\素材\Avatar\3222.jpg", FileMode.Open, FileAccess.Read);
+                //var fs = new FileStream(@"C:\Users\Kevin\素材\Avatar\img007.jpg", FileMode.Open, FileAccess.Read);
                 //var data = new byte[fs.Length];
                 //fs.Read(data, 0, data.Length);
                 //fs.Close();
@@ -37,9 +41,9 @@
                 //files.Add(data);
                 //files.Add(data2);
 
-                //twitterApi.TweetCommand.UpdateWithMedia("update with two picture for test~~~~~", mediaList: files);
+                //twitterApi.TweetCommand.UpdateWithMedia("update test~~~~~", mediaList: files);
                 //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
-                //twitterApi.TweetCommand.Update("Another tgdfgdfest.f.23243423......");
+                //twitterApi.TweetCommand.Update("test log...again...nice day.");
                 //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
                 //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
