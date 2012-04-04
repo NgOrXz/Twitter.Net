@@ -95,7 +95,6 @@
     <Compile Include="Core\TwitterConfiguration.cs" />
     <Compile Include="Core\TwitterError.cs" />
     <Compile Include="Core\TwitterException.cs" />
-    <Compile Include="TwitterObjects\TwitterCoordinate.cs" />
     <Compile Include="TwitterObjects\TwitterColor.cs" />
     <Compile Include="TwitterObjects\TwitterEntity.cs" />
     <Compile Include="TwitterObjects\TwitterGeometry.cs" />

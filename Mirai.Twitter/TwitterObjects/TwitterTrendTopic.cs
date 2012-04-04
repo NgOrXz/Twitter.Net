@@ -60,7 +60,7 @@ namespace Mirai.Twitter.TwitterObjects
         }
 
         [JsonProperty("trends")]
-        public TwitterTrendGroup[] TrendGroups { get; set; }
+        public IEnumerable<IGrouping<DateTime, TwitterTrend>> TrendGroups { get; set; }
 
     }
 }
