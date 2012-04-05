@@ -82,6 +82,7 @@ namespace Mirai.Twitter.TwitterObjects
         public bool Notifications { get; set; }
 
         [JsonProperty("profile_background_color")]
+        [JsonConverter(typeof(TwitterColorConverter))]
         public TwitterColor ProfileBackgroundColor { get; set; }
 
         [JsonProperty("profile_background_image_url")]
@@ -91,18 +92,22 @@ namespace Mirai.Twitter.TwitterObjects
         public bool ProfileBackgroundTile { get; set; }
 
         [JsonProperty("profile_link_color")]
+        [JsonConverter(typeof(TwitterColorConverter))]
         public TwitterColor ProfileLinkColor { get; set; }
 
         [JsonProperty("profile_image_url")]
         public Uri ProfileImageUrl { get; set; }
 
         [JsonProperty("profile_sidebar_border_color")]
+        [JsonConverter(typeof(TwitterColorConverter))]
         public TwitterColor ProfileSidebarBorderColor { get; set; }
 
         [JsonProperty("profile_sidebar_fill_color")]
+        [JsonConverter(typeof(TwitterColorConverter))]
         public TwitterColor ProfileSidebarFillColor { get; set; }
 
         [JsonProperty("profile_text_color")]
+        [JsonConverter(typeof(TwitterColorConverter))]
         public TwitterColor ProfileTextColor { get; set; }
 
         [JsonProperty("profile_use_background_image")]

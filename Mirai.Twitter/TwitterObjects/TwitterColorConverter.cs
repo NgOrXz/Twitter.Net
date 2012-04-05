@@ -21,32 +21,48 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
+    using System;
+
+    using Mirai.Utilities.Reflection;
+
     using Newtonsoft.Json;
 
-    public sealed class TwitterRelationship : TwitterObject
+    internal class TwitterColorConverter : JsonConverter
     {
-        #region Public Properties
-
-        [JsonProperty("connections")]
-        public string Connections { get; set; }
-
-        [JsonProperty("id_str")]
-        public string Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("screen_name")]
-        public string ScreenName { get; set; }
-
-        [JsonProperty("source")]
-        public TwitterRelationshipUser Source { get; set; }
-
-        [JsonProperty("target")]
-        public TwitterRelationshipUser Target { get; set; }
-
-        #endregion
+        public TwitterColorConverter()
+        {
+        }
 
 
+        public override bool CanConvert(Type typeObject)
+        {
+            return typeObject == typeof(TwitterColor);
+        }
+
+        public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
+        {
+            if (objectType != typeof(TwitterColor) && objectType != typeof(TwitterColor?))
+                throw new ArgumentException();
+
+            if (reader.TokenType == JsonToken.Null)
+            {
+                if (!reader.ValueType.IsNullableType())
+                    throw new Exception();
+
+                return null;
+            }
+
+            return TwitterColor.FromString(reader.Value.ToString());
+        }
+
+        public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
+        {
+            string color = null;
+
+            if (value is TwitterColor)
+                color = ((TwitterColor)value).ToString();
+
+            writer.WriteValue(color);
+        }
     }
 }

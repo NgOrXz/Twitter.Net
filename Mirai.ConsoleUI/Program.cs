@@ -43,7 +43,7 @@
 
                 //twitterApi.TweetCommand.UpdateWithMedia("update test~~~~~", mediaList: files);
                 //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
-                //twitterApi.TweetCommand.Update("a new test....");
+                //twitterApi.TweetCommand.Update("a new test~~~~~~~~....");
                 //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
                 //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
@@ -70,9 +70,9 @@
                 //twitterApi.FriendshipCommand.RetrieveIdsForOutgoingRequests();
                 //twitterApi.FriendshipCommand.Create("episod");
                 //twitterApi.FriendshipCommand.Destroy("AncientProverbs");
-                //twitterApi.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
-                //twitterApi.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
-                //twitterApi.FriendshipCommand.Update("yukinoyume");
+                twitterApi.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
+                var s1 = twitterApi.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
+                twitterApi.FriendshipCommand.Update("yukinoyume");
                 //twitterApi.FriendshipCommand.RetrieveNoRetweetIds();
 
                 //twitterApi.TimelineCommand.RetrieveHomeTimeline();

@@ -661,20 +661,24 @@ namespace Mirai.Net.OAuth
             logBuilder.AppendLine("+++++ WebException +++++");
             logBuilder.AppendFormat("{0}WebException Status: ({1:D}) {1}{2}", this._LogIndentSpace, webException.Status, Environment.NewLine);
             logBuilder.AppendFormat("{0}Message: {1}{2}", this._LogIndentSpace, webException.Message, Environment.NewLine);
-            logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
-            foreach (string headerKey in webException.Response.Headers)
-            {
-                logBuilder.AppendFormat("  {0}{1}: {2}{3}", 
-                                        this._LogIndentSpace, 
-                                        headerKey, 
-                                        webException.Response.Headers[headerKey], 
-                                        Environment.NewLine);
-            }
 
-            var stream = new StreamReader(webException.Response.GetResponseStream());
-            logBuilder.AppendFormat("{0}Body: {1}", this._LogIndentSpace, Environment.NewLine);
-            logBuilder.AppendFormat("  {0}{1}{2}", this._LogIndentSpace, stream.ReadToEnd(), Environment.NewLine);
-            stream.BaseStream.Position = 0;
+            if (webException.Response != null)
+            {
+                logBuilder.AppendFormat("{0}Headers: {1}", this._LogIndentSpace, Environment.NewLine);
+                foreach (string headerKey in webException.Response.Headers)
+                {
+                    logBuilder.AppendFormat("  {0}{1}: {2}{3}",
+                                            this._LogIndentSpace,
+                                            headerKey,
+                                            webException.Response.Headers[headerKey],
+                                            Environment.NewLine);
+                }
+
+                var stream = new StreamReader(webException.Response.GetResponseStream());
+                logBuilder.AppendFormat("{0}Body: {1}", this._LogIndentSpace, Environment.NewLine);
+                logBuilder.AppendFormat("  {0}{1}{2}", this._LogIndentSpace, stream.ReadToEnd(), Environment.NewLine);
+                stream.BaseStream.Position = 0;
+            }
             
             this.LogStream.WriteLine(logBuilder.ToString());
         }

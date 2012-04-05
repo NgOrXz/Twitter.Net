@@ -55,6 +55,7 @@
     <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="Commands\GeoCommand.cs" />
     <Compile Include="Core\TwitterHelper.cs" />
+    <Compile Include="TwitterObjects\TwitterColorConverter.cs" />
     <Compile Include="TwitterObjects\TwitterDateTimeConverter.cs" />
     <Compile Include="TwitterObjects\ITwitterObject.cs" />
     <Compile Include="TwitterObjects\TwitterGeoSimilarPlaces.cs" />

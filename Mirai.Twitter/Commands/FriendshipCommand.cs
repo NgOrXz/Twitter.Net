@@ -29,6 +29,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
@@ -238,10 +239,11 @@ namespace Mirai.Twitter.Commands
                                       String.Format("/show.json?{0}", queryBuilder.ToString().TrimEnd('&')));
 
             var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+                                  this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
+                                  this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var rel         = TwitterObject.Parse<TwitterRelationship>(response);
+            var jsonObj     = JObject.Parse(response);
+            var rel         = TwitterObject.Parse<TwitterRelationship>(jsonObj["relationship"].ToString());
 
             return rel;
         }
