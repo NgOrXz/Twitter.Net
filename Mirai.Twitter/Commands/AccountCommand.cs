@@ -31,7 +31,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using fastJSON;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Account-level configuration settings for users.
@@ -86,8 +86,7 @@ namespace Mirai.Twitter.Commands
                                 this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                                 this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var rateLimit   = TwitterRateLimitStatus.FromDictionary(jsonObj);
+            var rateLimit   = TwitterObject.Parse<TwitterRateLimitStatus>(response);
 
             return rateLimit;
         }
@@ -134,18 +133,8 @@ namespace Mirai.Twitter.Commands
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile.json");
 
-            TwitterUser twitterUser;
-            try
-            {
-                var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
-
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                twitterUser     = TwitterUser.FromDictionary(jsonObj);
-            }
-            catch (JsonParseException e)
-            {
-                throw new TwitterException("Json parsing failure.", e);
-            }
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
 
             return twitterUser;
         }
@@ -200,18 +189,8 @@ namespace Mirai.Twitter.Commands
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile_background_image.json");
 
-            TwitterUser twitterUser;
-            try
-            {
-                var response    = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uri, postData);
-
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                twitterUser     = TwitterUser.FromDictionary(jsonObj);
-            }
-            catch (JsonParseException e)
-            {
-                throw new TwitterException("Json parsing failure.", e);
-            }
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uri, postData);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
             
             return twitterUser;
         }
@@ -257,18 +236,8 @@ namespace Mirai.Twitter.Commands
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile_colors.json");
 
-            TwitterUser twitterUser;
-            try
-            {
-                var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
-
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                twitterUser     = TwitterUser.FromDictionary(jsonObj);
-            }
-            catch (JsonParseException e)
-            {
-                throw new TwitterException("Json parsing failure.", e);
-            }
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
 
             return twitterUser;
         }
@@ -316,18 +285,8 @@ namespace Mirai.Twitter.Commands
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile_image.json");
 
-            TwitterUser twitterUser;
-            try
-            {
-                var response    = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uri, postData);
-
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                twitterUser     = TwitterUser.FromDictionary(jsonObj);
-            }
-            catch (JsonParseException e)
-            {
-                throw new TwitterException("Json parsing failure.", e);
-            }
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uri, postData);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
 
             return twitterUser;
         }
@@ -383,19 +342,14 @@ namespace Mirai.Twitter.Commands
             try
             {
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
 
-                twitterUser     = TwitterUser.FromDictionary(jsonObj);
+                twitterUser     = TwitterObject.Parse<TwitterUser>(response);
                 valid           = true;
             }
             catch (TwitterException e)
             {
                 if (e.StatusCode != HttpStatusCode.Unauthorized)
                     throw;
-            }
-            catch (JsonParseException e)
-            {
-                throw new TwitterException("Json parsing failure.", e);
             }
 
             return valid;

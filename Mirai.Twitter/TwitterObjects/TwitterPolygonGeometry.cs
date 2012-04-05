@@ -26,88 +26,11 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Text;
 
-    using Mirai.Twitter.Core;
+    using Newtonsoft.Json;
 
     public sealed class TwitterPolygonGeometry : TwitterGeometry
     {
-        #region Public Methods
-
-        public void Add(TwitterCoordinate coordinate)
-        {
-            this.CoordinatesList.Add(coordinate);
-        }
-
-        public void Clear()
-        {
-            this.CoordinatesList.Clear();
-        }
-
-        public static TwitterPolygonGeometry FromDictionary(IDictionary<string, object> dictionary)
-        {
-            return FromDictionary<TwitterPolygonGeometry>(dictionary);
-        }
-
-        public static TwitterPolygonGeometry Parse(string jsonString)
-        {
-            return Parse<TwitterPolygonGeometry>(jsonString);
-        }
-
-        public bool Remove(TwitterCoordinate coordinate)
-        {
-            return this.CoordinatesList.Remove(coordinate);
-        }
-
-        #endregion
-
-
-        #region Overrides of TwitterObject
-
-        internal override void Init(IDictionary<string, object> dictionary)
-        {
-            if (dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            if (dictionary.Count == 0)
-                return;
-
-            object typeValue;
-            if (dictionary.TryGetValue("type", out typeValue) == false || typeValue == null)
-                throw new FormatException();
-
-            object coordinatesValue;
-            if (dictionary.TryGetValue("coordinates", out coordinatesValue) == false || coordinatesValue == null)
-                throw new FormatException();
-
-            if (!((string)typeValue).Equals("Polygon", StringComparison.OrdinalIgnoreCase))
-                throw new FormatException();
-
-            foreach (ArrayList polyArray in (ArrayList)coordinatesValue)
-            {
-                foreach (ArrayList c in polyArray)
-                {
-                    this.CoordinatesList.Add(new TwitterCoordinate(c[0].ToString().ToDouble(),
-                                                                   c[1].ToString().ToDouble()));
-                }
-                
-            }
-        }
-
-        public override string ToJson()
-        {
-            if (this.IsCoordinate)
-                throw new NotImplementedException();
-
-            var jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("{\"type\":\"Polygon\",\"coordinates\":[[");
-            this.CoordinatesList.ForEach(c => jsonBuilder.AppendFormat("{0},", c.ToJson()));
-            if (jsonBuilder[jsonBuilder.Length - 1] == ',')
-                jsonBuilder.Length -= 1;
-
-            jsonBuilder.Append("]]}");
-
-            return jsonBuilder.ToString();
-        }
-
-        #endregion
+        [JsonProperty("coordinates")]
+        public double[][][] Coordinates { get; set; }
     }
 }

@@ -23,53 +23,12 @@ namespace Mirai.Twitter.TwitterObjects
 {
     using System.Collections.Generic;
 
+    using Newtonsoft.Json;
+
     public abstract class TwitterGeometry : TwitterObject
     {
-        #region Constants and Fields
+        [JsonProperty("type")]
+        public string Type { get; set; }
 
-        private bool _IsCoordinate;
-
-        protected readonly List<TwitterCoordinate> CoordinatesList;
-
-        #endregion
-
-
-        protected TwitterGeometry()
-        {
-            this._IsCoordinate      = false;
-            this.CoordinatesList    = new List<TwitterCoordinate>();
-        }
-
-        /// <summary>
-        /// If there are no coordinate, return an empty array not null.
-        /// </summary>
-        public TwitterCoordinate[] Coordinates
-        {
-            get { return this.CoordinatesList != null ? this.CoordinatesList.ToArray() : new TwitterCoordinate[] { }; }
-        }
-
-
-        internal bool IsCoordinate
-        {
-            get { return this._IsCoordinate; }
-            set
-            {
-                if (this._IsCoordinate == value)
-                    return;
-
-                this._IsCoordinate = value;
-                this.SwapLatAndLong();
-            }
-        }
-
-        private void SwapLatAndLong()
-        {
-            foreach (var coordinate in CoordinatesList)
-            {
-                var tmp                 = coordinate.Latitude;
-                coordinate.Latitude     = coordinate.Longitude;
-                coordinate.Longitude    = tmp;
-            }
-        }
     }
 }

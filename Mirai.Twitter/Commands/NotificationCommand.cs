@@ -28,7 +28,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using fastJSON;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Controls SMS-based notifications that a dm wants to receive.

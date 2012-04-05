@@ -29,7 +29,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using fastJSON;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Categorical organization of users that others may be interested to follow. 

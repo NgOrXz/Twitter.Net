@@ -30,7 +30,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using fastJSON;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Allows users to block and unblock other users. 
@@ -202,8 +202,7 @@ namespace Mirai.Twitter.Commands
             try
             {
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                user            = TwitterUser.FromDictionary(jsonObj);
+                user            = TwitterObject.Parse<TwitterUser>(response);
             }
             catch (TwitterException e)
             {

@@ -22,45 +22,24 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Reflection;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    internal sealed class TwitterTrendTopic
+    public sealed class TwitterTrendTopic
     {
         [JsonProperty("as_of")]
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime? AsOf { get; set; }
 
         [JsonProperty("created_at")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime? CreatedAt { get; set; }
 
         [JsonProperty("locations")]
         public TwitterTrendLocation[] Locations { get; set; }
 
-        /// <summary>
-        /// Gets the trends of the trend topic, or the trends of the first trend group if there are 
-        /// multiple trend groups in the trend topic.
-        /// </summary>
-        public TwitterTrend[] Trends
-        {
-            get
-            {
-                var trends = !this.TrendGroups.Any() ?
-                                new TwitterTrend[0] :
-                                this.TrendGroups.First().ToArray();
-
-                return trends;
-            }
-        }
-
         [JsonProperty("trends")]
-        public IEnumerable<IGrouping<DateTime, TwitterTrend>> TrendGroups { get; set; }
-
+        public TwitterTrend[] Trends { get; set; }
     }
 }
