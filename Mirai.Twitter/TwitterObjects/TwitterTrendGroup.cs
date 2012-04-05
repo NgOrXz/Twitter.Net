@@ -26,9 +26,9 @@ namespace Mirai.Twitter.TwitterObjects
     using System.Collections.Generic;
     using System.Linq;
 
-    internal sealed class TwitterTrendGroup : IGrouping<DateTime?, TwitterTrend>
+    internal sealed class TwitterTrendGroup : IGrouping<DateTime, TwitterTrend>
     {
-        private readonly DateTime? _Key;
+        private readonly DateTime _Key;
 
         internal readonly List<TwitterTrend> Elements;
 
@@ -39,7 +39,7 @@ namespace Mirai.Twitter.TwitterObjects
 
         }
 
-        internal TwitterTrendGroup(DateTime? key, IEnumerable<TwitterTrend> trends)
+        internal TwitterTrendGroup(DateTime key, IEnumerable<TwitterTrend> trends)
         {
             this._Key = key;
             this.Elements = new List<TwitterTrend>();
@@ -49,7 +49,7 @@ namespace Mirai.Twitter.TwitterObjects
         }
 
 
-        public DateTime? Key
+        public DateTime Key
         {
             get { return this._Key; }
         }
