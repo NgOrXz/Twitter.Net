@@ -42,18 +42,18 @@ namespace Mirai.Twitter.TwitterObjects
 
         public override bool CanConvert(Type typeObject)
         {
-            return typeObject == typeof(DateTime);
+            return typeObject == typeof(DateTime) || typeObject == typeof(DateTime?);
         }
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
             if (objectType != typeof(DateTime) && objectType != typeof(DateTime?))
-                throw new ArgumentException();
+                throw new NotSupportedException();
 
             if (reader.TokenType == JsonToken.Null)
             {
                 if (!reader.ValueType.IsNullableType())
-                    throw new Exception();
+                    throw new NotSupportedException();
 
                 return null;
             }

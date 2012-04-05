@@ -23,8 +23,6 @@ namespace Mirai.Twitter.TwitterObjects
 {
     using System;
 
-    using Mirai.Twitter.Core;
-
     using Newtonsoft.Json;
 
     public sealed class TwitterList : TwitterObject

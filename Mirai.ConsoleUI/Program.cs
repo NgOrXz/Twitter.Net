@@ -70,9 +70,9 @@
                 //twitterApi.FriendshipCommand.RetrieveIdsForOutgoingRequests();
                 //twitterApi.FriendshipCommand.Create("episod");
                 //twitterApi.FriendshipCommand.Destroy("AncientProverbs");
-                twitterApi.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
-                var s1 = twitterApi.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
-                twitterApi.FriendshipCommand.Update("yukinoyume");
+                //twitterApi.FriendshipCommand.Show("yukinoyume", "FairyLGotay");
+                //twitterApi.FriendshipCommand.Lookup(new[] { "FairyLGotay", "twitterapi" });
+                //twitterApi.FriendshipCommand.Update("yukinoyume");
                 //twitterApi.FriendshipCommand.RetrieveNoRetweetIds();
 
                 //twitterApi.TimelineCommand.RetrieveHomeTimeline();
@@ -88,8 +88,11 @@
                 //    {
                 //        //GeoCode = new TwitterGeoCode(37.781157, -122.398720, 10),
                 //        IncludeEntities = true,
-                //        Page = 1, ShowUser = true, ReusltType = TwitterSearchReusltType.Mixed,
-                //        TweetsPerPage = 20, Until = DateTime.Now
+                //        Page = 1,
+                //        ShowUser = true,
+                //        ReusltType = TwitterSearchReusltType.Mixed,
+                //        TweetsPerPage = 20,
+                //        Until = DateTime.Now
                 //    });
 
                 //twitterApi.SavedSearchCommand.RetrieveSavedSearches();
@@ -102,7 +105,7 @@
                 //twitterApi.DirectMessageCommand.Sent();
 
                 //twitterApi.ListCommand.RetrieveAllLists("yukinoyume43534534645");
-                //twitterApi.ListCommand.RetrieveUserLists("yukinoyume");
+                //twitterApi.ListCommand.RetrieveUserCreatedLists("yukinoyume");
                 //twitterApi.ListCommand.RetrieveSubscriptions("yukinoyume");
                 //twitterApi.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
                 //twitterApi.ListCommand.RetrieveMemberships("twitter");

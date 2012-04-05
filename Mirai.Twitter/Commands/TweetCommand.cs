@@ -255,15 +255,14 @@ namespace Mirai.Twitter.Commands
         /// <param name="trimUser"></param>
         /// <param name="includeEntities"></param>
         /// <returns></returns>
-        public TwitterTweet Update(
-                                    string status,
-                                    string inReplyToStatusId = null,
-                                    double latitude = double.NaN,
-                                    double longitude = double.NaN,
-                                    string placeId = null,
-                                    bool displayCoordinates = true,
-                                    bool trimUser = false,
-                                    bool includeEntities = true)
+        public TwitterTweet Update(string status,
+                                   string inReplyToStatusId = null,
+                                   double latitude = double.NaN,
+                                   double longitude = double.NaN,
+                                   string placeId = null,
+                                   bool displayCoordinates = true,
+                                   bool trimUser = false,
+                                   bool includeEntities = true)
         {
             if (String.IsNullOrEmpty(status))
             {

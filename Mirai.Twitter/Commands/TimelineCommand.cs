@@ -279,7 +279,7 @@ namespace Mirai.Twitter.Commands
                                ? this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null)
                                : this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var tweets = JsonConvert.DeserializeObject<TwitterTweet[]>(response);
+            var tweets   = JsonConvert.DeserializeObject<TwitterTweet[]>(response);
 
             return tweets;
         }

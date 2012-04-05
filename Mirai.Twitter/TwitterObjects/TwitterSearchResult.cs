@@ -45,7 +45,7 @@ namespace Mirai.Twitter.TwitterObjects
         [JsonProperty("from_user_id_str")]
         public string FromUserId { get; set; }
 
-        [JsonProperty("from_user_id")]
+        [JsonProperty("from_user_name")]
         public string FromUserName { get; set; }
 
         [JsonProperty("id_str")]

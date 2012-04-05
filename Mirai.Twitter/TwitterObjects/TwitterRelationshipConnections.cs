@@ -22,12 +22,18 @@
 namespace Mirai.Twitter.TwitterObjects
 {
     using System;
+    using System.Runtime.Serialization;
 
     [Flags]
     public enum TwitterRelationshipConnections
     {
-        Following           = 0x01,
-        FollowingRequested  = 0x02,
-        FollowedBy          = 0x04
+        [EnumMember(Value = "following")]
+        Following = 0x01,
+
+        [EnumMember(Value = "following_requested")]
+        FollowingRequested = 0x02,
+
+        [EnumMember(Value = "followed_by")]
+        FollowedBy = 0x04
     }
 }

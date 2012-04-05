@@ -63,7 +63,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="woeid"></param>
         /// <param name="exclude"></param>
         /// <returns></returns>
-        public TwitterTrendTopic RetrieveTrendsByWoeId(string woeid, bool exclude = false)
+        public TwitterTrendTopic[] RetrieveTrendsByWoeId(string woeid, bool exclude = false)
         {
             if (String.IsNullOrEmpty(woeid))
                 throw new ArgumentException();
@@ -72,12 +72,12 @@ namespace Mirai.Twitter.Commands
                                                                   woeid,
                                                                   exclude ? "true" : "false"));
 
-            TwitterTrendTopic trendTopic = null;
+            TwitterTrendTopic[] trendTopic = null;
             try
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                trendTopic      = TwitterObject.Parse<TwitterTrendTopic>(response);
+                trendTopic      = JsonConvert.DeserializeObject<TwitterTrendTopic[]>(response);
             }
             catch (TwitterException e)
             {

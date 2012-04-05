@@ -21,6 +21,7 @@
 
 namespace Mirai.Twitter.TwitterObjects
 {
+
     using Newtonsoft.Json;
 
     public sealed class TwitterRelationship : TwitterObject
@@ -28,7 +29,8 @@ namespace Mirai.Twitter.TwitterObjects
         #region Public Properties
 
         [JsonProperty("connections")]
-        public string Connections { get; set; }
+        [JsonConverter(typeof(TwitterRelationshipConnectionsConverter))]
+        public TwitterRelationshipConnections? Connections { get; set; }
 
         [JsonProperty("id_str")]
         public string Id { get; set; }
