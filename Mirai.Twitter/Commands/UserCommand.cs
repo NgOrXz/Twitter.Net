@@ -22,7 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -105,9 +104,7 @@ namespace Mirai.Twitter.Commands
                            this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData) :
                            this.TwitterApi.ExecuteUnauthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var users       = (from Dictionary<string, object> jsonObj in jsonArray
-                               select TwitterUser.FromDictionary(jsonObj)).ToArray();
+            var users    = JsonConvert.DeserializeObject<TwitterUser[]>(response);
 
             return users;
         }
@@ -198,9 +195,7 @@ namespace Mirai.Twitter.Commands
 
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var users       = (from Dictionary<string, object> jsonObj in jsonArray
-                               select TwitterUser.FromDictionary(jsonObj)).ToArray();
+            var users       = JsonConvert.DeserializeObject<TwitterUser[]>(response);
 
             return users;
         }
@@ -231,42 +226,51 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var user    = TwitterUser.FromDictionary(jsonObj);
+            var user        = TwitterObject.Parse<TwitterUser>(response);
 
             return user;
         }
 
         #endregion
 
-        private TwitterUser[] RetrieveUsers(string screenName, string userId, bool includeEntities,
-                                            bool skipStatus, string userType)
+        #region Private Methods
+
+        private TwitterUser[] RetrieveUsers(
+            string screenName,
+            string userId,
+            bool includeEntities,
+            bool skipStatus,
+            string userType)
         {
             if (String.IsNullOrEmpty(screenName) && String.IsNullOrEmpty(userId))
                 throw new ArgumentException("Either a userId or screenName is required for this method.");
 
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendFormat("?include_entities={0}&skip_status={1}&",
-                                      includeEntities ? "true" : "false",
-                                      skipStatus ? "true" : "false");
+            queryBuilder.AppendFormat(
+                "?include_entities={0}&skip_status={1}&",
+                includeEntities ? "true" : "false",
+                skipStatus ? "true" : "false");
 
             if (!String.IsNullOrEmpty(screenName))
                 queryBuilder.AppendFormat("screen_name={0}&", screenName);
             if (!String.IsNullOrEmpty(userId))
                 queryBuilder.AppendFormat("user_id={0}", userId);
 
-            var uri         = new Uri(this.CommandBaseUri + String.Format("/{0}.json{1}",
-                                                                           userType,
-                                                                           queryBuilder.ToString().TrimEnd('&')));
-            var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+            var uri = new Uri(
+                this.CommandBaseUri + String.Format(
+                    "/{0}.json{1}",
+                    userType,
+                    queryBuilder.ToString().TrimEnd('&')));
+            var response = this.TwitterApi.Authenticated
+                               ? this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null)
+                               : this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var users       = (from Dictionary<string, object> jsonObj in jsonArray
-                               select TwitterUser.FromDictionary(jsonObj)).ToArray();
+            var users = JsonConvert.DeserializeObject<TwitterUser[]>(response);
 
             return users;
         }
+
+        #endregion
+
     }
 }

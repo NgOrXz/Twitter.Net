@@ -22,9 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
 
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
@@ -65,9 +62,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/suggestions.json{0}", queryString));
 
             var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var categories  = (from Dictionary<string, object> tweet in jsonArray
-                               select TwitterSuggestedUserCategory.FromDictionary(tweet)).ToArray();
+            var categories  = JsonConvert.DeserializeObject<TwitterSuggestedUserCategory[]>(response);
 
             return categories;
         }
@@ -89,8 +84,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/suggestions/{0}.json{1}", slug, queryString));
 
             var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var category    = TwitterSuggestedUserCategory.FromDictionary(jsonObj);
+            var category    = TwitterObject.Parse<TwitterSuggestedUserCategory>(response);
 
             return category;
         }
@@ -109,9 +103,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/suggestions/{0}/members.json", slug));
 
             var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var users       = (from Dictionary<string, object> user in jsonArray
-                               select TwitterUser.FromDictionary(user)).ToArray();
+            var users       = JsonConvert.DeserializeObject<TwitterUser[]>(response);
 
             return users;
         }

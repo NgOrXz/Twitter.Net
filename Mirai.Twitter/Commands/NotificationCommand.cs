@@ -28,7 +28,6 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Controls SMS-based notifications that a dm wants to receive.
@@ -106,8 +105,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/follow.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterUser = TwitterUser.FromDictionary(jsonObj);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
 
             return twitterUser;
         }
@@ -128,8 +126,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/leave.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterUser = TwitterUser.FromDictionary(jsonObj);
+            var twitterUser = TwitterObject.Parse<TwitterUser>(response);
 
             return twitterUser;
         }

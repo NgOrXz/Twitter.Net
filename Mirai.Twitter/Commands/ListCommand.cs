@@ -22,9 +22,7 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Text;
 
@@ -132,7 +130,7 @@ namespace Mirai.Twitter.Commands
                 throw new ArgumentException();
 
             return this.ContainsOrSubscribes("members/show", listId, null, null, null, userId, screenName,
-                includeEntites, skipStatus);
+                                             includeEntites, skipStatus);
         }
 
         /// <summary>
@@ -157,7 +155,7 @@ namespace Mirai.Twitter.Commands
                 throw new ArgumentException();
 
             return this.ContainsOrSubscribes("members/show", null, slug, ownerId, ownerScreenName,
-                userId, screenName, includeEntites, skipStatus);
+                                             userId, screenName, includeEntites, skipStatus);
         }
 
         public TwitterList CreateList(string name, TwitterListMode mode = TwitterListMode.Public, string description = null)
@@ -180,8 +178,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/create.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var list    = TwitterList.FromDictionary(jsonObj);
+            var list        = TwitterObject.Parse<TwitterList>(response);
 
             return list;
         }
@@ -228,9 +225,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var lists       = (from Dictionary<string, object> tweet in jsonArray
-                               select TwitterList.FromDictionary(tweet)).ToArray();
+            var lists       = JsonConvert.DeserializeObject<TwitterList[]>(response);
 
             return lists;
         }
@@ -267,8 +262,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var lists   = TwitterCursorPagedListCollection.FromDictionary(jsonObj);
+            var lists       = TwitterObject.Parse<TwitterCursorPagedListCollection>(response);
 
             return lists;
         }
@@ -378,8 +372,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var lists   = TwitterCursorPagedListCollection.FromDictionary(jsonObj);
+            var lists       = TwitterObject.Parse<TwitterCursorPagedListCollection>(response);
 
             return lists;
         }
@@ -534,8 +527,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var lists   = TwitterCursorPagedListCollection.FromDictionary(jsonObj);
+            var lists       = TwitterObject.Parse<TwitterCursorPagedListCollection>(response);
 
             return lists;
         }
@@ -558,7 +550,7 @@ namespace Mirai.Twitter.Commands
                 throw new ArgumentException();
 
             return this.ContainsOrSubscribes("subscribers/show", listId, null, null, null, userId, screenName,
-                includeEntites, skipStatus);
+                                             includeEntites, skipStatus);
         }
 
         /// <summary>
@@ -583,7 +575,7 @@ namespace Mirai.Twitter.Commands
                 throw new ArgumentException();
 
             return this.ContainsOrSubscribes("subscribers/show", null, slug, ownerId, ownerScreenName,
-                userId, screenName, includeEntites, skipStatus);
+                                              userId, screenName, includeEntites, skipStatus);
         }
 
         public TwitterList SubscribeToListById(string listId)
@@ -674,8 +666,7 @@ namespace Mirai.Twitter.Commands
             try
             {
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                list            = TwitterList.FromDictionary(jsonObj);
+                list            = TwitterObject.Parse<TwitterList>(response);
 
             }
             catch (TwitterException e)
@@ -721,8 +712,7 @@ namespace Mirai.Twitter.Commands
                                this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                                this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                user        = TwitterUser.FromDictionary(jsonObj);
+                user         = TwitterObject.Parse<TwitterUser>(response);
             }
             catch (TwitterException e)
             {
@@ -755,8 +745,7 @@ namespace Mirai.Twitter.Commands
             try
             {
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                list            = TwitterList.FromDictionary(jsonObj);  
+                list            = TwitterObject.Parse<TwitterList>(response); 
             }
             catch (TwitterException e)
             {
@@ -787,12 +776,11 @@ namespace Mirai.Twitter.Commands
             TwitterList list = null;
             try
             {
-                var response = this.TwitterApi.Authenticated ?
-                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+                var response    = this.TwitterApi.Authenticated ?
+                                    this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
+                                    this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                list        = TwitterList.FromDictionary(jsonObj);
+                list            = TwitterObject.Parse<TwitterList>(response); 
             }
             catch (TwitterException e)
             {
@@ -827,11 +815,10 @@ namespace Mirai.Twitter.Commands
                                       method, queryBuilder.ToString().TrimEnd('&')));
 
             var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+                                this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
+                                this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var users   = TwitterCursorPagedUserCollection.FromDictionary(jsonObj);
+            var users       = TwitterObject.Parse<TwitterCursorPagedUserCollection>(response);
 
             return users;
         }
@@ -864,9 +851,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var tweets      = (from Dictionary<string, object> tweet in jsonArray
-                               select TwitterTweet.FromDictionary(tweet)).ToArray();
+            var tweets      = JsonConvert.DeserializeObject<TwitterTweet[]>(response);
 
             return tweets;
         }
@@ -890,8 +875,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/subscribers/create.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var list    = TwitterList.FromDictionary(jsonObj);
+            var list        = TwitterObject.Parse<TwitterList>(response);
 
             return list;
         }
@@ -915,8 +899,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/subscribers/destroy.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var list    = TwitterList.FromDictionary(jsonObj);
+            var list        = TwitterObject.Parse<TwitterList>(response);
 
             return list;
         }
@@ -948,8 +931,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/update.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var list    = TwitterList.FromDictionary(jsonObj);
+            var list        = TwitterObject.Parse<TwitterList>(response);
 
             return list;
         }

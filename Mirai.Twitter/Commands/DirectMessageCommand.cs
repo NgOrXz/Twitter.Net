@@ -22,9 +22,7 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     using Mirai.Net.OAuth;
@@ -58,8 +56,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/destroy/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var dm          = TwitterDirectMessage.FromDictionary(jsonObj);
+            var dm          = TwitterObject.Parse<TwitterDirectMessage>(response);
 
             return dm;
         }
@@ -95,8 +92,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/new.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var dm          = TwitterDirectMessage.FromDictionary(jsonObj);
+            var dm          = TwitterObject.Parse<TwitterDirectMessage>(response);
 
             return dm;
         }
@@ -123,9 +119,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + ".json" + queryBuilder);
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonArray       = (ArrayList)JSON.Instance.Parse(response);
-            var directMessages  = (from Dictionary<string, object> search in jsonArray
-                                   select TwitterDirectMessage.FromDictionary(search)).ToArray();
+            var directMessages = JsonConvert.DeserializeObject<TwitterDirectMessage[]>(response);
 
             return directMessages;
         }
@@ -151,9 +145,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/sent.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonArray       = (ArrayList)JSON.Instance.Parse(response);
-            var directMessages  = (from Dictionary<string, object> search in jsonArray
-                                   select TwitterDirectMessage.FromDictionary(search)).ToArray();
+            var directMessages  = JsonConvert.DeserializeObject<TwitterDirectMessage[]>(response);
 
             return directMessages;
         }
@@ -169,8 +161,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/show/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var dm          = TwitterDirectMessage.FromDictionary(jsonObj);
+            var dm          = TwitterObject.Parse<TwitterDirectMessage>(response);
 
             return dm;
         }

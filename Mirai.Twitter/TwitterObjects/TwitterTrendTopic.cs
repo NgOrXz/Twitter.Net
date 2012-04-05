@@ -26,7 +26,7 @@ namespace Mirai.Twitter.TwitterObjects
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public sealed class TwitterTrendTopic
+    public sealed class TwitterTrendTopic : TwitterObject
     {
         [JsonProperty("as_of")]
         [JsonConverter(typeof(IsoDateTimeConverter))]

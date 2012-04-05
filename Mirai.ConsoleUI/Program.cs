@@ -43,7 +43,7 @@
 
                 //twitterApi.TweetCommand.UpdateWithMedia("update test~~~~~", mediaList: files);
                 //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
-                //twitterApi.TweetCommand.Update("test log...again...nice day.");
+                //twitterApi.TweetCommand.Update("a new test....");
                 //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
                 //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);

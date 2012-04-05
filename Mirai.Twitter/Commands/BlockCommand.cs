@@ -30,7 +30,6 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Allows users to block and unblock other users. 
@@ -108,8 +107,7 @@ namespace Mirai.Twitter.Commands
             try
             {
                 var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                user            = TwitterUser.FromDictionary(jsonObj);
+                user            = TwitterObject.Parse<TwitterUser>(response);
             }
             catch (TwitterException e)
             {
@@ -143,10 +141,8 @@ namespace Mirai.Twitter.Commands
             var uri = new Uri(this.CommandBaseUri +
                                       String.Format("/blocking.json{0}", queryBuilder.ToString()));
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var users   = TwitterCursorPagedUserCollection.FromDictionary(jsonObj);
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
+            var users       = TwitterObject.Parse<TwitterCursorPagedUserCollection>(response);
 
             return users;
         }
@@ -164,10 +160,8 @@ namespace Mirai.Twitter.Commands
             var uri = new Uri(this.CommandBaseUri +
                               String.Format("/blocking/ids.json?cursor={0}", !String.IsNullOrEmpty(cursor) ? cursor : "-1"));
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var ids     = TwitterCursorPagedIdCollection.FromDictionary(jsonObj);
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
+            var ids         = TwitterObject.Parse<TwitterCursorPagedIdCollection>(response);
 
             return ids;
         }

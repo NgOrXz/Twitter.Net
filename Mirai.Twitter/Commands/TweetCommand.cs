@@ -22,7 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -74,7 +73,7 @@ namespace Mirai.Twitter.Commands
         /// </param>
         /// <param name="page">Specifies the page of results to retrieve.</param>
         /// <returns></returns>
-        public List<TwitterUser> RetweetedBy(string id, int count = 10, int page = 1)
+        public TwitterUser[] RetweetedBy(string id, int count = 10, int page = 1)
         {
             if (String.IsNullOrEmpty(id))
                 throw new ArgumentException();
@@ -87,10 +86,7 @@ namespace Mirai.Twitter.Commands
                            this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null) : 
                            this.TwitterApi.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
             
-            var users       = new List<TwitterUser>();
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            users.AddRange(from Dictionary<string, object> jsonObj in jsonArray 
-                           select TwitterUser.FromDictionary(jsonObj));
+            var users    = JsonConvert.DeserializeObject<TwitterUser[]>(response);
 
             return users;
         }
@@ -118,11 +114,9 @@ namespace Mirai.Twitter.Commands
             uriBuilder.Path     += String.Format("/{0}/retweeted_by/ids.json", id);
             uriBuilder.Query    = String.Format("count={0}&page={1}", count > 100 ? 100 : count, page >= 1 ? page : 1);
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null);
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null);
 
-            var jsonArray       = (ArrayList)JSON.Instance.Parse(response);
-            string[] idsOfUsers = (from string jsonObj in jsonArray
-                                   select jsonObj).ToArray();
+            var idsOfUsers  = JsonConvert.DeserializeObject<string[]>(response);
 
             return idsOfUsers;
         }
@@ -138,7 +132,7 @@ namespace Mirai.Twitter.Commands
         /// </param>
         /// <param name="includeEntities"></param>
         /// <returns></returns>
-        public List<TwitterTweet> Retweets(string id, int count = 10, bool trimUser = false, bool includeEntities = true)
+        public TwitterTweet[] Retweets(string id, int count = 10, bool trimUser = false, bool includeEntities = true)
         {
             if (String.IsNullOrEmpty(id))
                 throw new ArgumentException();
@@ -153,12 +147,9 @@ namespace Mirai.Twitter.Commands
                                                 trimUser,
                                                 includeEntities);
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null);
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null);
 
-            var retweets    = new List<TwitterTweet>();
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            retweets.AddRange(from Dictionary<string, object> jsonObj in jsonArray
-                              select TwitterTweet.FromDictionary(jsonObj));
+            var retweets    = JsonConvert.DeserializeObject<TwitterTweet[]>(response);    
 
             return retweets;
         }
@@ -183,8 +174,7 @@ namespace Mirai.Twitter.Commands
                            this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Get, null) :
                            this.TwitterApi.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var tweet   = TwitterTweet.FromDictionary(jsonObj);
+            var tweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return tweet;
         }
@@ -216,8 +206,7 @@ namespace Mirai.Twitter.Commands
 
             var response = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var tweet   = TwitterTweet.FromDictionary(jsonObj);
+            var tweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return tweet;
         }
@@ -248,8 +237,7 @@ namespace Mirai.Twitter.Commands
 
             var response = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var tweet   = TwitterTweet.FromDictionary(jsonObj);
+            var tweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return tweet;
         }
@@ -316,10 +304,9 @@ namespace Mirai.Twitter.Commands
             var uriBuilder  = new UriBuilder(this.CommandBaseUri);
             uriBuilder.Path += "/update.json";
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Post, postData);
+            var response        = this.TwitterApi.ExecuteAuthenticatedRequest(uriBuilder.Uri, HttpMethod.Post, postData);
 
-            var jsonObj         = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterTweet    = TwitterTweet.FromDictionary(jsonObj);
+            var twitterTweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return twitterTweet;
         }
@@ -392,10 +379,9 @@ namespace Mirai.Twitter.Commands
             var uriBuilder  = new UriBuilder(this._UploadCommandBaseUri);
             uriBuilder.Path += ("/update_with_media.json");
 
-            var response = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uriBuilder.Uri, postData);
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequestForMultipartFormData(uriBuilder.Uri, postData);
 
-            var jsonObj         = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterTweet    = TwitterTweet.FromDictionary(jsonObj);;
+            var twitterTweet = TwitterObject.Parse<TwitterTweet>(response);
 
             return twitterTweet;
         }

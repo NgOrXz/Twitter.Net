@@ -28,7 +28,7 @@ namespace Mirai.Twitter.TwitterObjects
 
     internal sealed class TwitterTrendGroup : IGrouping<DateTime, TwitterTrend>
     {
-        private readonly DateTime _Key;
+        private DateTime _Key;
 
         internal readonly List<TwitterTrend> Elements;
 
@@ -52,6 +52,7 @@ namespace Mirai.Twitter.TwitterObjects
         public DateTime Key
         {
             get { return this._Key; }
+            internal set { this._Key = value; }
         }
 
 

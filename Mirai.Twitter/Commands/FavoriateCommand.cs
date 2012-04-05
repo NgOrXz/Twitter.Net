@@ -22,9 +22,7 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     using Mirai.Net.OAuth;
@@ -74,8 +72,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/create/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj         = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterTweet    = TwitterTweet.FromDictionary(jsonObj);
+            var twitterTweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return twitterTweet;
         }
@@ -91,8 +88,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/destroy/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, null);
 
-            var jsonObj         = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var twitterTweet    = TwitterTweet.FromDictionary(jsonObj);
+            var twitterTweet    = TwitterObject.Parse<TwitterTweet>(response);
 
             return twitterTweet;
         }
@@ -138,9 +134,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + ".json" + queryBuilder);
 
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var tweets      = (from Dictionary<string, object> tweet in jsonArray
-                               select TwitterTweet.FromDictionary(tweet)).ToArray();
+            var tweets      = JsonConvert.DeserializeObject<TwitterTweet[]>(response);
 
             return tweets;
         }

@@ -84,8 +84,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/place.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var place       = TwitterPlace.FromDictionary(jsonObj);
+            var place       = TwitterObject.Parse<TwitterPlace>(response);
 
             return place; 
         }
@@ -107,8 +106,7 @@ namespace Mirai.Twitter.Commands
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                place           = TwitterPlace.FromDictionary(jsonObj);
+                place           = TwitterObject.Parse<TwitterPlace>(response);
             }
             catch (TwitterException e)
             {
@@ -152,8 +150,7 @@ namespace Mirai.Twitter.Commands
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                similarPlaces   = TwitterGeoSimilarPlaces.FromDictionary((Dictionary<string, object>)jsonObj["result"]);
+                similarPlaces   = TwitterObject.Parse<TwitterGeoSimilarPlaces>(response);
             }
             catch (TwitterException e)
             {
@@ -197,9 +194,7 @@ namespace Mirai.Twitter.Commands
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                places          = TwitterGeoSimilarPlaces.FromDictionary(
-                                                                    (Dictionary<string, object>)jsonObj["result"]).Places;
+                places          = JsonConvert.DeserializeObject<TwitterPlace[]>(response);
                                    
             }
             catch (TwitterException e)
@@ -261,8 +256,7 @@ namespace Mirai.Twitter.Commands
             {
                 var response = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-                places      = TwitterGeoSimilarPlaces.FromDictionary((Dictionary<string, object>)jsonObj["result"]);
+                places      = TwitterObject.Parse<TwitterGeoSimilarPlaces>(response);
             }
             catch (TwitterException e)
             {

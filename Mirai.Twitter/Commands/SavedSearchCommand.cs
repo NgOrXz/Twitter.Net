@@ -1,9 +1,7 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Mirai.Net.OAuth;
     using Mirai.Twitter.Core;
@@ -37,8 +35,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/create.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var savedSeach  = TwitterSavedSearch.FromDictionary(jsonObj);
+            var savedSeach  = TwitterObject.Parse<TwitterSavedSearch>(response);
 
             return savedSeach;
         }
@@ -54,8 +51,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/destroy/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, null);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var savedSeach  = TwitterSavedSearch.FromDictionary(jsonObj);
+            var savedSeach  = TwitterObject.Parse<TwitterSavedSearch>(response);
 
             return savedSeach;
         }
@@ -68,9 +64,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + ".json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonArray       = (ArrayList)JSON.Instance.Parse(response);
-            var savedSeaches    = (from Dictionary<string, object> search in jsonArray
-                                   select TwitterSavedSearch.FromDictionary(search)).ToArray();
+            var savedSeaches    = JsonConvert.DeserializeObject<TwitterSavedSearch[]>(response);
 
             return savedSeaches;
         }
@@ -86,8 +80,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + String.Format("/show/{0}.json", id));
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var savedSeach  = TwitterSavedSearch.FromDictionary(jsonObj);
+            var savedSeach  = TwitterObject.Parse<TwitterSavedSearch>(response);
 
             return savedSeach;
         }

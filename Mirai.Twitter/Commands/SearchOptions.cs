@@ -25,45 +25,46 @@ namespace Mirai.Twitter.Commands
     using System.Reflection;
     using System.Text;
 
-    using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
+
+    using Newtonsoft.Json;
 
     public sealed class SearchOptions
     {
-        //[TwitterKey("callback")]
+        //[JsonProperty("callback")]
         //public string Callback { get; set; }
 
-        [TwitterKey("geocode")]
+        [JsonProperty("geocode")]
         public TwitterGeoCode GeoCode { get; set; }
 
-        [TwitterKey("include_entities")]
+        [JsonProperty("include_entities")]
         public bool? IncludeEntities { get; set; }
 
-        [TwitterKey("lang")]
+        [JsonProperty("lang")]
         public string Language { get; set; }
 
-        [TwitterKey("locale")]
+        [JsonProperty("locale")]
         public string Locale { get; set; }
 
-        [TwitterKey("max_id")]
+        [JsonProperty("max_id")]
         public string MaxId { get; set; }
 
-        [TwitterKey("page")]
+        [JsonProperty("page")]
         public int? Page { get; set; }
 
-        [TwitterKey("result_type")]
+        [JsonProperty("result_type")]
         public TwitterSearchReusltType? ReusltType { get; set; }
 
-        [TwitterKey("show_user")]
+        [JsonProperty("show_user")]
         public bool? ShowUser { get; set; }
 
-        [TwitterKey("since_id")]
+        [JsonProperty("since_id")]
         public string SinceId { get; set; }
 
-        [TwitterKey("rpp")]
+        [JsonProperty("rpp")]
         public int? TweetsPerPage { get; set; }
 
-        [TwitterKey("until")]
+        [JsonProperty("until")]
         public DateTime? Until { get; set; }
 
 
@@ -74,10 +75,10 @@ namespace Mirai.Twitter.Commands
             var pis = typeof(SearchOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var propertyInfo in pis)
             {
-                var twitterKey = (TwitterKeyAttribute)Attribute.GetCustomAttribute(propertyInfo,
-                                                                                   typeof(TwitterKeyAttribute));
+                var jsonProperty = (JsonPropertyAttribute)Attribute.GetCustomAttribute(propertyInfo,
+                                                                                       typeof(JsonPropertyAttribute));
                 
-                if (twitterKey == null)
+                if (jsonProperty == null)
                     continue;
 
                 var value = propertyInfo.GetValue(this, null);
@@ -85,11 +86,11 @@ namespace Mirai.Twitter.Commands
                 {
                     if (propertyInfo.PropertyType == typeof(DateTime?))
                     {
-                        sb.AppendFormat("{0}={1}&", twitterKey.Key, ((DateTime)value).ToString("yyyy-MM-dd"));
+                        sb.AppendFormat("{0}={1}&", jsonProperty.PropertyName, ((DateTime)value).ToString("yyyy-MM-dd"));
                     }
                     else
                     {
-                        sb.AppendFormat("{0}={1}&", twitterKey.Key, value.ToString().ToLowerInvariant());
+                        sb.AppendFormat("{0}={1}&", jsonProperty.PropertyName, value.ToString().ToLowerInvariant());
                     }
                 }
             }

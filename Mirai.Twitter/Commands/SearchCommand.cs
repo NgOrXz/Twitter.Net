@@ -22,12 +22,10 @@
 namespace Mirai.Twitter.Commands
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Mirai.Twitter.Core;
 	using Mirai.Twitter.TwitterObjects;
 
-	using Newtonsoft.Json;
 
 	public sealed class SearchCommand : TwitterCommandBase
 	{
@@ -57,8 +55,7 @@ namespace Mirai.Twitter.Commands
 									  searchCommandOptions != null ? "&" + searchCommandOptions : ""));
 			var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-			var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-			var search      = TwitterSearch.FromDictionary(jsonObj);
+			var search      = TwitterObject.Parse<TwitterSearch>(response);
 
 			return search;
 		}

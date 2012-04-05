@@ -22,7 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -33,6 +32,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public sealed class TrendCommand : TwitterCommandBase
     {
@@ -52,11 +52,9 @@ namespace Mirai.Twitter.Commands
         /// </summary>
         /// <param name="exclude"></param>
         /// <returns></returns>
-        public TwitterTrendGroup[] RetrieveDailyTrends(bool exclude = false)
+        public IEnumerable<IGrouping<DateTime, TwitterTrend>> RetrieveDailyTrends(bool exclude = false)
         {
-            var trendTopic =  this.RetrieveTrends("daily");
-
-            return trendTopic.TrendGroups;
+            return this.RetrieveTrends("daily");
         }
 
         /// <summary>
@@ -65,7 +63,7 @@ namespace Mirai.Twitter.Commands
         /// <param name="woeid"></param>
         /// <param name="exclude"></param>
         /// <returns></returns>
-        public TwitterTrend[] RetrieveTrendsByWoeId(string woeid, bool exclude = false)
+        public TwitterTrendTopic RetrieveTrendsByWoeId(string woeid, bool exclude = false)
         {
             if (String.IsNullOrEmpty(woeid))
                 throw new ArgumentException();
@@ -74,16 +72,12 @@ namespace Mirai.Twitter.Commands
                                                                   woeid,
                                                                   exclude ? "true" : "false"));
 
-            TwitterTrend[] trends = null;
+            TwitterTrendTopic trendTopic = null;
             try
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-                var topics      = (from Dictionary<string, object> topic in jsonArray
-                                   select TwitterTrendTopic.FromDictionary(topic)).ToArray();
-
-                trends          = topics[0].Trends;
+                trendTopic      = TwitterObject.Parse<TwitterTrendTopic>(response);
             }
             catch (TwitterException e)
             {
@@ -91,7 +85,7 @@ namespace Mirai.Twitter.Commands
                     throw;
             }
 
-            return trends;
+            return trendTopic;
         }
 
         /// <summary>
@@ -123,9 +117,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/available.json" + queryBuilder);
             var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var locations   = (from Dictionary<string, object> loc in jsonArray
-                               select TwitterTrendLocation.FromDictionary(loc)).ToArray();
+            var locations   = JsonConvert.DeserializeObject<TwitterTrendLocation[]>(response);
 
             return locations;
         }
@@ -135,18 +127,16 @@ namespace Mirai.Twitter.Commands
         /// </summary>
         /// <param name="exclude"></param>
         /// <returns></returns>
-        public TwitterTrendGroup[] RetrieveWeeklyTrends(bool exclude = false)
+        public IEnumerable<IGrouping<DateTime, TwitterTrend>> RetrieveWeeklyTrends(bool exclude = false)
         {
-            var trendTopic = this.RetrieveTrends("weekly");
-
-            return trendTopic.TrendGroups;
+            return this.RetrieveTrends("weekly");
         }
 
         #endregion
 
         #region Private Methods
 
-        private TwitterTrendTopic RetrieveTrends(string method, bool exclude = false)
+        private IEnumerable<IGrouping<DateTime, TwitterTrend>> RetrieveTrends(string method, bool exclude = false)
         {
             var uri         = new Uri(this.CommandBaseUri + 
                                       String.Format("/{0}.json?date={1}&exclude={2}", 
@@ -156,10 +146,15 @@ namespace Mirai.Twitter.Commands
 
             var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var topic       = TwitterTrendTopic.FromDictionary(jsonObj);
+            var trends      = new List<IGrouping<DateTime, TwitterTrend>>();
+            var jsonObj     = JObject.Parse(response);
+            foreach (var p in ((JObject)jsonObj["trends"]).Properties())
+            {
+                trends.Add(new TwitterTrendGroup(DateTime.Parse(p.Name, CultureInfo.InvariantCulture),
+                                                JsonConvert.DeserializeObject<TwitterTrend[]>(p.Value.ToString())));
+            }
 
-            return topic;
+            return trends;
         }
 
         #endregion

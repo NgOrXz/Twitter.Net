@@ -35,21 +35,6 @@ namespace Mirai.Twitter.Commands
 
         private readonly TwitterApi _TwitterApi;
 
-        //private Stream _LogStream;
-
-        //public Stream Log
-        //{
-        //    get { return this._LogStream; } 
-        //    set
-        //    {
-        //        AppDomain.CurrentDomain.FirstChanceException += delegate(object sender, FirstChanceExceptionEventArgs args)
-        //            {
-        //                if (args.Exception is TwitterException || args.Exception is JsonParseException)
-        //                    this._LogStream.Write();
-        //            };
-        //    }
-        //}
-
 
         protected virtual string CommandBaseUri
         {

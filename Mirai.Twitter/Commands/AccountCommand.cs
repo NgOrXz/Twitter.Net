@@ -31,7 +31,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.Core;
     using Mirai.Twitter.TwitterObjects;
 
-    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Account-level configuration settings for users.
@@ -305,11 +305,11 @@ namespace Mirai.Twitter.Commands
 
             var uri         = new Uri(this.CommandBaseUri + "/totals.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
+            var jsonObj     = JObject.Parse(response);
 
             friends = statuses = followers = favorites = -1;
 
-            object value;
+            JToken value;
             if (jsonObj.TryGetValue("friends", out value))
                 friends     = value.ToString().ToInt32();
             if (jsonObj.TryGetValue("updates", out value))

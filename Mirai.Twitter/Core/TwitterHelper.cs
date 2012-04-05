@@ -23,7 +23,6 @@ namespace Mirai.Twitter.Core
 {
     using System;
     using System.Globalization;
-    using System.Text;
 
     internal static class TwitterHelper
     {
@@ -58,67 +57,6 @@ namespace Mirai.Twitter.Core
             Int32.TryParse(numberString, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
 
             return result;
-        }
-        
-        // Extracted from fastJSON lib.
-        internal static string ToJsonString(this string s)
-        {
-            var output = new StringBuilder();
-            output.Append('\"');
-
-            var runIndex = -1;
-
-            for (var index = 0; index < s.Length; ++index)
-            {
-                var c = s[index];
-
-                if (c >= ' ' && c < 128 && c != '\"' && c != '\\')
-                {
-                    if (runIndex == -1)
-                    {
-                        runIndex = index;
-                    }
-
-                    continue;
-                }
-
-                if (runIndex != -1)
-                {
-                    output.Append(s, runIndex, index - runIndex);
-                    runIndex = -1;
-                }
-
-                switch (c)
-                {
-                    case '\t':
-                        output.Append("\\t");
-                        break;
-                    case '\r':
-                        output.Append("\\r");
-                        break;
-                    case '\n':
-                        output.Append("\\n");
-                        break;
-                    case '"':
-                    case '\\':
-                        output.Append('\\');
-                        output.Append(c);
-                        break;
-                    default:
-                        output.Append("\\u");
-                        output.Append(((int)c).ToString("X4", NumberFormatInfo.InvariantInfo));
-                        break;
-                }
-            }
-
-            if (runIndex != -1)
-            {
-                output.Append(s, runIndex, s.Length - runIndex);
-            }
-
-            output.Append('\"');
-
-            return output.ToString();
         }
     }
 }

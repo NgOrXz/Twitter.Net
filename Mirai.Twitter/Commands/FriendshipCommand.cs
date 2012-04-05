@@ -22,7 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -80,8 +79,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/create.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var user    = TwitterUser.FromDictionary(jsonObj);
+            var user        = TwitterObject.Parse<TwitterUser>(response);
 
             return user;
         }
@@ -119,8 +117,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/destroy.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var user    = TwitterUser.FromDictionary(jsonObj);
+            var user        = TwitterObject.Parse<TwitterUser>(response);
 
             return user;
         }
@@ -144,9 +141,7 @@ namespace Mirai.Twitter.Commands
 
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var rels         = (from Dictionary<string, object> rel in jsonArray
-                                select TwitterRelationship.FromDictionary(rel)).ToArray();
+            var rels        = JsonConvert.DeserializeObject<TwitterRelationship[]>(response);
 
             return rels;
         }
@@ -208,8 +203,7 @@ namespace Mirai.Twitter.Commands
             var uri         = new Uri(this.CommandBaseUri + "/no_retweet_ids.json");
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var ids         = (from string id in jsonArray select id).ToArray();
+            var ids         = JsonConvert.DeserializeObject<string[]>(response);
 
             return ids;
         }
@@ -247,8 +241,7 @@ namespace Mirai.Twitter.Commands
                               this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                               this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var rel         = TwitterRelationship.FromDictionary(jsonObj["relationship"] as Dictionary<string, object>);
+            var rel         = TwitterObject.Parse<TwitterRelationship>(response);
 
             return rel;
         }
@@ -284,13 +277,14 @@ namespace Mirai.Twitter.Commands
 
             var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var rel         = TwitterRelationship.FromDictionary(jsonObj["relationship"] as Dictionary<string, object>);
+            var rel         = TwitterObject.Parse<TwitterRelationship>(response);
 
             return rel;
         }
 
         #endregion
+
+        #region Private Methods
 
         private TwitterCursorPagedIdCollection RetrieveIdsForFollowingRequests(string cursor, string type)
         {
@@ -300,15 +294,15 @@ namespace Mirai.Twitter.Commands
             if (!this.TwitterApi.Authenticated)
                 throw new InvalidOperationException("Authentication required.");
 
-            var uri         = new Uri(this.CommandBaseUri + String.Format("/{0}.json?cursor={1}", type, cursor));
-            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var ids         = TwitterCursorPagedIdCollection.FromDictionary(jsonObj);
+            var uri = new Uri(this.CommandBaseUri + String.Format("/{0}.json?cursor={1}", type, cursor));
+            var response = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
+            var ids = TwitterObject.Parse<TwitterCursorPagedIdCollection>(response);
 
             return ids;
         }
 
-        private TwitterCursorPagedIdCollection RetrieveIds(string screenName, string userId, string cursor, string userType)
+        private TwitterCursorPagedIdCollection RetrieveIds(
+            string screenName, string userId, string cursor, string userType)
         {
             if (String.IsNullOrEmpty(screenName) && String.IsNullOrEmpty(userId))
                 throw new ArgumentException("Either a userId or screenName is required for this method.");
@@ -323,17 +317,20 @@ namespace Mirai.Twitter.Commands
             if (!String.IsNullOrEmpty(userId))
                 queryBuilder.AppendFormat("user_id={0}", userId);
 
-            var uri         = new Uri(TwitterApi.ApiBaseUri + "/" + this.TwitterApi.ApiVersion.ToString("D") + 
-                                      String.Format("/{0}/ids.json{1}", userType, queryBuilder.ToString().TrimEnd('&')));
+            var uri = new Uri(
+                TwitterApi.ApiBaseUri + "/" + this.TwitterApi.ApiVersion.ToString("D") +
+                String.Format("/{0}/ids.json{1}", userType, queryBuilder.ToString().TrimEnd('&')));
 
-            var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+            var response = this.TwitterApi.Authenticated
+                               ? this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null)
+                               : this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonObj     = (Dictionary<string, object>)JSON.Instance.Parse(response);
-            var ids         = TwitterCursorPagedIdCollection.FromDictionary(jsonObj);
+            var ids = TwitterObject.Parse<TwitterCursorPagedIdCollection>(response);
 
             return ids;
         }
+
+        #endregion
+
     }
 }

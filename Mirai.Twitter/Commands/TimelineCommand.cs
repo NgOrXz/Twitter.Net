@@ -22,9 +22,6 @@
 namespace Mirai.Twitter.Commands
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     using Mirai.Net.OAuth;
@@ -188,22 +185,32 @@ namespace Mirai.Twitter.Commands
 
         #endregion
 
-        private TwitterTweet[] RetrieveTimeline(TimelineType timelineType, string userId = null, 
-                                                string screenName = null, int count = 20,
-                                                string sinceId = null, string maxId = null,
-                                                int page = 1, bool trimUser = true, bool includeRetweets = true,
-                                                bool includeEntities = true, bool excludeReplies = true,
-                                                bool contributorDetails = true)
+        #region Private Methods
+
+        private TwitterTweet[] RetrieveTimeline(
+            TimelineType timelineType,
+            string userId = null,
+            string screenName = null,
+            int count = 20,
+            string sinceId = null,
+            string maxId = null,
+            int page = 1,
+            bool trimUser = true,
+            bool includeRetweets = true,
+            bool includeEntities = true,
+            bool excludeReplies = true,
+            bool contributorDetails = true)
         {
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendFormat("?count={0}&page={1}&trim_user={2}&include_rts={3}&include_entities={4}&" +
-                                      "exclude_replies={5}&",
-                                      count <= 200 ? count : 200,
-                                      page > 1 ? page : 1,
-                                      trimUser ? "true" : "false",
-                                      includeRetweets ? "true" : "false",
-                                      includeEntities ? "true" : "false",
-                                      excludeReplies ? "true" : "false");
+            queryBuilder.AppendFormat(
+                "?count={0}&page={1}&trim_user={2}&include_rts={3}&include_entities={4}&" +
+                "exclude_replies={5}&",
+                count <= 200 ? count : 200,
+                page > 1 ? page : 1,
+                trimUser ? "true" : "false",
+                includeRetweets ? "true" : "false",
+                includeEntities ? "true" : "false",
+                excludeReplies ? "true" : "false");
 
             if (timelineType == TimelineType.HomeTimeline ||
                 timelineType == TimelineType.Mentions ||
@@ -267,16 +274,17 @@ namespace Mirai.Twitter.Commands
                     twitterMethod = "/retweeted_by_user.json";
                     break;
             }
-            var uri         = new Uri(this.CommandBaseUri + twitterMethod + queryBuilder.ToString().TrimEnd('&'));
-            var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+            var uri = new Uri(this.CommandBaseUri + twitterMethod + queryBuilder.ToString().TrimEnd('&'));
+            var response = this.TwitterApi.Authenticated
+                               ? this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null)
+                               : this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var jsonArray   = (ArrayList)JSON.Instance.Parse(response);
-            var tweets      = (from Dictionary<string, object> jsonObj in jsonArray
-                               select TwitterTweet.FromDictionary(jsonObj)).ToArray();
+            var tweets = JsonConvert.DeserializeObject<TwitterTweet[]>(response);
 
             return tweets;
         }
+
+        #endregion
+
     }
 }
