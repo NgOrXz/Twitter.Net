@@ -79,29 +79,7 @@ namespace Mirai.Twitter.TwitterObjects
                 values.Add(reader.Value.ToString());
             }
             
-            var map = new Dictionary<string, string>();
-            foreach (var fieldInfo in typeof(TwitterRelationshipConnections).GetFields(BindingFlags.Public | 
-                                                                                       BindingFlags.Static))
-            {
-                var emAttr = (EnumMemberAttribute)Attribute.GetCustomAttribute(fieldInfo, 
-                                                                              typeof(EnumMemberAttribute));
-                map.Add(emAttr.Value, fieldInfo.Name);
-            }
-
-            var enumValBuilder = new StringBuilder();
-            values.ForEach(v =>
-                {
-                    if (!map.ContainsKey(v))
-                        return;
-
-                    enumValBuilder.AppendFormat("{0},", map[v]);
-                });
-            enumValBuilder.Length -= 1;
-
-            var result = Enum.Parse(typeof(TwitterRelationshipConnections),
-                enumValBuilder.ToString(), true);
-            
-            return result;
+            return values.ToBitFlags<TwitterRelationshipConnections>();
         }
 
         public override bool CanConvert(Type objectType)

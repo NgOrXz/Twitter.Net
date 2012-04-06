@@ -147,7 +147,7 @@
                 //twitterApi.TrendCommand.RetrieveTrendLocations();
                 //twitterApi.TrendCommand.RetrieveTrendsByWoeId("2442047"); // LA
 
-                //twitterApi.GeoCommand.RetrievePlaceById("df51dec6f4ee2b2c");
+                twitterApi.GeoCommand.RetrievePlaceById("df51dec6f4ee2b2c");
                 //twitterApi.GeoCommand.ReverseGeoCode("37.76893497", "-122.422848843");
                 //twitterApi.GeoCommand.Search(null, null, null, IPAddress.Parse("74.125.19.104"));
             }
