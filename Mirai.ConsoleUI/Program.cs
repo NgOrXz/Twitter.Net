@@ -7,10 +7,10 @@
     using System.Net;
     using System.Xml.Linq;
 
-    using Mirai.Twitter;
-    using Mirai.Twitter.Commands;
-    using Mirai.Twitter.Core;
-    using Mirai.Twitter.TwitterObjects;
+    using Mirai.Social.Twitter;
+    using Mirai.Social.Twitter.Commands;
+    using Mirai.Social.Twitter.Core;
+    using Mirai.Social.Twitter.TwitterObjects;
 
     class Program
     {
