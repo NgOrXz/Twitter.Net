@@ -31,6 +31,7 @@ namespace Mirai.Twitter.Commands
     using Mirai.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public sealed class GeoCommand : TwitterCommandBase
     {
@@ -129,10 +130,10 @@ namespace Mirai.Twitter.Commands
         /// </param>
         /// <param name="streetAddress"></param>
         /// <returns></returns>
-        public TwitterGeoSimilarPlaces RetrieveSimilarPlaces(string latitude, string longitude, string name,
+        public TwitterGeoSimilarPlaces RetrieveSimilarPlaces(double latitude, double longitude, string name,
                                                              string containedWithin = null, string streetAddress = null)
         {
-            if (String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude) || String.IsNullOrEmpty(name))
+            if (String.IsNullOrEmpty(name))
                 throw new ArgumentException();
 
             var queryBuilder = new StringBuilder();
@@ -150,7 +151,8 @@ namespace Mirai.Twitter.Commands
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                similarPlaces   = TwitterObject.Parse<TwitterGeoSimilarPlaces>(response);
+                var jsonObj     = JObject.Parse(response);
+                similarPlaces   = TwitterObject.Parse<TwitterGeoSimilarPlaces>(jsonObj["result"].ToString());
             }
             catch (TwitterException e)
             {
@@ -171,13 +173,10 @@ namespace Mirai.Twitter.Commands
         /// <param name="granularity"></param>
         /// <param name="maxResults"></param>
         /// <returns></returns>
-        public TwitterPlace[] ReverseGeoCode(string latitude, string longitude, string accuracy = null,
+        public TwitterPlace[] ReverseGeoCode(double latitude, double longitude, string accuracy = null,
                                              TwitterPlaceType granularity = TwitterPlaceType.Neighborhood,
                                              int? maxResults = null)
         {
-            if (String.IsNullOrEmpty(latitude) || String.IsNullOrEmpty(longitude))
-                throw new ArgumentException();
-
             var queryBuilder = new StringBuilder();
             queryBuilder.AppendFormat("?lat={0}&long={1}&granularity={2}&", 
                                       latitude, longitude, granularity.ToString().ToLowerInvariant());
@@ -194,7 +193,8 @@ namespace Mirai.Twitter.Commands
             {
                 var response    = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                places          = JsonConvert.DeserializeObject<TwitterPlace[]>(response);
+                var jsonObj     = JObject.Parse(response);
+                places          = JsonConvert.DeserializeObject<TwitterPlace[]>(jsonObj["result"]["places"].ToString());
                                    
             }
             catch (TwitterException e)
@@ -256,7 +256,8 @@ namespace Mirai.Twitter.Commands
             {
                 var response = this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-                places      = TwitterObject.Parse<TwitterGeoSimilarPlaces>(response);
+                var jsonObj  = JObject.Parse(response);
+                places       = TwitterObject.Parse<TwitterGeoSimilarPlaces>(jsonObj["result"].ToString());
             }
             catch (TwitterException e)
             {

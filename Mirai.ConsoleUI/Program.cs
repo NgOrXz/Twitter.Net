@@ -44,6 +44,7 @@
                 //twitterApi.TweetCommand.UpdateWithMedia("update test~~~~~", mediaList: files);
                 //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
                 //twitterApi.TweetCommand.Update("a new test~~~~~~~~....");
+
                 //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
                 //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
@@ -96,15 +97,16 @@
                 //    });
 
                 //twitterApi.SavedSearchCommand.RetrieveSavedSearches();
-                //twitterApi.SavedSearchCommand.Show("86615025");
+                //twitterApi.SavedSearchCommand.Show("3762040");
                 //twitterApi.SavedSearchCommand.Create("@space");
                 //twitterApi.SavedSearchCommand.Destroy("86615025");
 
+                //twitterApi.DirectMessageCommand.RetrieveDirectMessages();
                 //twitterApi.DirectMessageCommand.Show("1900822745");
                 //twitterApi.DirectMessageCommand.Destroy("1900822745");
                 //twitterApi.DirectMessageCommand.Sent();
 
-                //twitterApi.ListCommand.RetrieveAllLists("yukinoyume43534534645");
+                //twitterApi.ListCommand.RetrieveAllLists("yukinoyume");
                 //twitterApi.ListCommand.RetrieveUserCreatedLists("yukinoyume");
                 //twitterApi.ListCommand.RetrieveSubscriptions("yukinoyume");
                 //twitterApi.ListCommand.RetrieveTweetsOfListMembersBySlug("team", "twitter");
@@ -147,7 +149,8 @@
                 //twitterApi.TrendCommand.RetrieveTrendLocations();
                 //twitterApi.TrendCommand.RetrieveTrendsByWoeId("2442047"); // LA
 
-                twitterApi.GeoCommand.RetrievePlaceById("df51dec6f4ee2b2c");
+                //twitterApi.GeoCommand.RetrievePlaceById("df51dec6f4ee2b2c");
+                //twitterApi.GeoCommand.RetrieveSimilarPlaces(37, -122, "twitter hq");
                 //twitterApi.GeoCommand.ReverseGeoCode("37.76893497", "-122.422848843");
                 //twitterApi.GeoCommand.Search(null, null, null, IPAddress.Parse("74.125.19.104"));
             }

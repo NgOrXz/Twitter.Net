@@ -43,10 +43,10 @@ namespace Mirai.Twitter.TwitterObjects
         public bool GeoEnabled { get; set; }
 
         [JsonProperty("favorites_count")]
-        public int FavoritesCount { get; set; }
+        public int? FavoritesCount { get; set; }
 
         [JsonProperty("followers_count")]
-        public int FollowersCount { get; set; }
+        public int? FollowersCount { get; set; }
 
         [JsonProperty("following")]
         public bool Following { get; set; }
@@ -70,7 +70,7 @@ namespace Mirai.Twitter.TwitterObjects
         public string Language { get; set; }
 
         [JsonProperty("listed_count")]
-        public int ListedCount { get; set; }
+        public int? ListedCount { get; set; }
 
         [JsonProperty("location")]
         public string Location { get; set; }
@@ -126,7 +126,7 @@ namespace Mirai.Twitter.TwitterObjects
         public TwitterTweet Status { get; set; }
 
         [JsonProperty("statuses_count")]
-        public int StatusesCount { get; set; }
+        public int? StatusesCount { get; set; }
 
         [JsonProperty("time_zone")]
         public string TimeZone { get; set; }
@@ -135,7 +135,7 @@ namespace Mirai.Twitter.TwitterObjects
         public Uri Url { get; set; }
 
         [JsonProperty("utc_offset")]
-        public int UtcOffset { get; set; }
+        public int? UtcOffset { get; set; }
 
         [JsonProperty("verified")]
         public bool Verified { get; set; }
