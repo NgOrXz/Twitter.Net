@@ -19,44 +19,11 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Twitter.Core
+namespace Mirai.Utilities
 {
-    using System;
-    using System.Globalization;
 
-    internal static class TwitterHelper
+    public static class EnumExtensions
     {
-        /// <summary>
-        /// Note: if conversion failed, return DateTime.MinValue.
-        /// </summary>
-        /// <param name="dateTimeString"></param>
-        /// <returns></returns>
-        public static DateTime ToDateTime(this string dateTimeString)
-        {
-            DateTime dt;
-            DateTime.TryParseExact(dateTimeString,
-                                   "ddd MMM dd HH:mm:ss +0000 yyyy",
-                                   CultureInfo.InvariantCulture,
-                                   DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
-                                   out dt);
-
-            return dt;
-        }
-
-        public static double ToDouble(this string numberString)
-        {
-            double result;
-            Double.TryParse(numberString, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
-
-            return result;
-        }
-
-        public static int ToInt32(this string numberString)
-        {
-            int result;
-            Int32.TryParse(numberString, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
-
-            return result;
-        }
+        
     }
 }

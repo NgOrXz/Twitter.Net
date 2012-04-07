@@ -23,15 +23,13 @@ namespace Mirai.Twitter.TwitterObjects
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.Serialization;
-    using System.Text;
 
-    using Mirai.Utilities.Reflection;
+    using Mirai.Utilities;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+
+    using Convert = Mirai.Utilities.Convert;
 
     class TwitterRelationshipConnectionsConverter : JsonConverter
     {
@@ -43,16 +41,11 @@ namespace Mirai.Twitter.TwitterObjects
 
             if (value is TwitterRelationshipConnections)
             {
-                IList<string> values = 
-                    ((TwitterRelationshipConnections)value).ToString().Split(new[] { ',', ' ' }, 
-                                                                             StringSplitOptions.RemoveEmptyEntries);
-                
-                var list = (from fieldInfo in typeof(TwitterRelationshipConnections).GetFields(BindingFlags.Public | BindingFlags.Static)
-                            where values.Contains(fieldInfo.Name)
-                            select (EnumMemberAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(EnumMemberAttribute))
-                            into attr select attr.Value).ToArray();
+                var existingValues = 
+                    Convert.ToString<TwitterRelationshipConnections>((TwitterRelationshipConnections)value);
 
-                var jArray  = JArray.FromObject(list);
+                var jArray  = JArray.FromObject(existingValues.Split(
+                                                            new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries));
                 result      = jArray.ToString();
             }
 
@@ -79,7 +72,7 @@ namespace Mirai.Twitter.TwitterObjects
                 values.Add(reader.Value.ToString());
             }
             
-            return values.ToBitFlags<TwitterRelationshipConnections>();
+            return Convert.ToEnum<TwitterRelationshipConnections>(values);
         }
 
         public override bool CanConvert(Type objectType)

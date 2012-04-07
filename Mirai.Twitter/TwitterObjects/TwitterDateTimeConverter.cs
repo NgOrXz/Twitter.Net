@@ -24,7 +24,7 @@ namespace Mirai.Twitter.TwitterObjects
     using System;
     using System.Globalization;
 
-    using Mirai.Utilities.Reflection;
+    using Mirai.Utilities;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;

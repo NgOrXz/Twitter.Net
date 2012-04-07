@@ -311,13 +311,13 @@ namespace Mirai.Twitter.Commands
 
             JToken value;
             if (jsonObj.TryGetValue("friends", out value))
-                friends     = value.ToString().ToInt32();
+                friends     = Int32.Parse(value.ToString());
             if (jsonObj.TryGetValue("updates", out value))
-                statuses    = value.ToString().ToInt32();
+                statuses    = Int32.Parse(value.ToString());
             if (jsonObj.TryGetValue("followers", out value))
-                followers   = value.ToString().ToInt32();
+                followers   = Int32.Parse(value.ToString());
             if (jsonObj.TryGetValue("favorites", out value))
-                favorites   = value.ToString().ToInt32();
+                favorites   = Int32.Parse(value.ToString());
         }
 
         /// <summary>

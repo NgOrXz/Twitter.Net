@@ -19,7 +19,7 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Utilities.Reflection
+namespace Mirai.Utilities
 {
     using System;
     using System.Collections.Generic;
@@ -28,30 +28,30 @@ namespace Mirai.Utilities.Reflection
     using System.Runtime.Serialization;
     using System.Text;
 
-    public static class EnumExtensions
+    public static class Convert
     {
         /// <summary>
-        /// Converts a comma-separated string to an enumerated type.
+        /// Converts a comma-separated string to an enumerated type(bit flags).
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Must be a enumerated type.</typeparam>
         /// <param name="input"></param>
         /// <returns></returns>
         /// <remarks>This method handles EnumMemberAttribute attribute.</remarks>
-        public static T ToBitFlags<T>(this string input) where T : struct
+        public static T ToEnum<T>(string input) where T : struct
         {
             var flags = input.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            return flags.ToBitFlags<T>();
+            return ToEnum<T>(flags);
         }
 
         /// <summary>
-        /// Converts a collection of strings to an enumerated type.
+        /// Converts a collection of strings to an enumerated type(bit flags).
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Must be a enumerated type.</typeparam>
         /// <param name="input"></param>
         /// <returns></returns>
         /// <remarks>This method handles EnumMemberAttribute attribute.</remarks>
-        public static T ToBitFlags<T>(this IEnumerable<string> input) where T: struct 
+        public static T ToEnum<T>(IEnumerable<string> input) where T : struct
         {
             if (!(typeof(T).IsEnum))
                 throw new NotSupportedException();
@@ -60,24 +60,52 @@ namespace Mirai.Utilities.Reflection
             foreach (var fieldInfo in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
             {
                 var attr = Attribute.GetCustomAttribute(fieldInfo, typeof(EnumMemberAttribute));
-                enumAttrMapping.Add(attr != null ? 
-                                        ((EnumMemberAttribute)attr).Value : 
+                enumAttrMapping.Add(attr != null ?
+                                        ((EnumMemberAttribute)attr).Value :
                                         fieldInfo.Name, fieldInfo.Name);
             }
 
             var bitFlagBuilder = new StringBuilder();
             input.ToList().ForEach(bitFlagName =>
-            {
-                if (!enumAttrMapping.ContainsKey(bitFlagName))
-                    return;
+                {
+                    if (!enumAttrMapping.ContainsKey(bitFlagName))
+                        return;
 
-                bitFlagBuilder.AppendFormat("{0}, ", enumAttrMapping[bitFlagName]);
-            });
+                    bitFlagBuilder.AppendFormat("{0}, ", enumAttrMapping[bitFlagName]);
+                });
             bitFlagBuilder.Length -= 2; // Trim ending ',' and ' ' characters.
 
             var result = (T)Enum.Parse(typeof(T), bitFlagBuilder.ToString(), true);
 
             return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        /// <remarks>This method handles EnumMemberAttribute attribute.</remarks>
+        public static string ToString<T>(Enum value, string separator = ", ") where T: struct 
+        {
+            if (!(typeof(T).IsEnum))
+                throw new NotSupportedException();
+
+            var existingValues = value.ToString("F").Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var result = new List<string>();
+            foreach (var fieldInfo in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (!existingValues.Contains(fieldInfo.Name))
+                    continue;
+
+                var attr = Attribute.GetCustomAttribute(fieldInfo, typeof(EnumMemberAttribute));
+                result.Add(attr != null ? ((EnumMemberAttribute)attr).Value : fieldInfo.Name);
+            }
+
+            return String.Join(separator, result);
         }
     }
 }

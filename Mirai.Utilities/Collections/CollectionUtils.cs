@@ -19,10 +19,31 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Utilities.Reflection
+namespace Mirai.Utilities.Collections
 {
+    using System.Collections.Generic;
+    using System.Text;
 
-    public static class ReflectionUtils
+    public static class CollectionUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="nameValueSeparator">The separator between name and value.</param>
+        /// <param name="pairsSeparator">The separator between name/value pairs.</param>
+        /// <returns></returns>
+        public static string ToNameValuePairString(this IEnumerable<KeyValuePair<string, string>> source,
+                                                   char nameValueSeparator = '=', char pairsSeparator = '&')
+        {
+            var kvpString = new StringBuilder();
+            foreach (KeyValuePair<string, string> kvp in source)
+            {
+                kvpString.AppendFormat("{0}{1}{2}{3}", kvp.Key, nameValueSeparator, kvp.Value, pairsSeparator);
+            }
+            kvpString.Length -= 1;
+
+            return kvpString.ToString();
+        }
     }
 }

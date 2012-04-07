@@ -32,7 +32,7 @@ namespace Mirai.Net.OAuth
     using System.Text.RegularExpressions;
     using System.Web;
 
-    using Mirai.Utilities.Text;
+    using Mirai.Utilities.Collections;
 
     using Wintellect.PowerCollections;
 

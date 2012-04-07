@@ -19,10 +19,15 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Utilities.Reflection
+namespace Mirai.Utilities
 {
+    using System;
 
-    public static class ReflectionUtils
+    public static class TypeExtensions
     {
+        public static bool IsNullableType(this Type type)
+        {
+            return type.IsGenericType && type == typeof(Nullable<>);
+        }
     }
 }

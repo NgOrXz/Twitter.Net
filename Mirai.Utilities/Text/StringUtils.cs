@@ -21,26 +21,8 @@
 
 namespace Mirai.Utilities.Text
 {
-    using System.Collections.Generic;
-    using System.Text;
 
     public static class StringUtils
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns>A key value pair string.</returns>
-        public static string ToNameValuePairString(this IEnumerable<KeyValuePair<string, string>> source)
-        {
-            var kvpString = new StringBuilder();
-            foreach (KeyValuePair<string, string> kvp in source)
-            {
-                kvpString.AppendFormat("{0}={1}&", kvp.Key, kvp.Value);
-            }
-            kvpString.Length -= 1;
-
-            return kvpString.ToString();
-        }
     }
 }
