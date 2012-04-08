@@ -48,6 +48,7 @@
                 //twitterApi.AccountCommand.UpdateProfileImage(@"C:\Users\Kevin\Pictures\Anime\Anime-029.jpg");
                 //int friends, statuses, followers, favorites;
                 //twitterApi.AccountCommand.Totals(out friends, out statuses, out followers, out favorites);
+                //twitterApi.AccountCommand.RetrieveAccountSettings();
 
                 //twitterApi.GetSupportedLanguages();
 

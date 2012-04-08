@@ -113,8 +113,8 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns the most recent statuses, including retweets if they exist, posted by the authenticating dm 
-        /// and the dm's they follow. This is the same timeline seen by a dm when they login to twitter.com.
+        /// Returns the most recent statuses, including retweets if they exist, posted by the authenticating user 
+        /// and the user's they follow. This is the same timeline seen by a user when they login to twitter.com.
         /// </summary>
         /// <param name="count">
         /// Specifies the number of records to retrieve. Must be less than or equal to 200. Defaults to 20.
@@ -155,11 +155,11 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns the 20 most recent statuses posted by the authenticating dm. It is also possible to 
-        /// request another dm's timeline by using the screen_name or user_id parameter. The other users 
-        /// timeline will only be visible if they are not protected, or if the authenticating dm's follow request 
-        /// was accepted by the protected dm.
-        /// The timeline returned is the equivalent of the one seen when you view a dm's profile on twitter.com.
+        /// Returns the 20 most recent statuses posted by the authenticating user. It is also possible to 
+        /// request another user's timeline by using the screen_name or user_id parameter. The other users 
+        /// timeline will only be visible if they are not protected, or if the authenticating user's follow request 
+        /// was accepted by the protected user.
+        /// The timeline returned is the equivalent of the one seen when you view a user's profile on twitter.com.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="screenName"></param>

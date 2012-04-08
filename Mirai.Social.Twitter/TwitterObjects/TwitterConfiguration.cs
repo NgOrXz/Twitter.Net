@@ -19,13 +19,11 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Social.Twitter.Core
+namespace Mirai.Social.Twitter.TwitterObjects
 {
-    using Mirai.Social.Twitter.TwitterObjects;
-
     using Newtonsoft.Json;
 
-    public sealed class TwitterConfiguration
+    public sealed class TwitterConfiguration : TwitterObject
     {
         #region Public Properties
 

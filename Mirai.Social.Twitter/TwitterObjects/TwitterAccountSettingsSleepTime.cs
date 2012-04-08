@@ -1,4 +1,4 @@
-﻿// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
 // Copyright (c) 2012, Kevin Wang
 // All rights reserved.
 //
@@ -19,19 +19,19 @@
 // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------------
 
-namespace Mirai.Social.Twitter.Core
+namespace Mirai.Social.Twitter.TwitterObjects
 {
     using Newtonsoft.Json;
 
-    public sealed class TwitterLanguage
+    public class TwitterAccountSettingsSleepTime : TwitterObject
     {
-        [JsonProperty("code")]
-        public string Code { get; set; }
+        [JsonProperty("end_time")]
+        public string EndTime { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; }
 
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        [JsonProperty("start_time")]
+        public string StartTime { get; set; }
     }
 }

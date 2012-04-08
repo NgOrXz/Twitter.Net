@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Utilities", "Mirai.Ut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Social.Twitter", "Mirai.Social.Twitter\Mirai.Social.Twitter.csproj", "{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterDemo", "TwitterDemo\TwitterDemo.csproj", "{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Mirai.Social.Twitter.vsmdi
@@ -69,6 +71,16 @@ Global
 		{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}.Release|x86.ActiveCfg = Release|Any CPU
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Debug|x86.ActiveCfg = Debug|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Debug|x86.Build.0 = Debug|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Release|Any CPU.ActiveCfg = Release|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Release|x86.ActiveCfg = Release|x86
+		{152A35A4-0BA3-4914-9FE4-C22C5A30D1FA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

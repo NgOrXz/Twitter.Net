@@ -55,6 +55,8 @@
     <Compile Include="Commands\SpamReportingCommand.cs" />
     <Compile Include="Commands\TrendCommand.cs" />
     <Compile Include="Commands\GeoCommand.cs" />
+    <Compile Include="TwitterObjects\TwitterAccountSettings.cs" />
+    <Compile Include="TwitterObjects\TwitterAccountSettingsSleepTime.cs" />
     <Compile Include="TwitterObjects\TwitterColorConverter.cs" />
     <Compile Include="TwitterObjects\TwitterDateTimeConverter.cs" />
     <Compile Include="TwitterObjects\ITwitterObject.cs" />
@@ -91,11 +93,11 @@
     <Compile Include="TwitterObjects\TwitterSearchReusltType.cs" />
     <Compile Include="TwitterObjects\TwitterSuggestedUserCategory.cs" />
     <Compile Include="Commands\SuggestedUserCommand.cs" />
-    <Compile Include="Core\TwitterLanguage.cs" />
+    <Compile Include="TwitterObjects\TwitterLanguage.cs" />
     <Compile Include="TwitterObjects\TwitterRateLimitStatus.cs" />
     <Compile Include="Core\ApiVersion.cs" />
     <Compile Include="Commands\TweetCommand.cs" />
-    <Compile Include="Core\TwitterConfiguration.cs" />
+    <Compile Include="TwitterObjects\TwitterConfiguration.cs" />
     <Compile Include="Core\TwitterError.cs" />
     <Compile Include="Core\TwitterException.cs" />
     <Compile Include="TwitterObjects\TwitterColor.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="TwitterObjects\TwitterPlace.cs" />
     <Compile Include="TwitterObjects\TwitterSize.cs" />
     <Compile Include="TwitterObjects\TwitterSizes.cs" />
+    <Compile Include="TwitterObjects\TwitterTimeZoneInfo.cs" />
     <Compile Include="TwitterObjects\TwitterTrend.cs" />
     <Compile Include="TwitterObjects\TwitterTrendGroup.cs" />
     <Compile Include="TwitterObjects\TwitterTrendLocation.cs" />

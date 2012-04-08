@@ -29,7 +29,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json.Linq;
@@ -70,6 +69,19 @@ namespace Mirai.Social.Twitter.Commands
             this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, null);
         }
 
+        public TwitterAccountSettings RetrieveAccountSettings()
+        {
+            if (!this.TwitterApi.Authenticated)
+                throw new InvalidOperationException("Authentication required.");
+
+            var uri         = new Uri(this.CommandBaseUri + "/settings.json");
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null);
+
+            var settings    = TwitterObject.Parse<TwitterAccountSettings>(response);
+
+            return settings;
+        }
+
         /// <summary>
         /// Returns the remaining number of API requests available to the requesting user before the API limit 
         /// is reached for the current hour. 
@@ -90,6 +102,57 @@ namespace Mirai.Social.Twitter.Commands
             var rateLimit   = TwitterObject.Parse<TwitterRateLimitStatus>(response);
 
             return rateLimit;
+        }
+
+        /// <summary>
+        /// Updates the authenticating user's settings.
+        /// </summary>
+        /// <param name="trendLocationId"></param>
+        /// <param name="sleepTimeEnabled"></param>
+        /// <param name="startSleepTime"></param>
+        /// <param name="endSleepTime"></param>
+        /// <param name="timeZone">The time zone dates and times should be displayed in for the user.</param>
+        /// <param name="language">
+        /// The language which Twitter should render in for this user. The language must be specified by 
+        /// the appropriate two letter ISO 639-1 representation.
+        /// </param>
+        /// <returns></returns>
+        /// <remarks>
+        /// While all parameters for this method are optional, at least one or more should be provided when executing 
+        /// this request.
+        /// </remarks>
+        public TwitterAccountSettings UpdateAccountSettings(string trendLocationId = null, bool? sleepTimeEnabled = null,
+                                                            string startSleepTime = null, string endSleepTime = null,
+                                                            string timeZone = null, string language = null)
+        {
+            if (!this.TwitterApi.Authenticated)
+                throw new InvalidOperationException("Authentication required.");
+
+            var postData = new Dictionary<string, string>();
+
+            if (!String.IsNullOrWhiteSpace(trendLocationId))
+                postData.Add("trend_location_woeid", trendLocationId);
+            if (sleepTimeEnabled.HasValue)
+                postData.Add("sleep_time_enabled", sleepTimeEnabled.Value ? "true" : "false");
+            if (!String.IsNullOrWhiteSpace(startSleepTime))
+                postData.Add("start_sleep_time", startSleepTime);
+            if (!String.IsNullOrWhiteSpace(endSleepTime))
+                postData.Add("end_sleep_time", endSleepTime);
+            if (!String.IsNullOrWhiteSpace(timeZone))
+                postData.Add("time_zone", timeZone);
+            if (!String.IsNullOrWhiteSpace(language))
+                postData.Add("lang", language);
+
+            if (postData.Count == 0)
+                throw new ArgumentException("While all parameters for this method are optional, " + 
+                                            "at least one or more should be provided when executing this request.");
+
+            var uri         = new Uri(this.CommandBaseUri + "/settings.json");
+            var response    = this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Post, postData);
+
+            var settings    = TwitterObject.Parse<TwitterAccountSettings>(response);
+
+            return settings;
         }
 
         /// <summary>

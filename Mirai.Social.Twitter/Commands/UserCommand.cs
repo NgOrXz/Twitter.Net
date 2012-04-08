@@ -29,7 +29,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
@@ -72,14 +71,15 @@ namespace Mirai.Social.Twitter.Commands
 
         /// <summary>
         /// Return up to 100 users worth of extended information, specified by either ID, screen name, or 
-        /// combination of the two. The author's most recent status (if the authenticating dm has permission) 
+        /// combination of the two. The author's most recent status (if the authenticating user has permission) 
         /// will be returned inline.
         /// </summary>
         /// <param name="screenNames"></param>
         /// <param name="userIds"></param>
         /// <param name="includeEntities"></param>
         /// <returns></returns>
-        public TwitterUser[] Lookup(IEnumerable<string> screenNames, IEnumerable<string> userIds, bool includeEntities = true)
+        public TwitterUser[] Lookup(IEnumerable<string> screenNames, IEnumerable<string> userIds, 
+                                    bool includeEntities = true)
         {
             var postData = new Dictionary<string, string>
                 {
@@ -111,7 +111,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Access the profile image in various sizes for the dm with the indicated screenName. 
+        /// Access the profile image in various sizes for the user with the indicated screenName. 
         /// If no size is provided the normal image is returned.
         /// </summary>
         /// <param name="screenName"></param>
@@ -119,7 +119,7 @@ namespace Mirai.Social.Twitter.Commands
         /// <returns></returns>
         /// <remarks>
         /// This method should only be used by application developers to lookup or check the profile image URL 
-        /// for a dm. This method must not be used as the image source URL presented to users of your application.
+        /// for a user. This method must not be used as the image source URL presented to users of your application.
         /// </remarks>
         public Uri RetrieveProfileImageUri(string screenName, ProfileImageSize profileImageSize = ProfileImageSize.Normal)
         {
@@ -140,7 +140,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of users that the specified dm can contribute to.
+        /// Returns an array of users that the specified user can contribute to.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -176,7 +176,7 @@ namespace Mirai.Social.Twitter.Commands
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="q">The dm query to run against people dm.</param>
+        /// <param name="q">The user query to run against people user.</param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="includeEntities"></param>
@@ -202,7 +202,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns extended information of a given dm, specified by ID or screen name as per the 
+        /// Returns extended information of a given user, specified by ID or screen name as per the 
         /// required id parameter. The author's most recent status will be returned inline.
         /// </summary>
         /// <param name="screenName"></param>
@@ -224,8 +224,8 @@ namespace Mirai.Social.Twitter.Commands
 
             var uri         = new Uri(this.CommandBaseUri + "/show.json" + queryBuilder.ToString().TrimEnd('&'));
             var response    = this.TwitterApi.Authenticated ?
-                              this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
-                              this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
+                                  this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
+                                  this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
             var user        = TwitterObject.Parse<TwitterUser>(response);
 
