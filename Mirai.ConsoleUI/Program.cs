@@ -25,9 +25,18 @@
             twitterApi.LogEnabled = true;
             twitterApi.LogStream = Console.Out;
 
+            //var twitterApi = new TwitterApi(keys.Element("consumerKey").Value,
+            //                                keys.Element("consumerSecret").Value);
+
+            //var uri = twitterApi.RequestUserAuthorization("oob");
+            //Console.WriteLine(uri);
+            //var v = Console.ReadLine();
+            //twitterApi.ProcessUserAuthorization(v);
+            //twitterApi.TweetCommand.Update("Hello World!");
+
             try
             {
-                //var fs = new FileStream(@"C:\Users\Kevin\素材\Avatar\img007.jpg", FileMode.Open, FileAccess.Read);
+                //var fs = new FileStream(@"C:\Users\Kevin\素材\Avatar\img021.jpg", FileMode.Open, FileAccess.Read);
                 //var data = new byte[fs.Length];
                 //fs.Read(data, 0, data.Length);
                 //fs.Close();
@@ -41,7 +50,7 @@
                 //files.Add(data);
                 //files.Add(data2);
 
-                //twitterApi.TweetCommand.UpdateWithMedia("update test~~~~~", mediaList: files);
+                //twitterApi.TweetCommand.UpdateWithMedia("Gundam Seed", mediaList: files);
                 //twitterApi.TweetCommand.RetweetedBy("21947795900469248");
                 //twitterApi.TweetCommand.Update("a new test~~~~~~~~....");
 

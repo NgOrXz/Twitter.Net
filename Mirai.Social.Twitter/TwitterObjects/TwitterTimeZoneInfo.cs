@@ -26,12 +26,18 @@ namespace Mirai.Social.Twitter.TwitterObjects
     public class TwitterTimeZoneInfo : TwitterObject
     {
         [JsonProperty("name")]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; internal set; }
 
         [JsonProperty("tzinfo_name")]
-        public string TimeZoneInfoName { get; set; }
+        public string Name { get; internal set; }
 
         [JsonProperty("utc_offset")]
-        public int UtcOffset { get; set; }
+        public int UtcOffset { get; internal set; }
+        
+        
+        internal TwitterTimeZoneInfo()
+        {
+        
+        }
     }
 }

@@ -36,5 +36,9 @@ namespace Mirai.Social.Twitter.TwitterObjects
         #endregion
 
 
+        internal TwitterRateLimitStatus()
+        {
+        
+        }
     }
 }

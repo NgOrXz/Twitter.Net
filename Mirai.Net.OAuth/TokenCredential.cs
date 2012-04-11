@@ -55,7 +55,12 @@ namespace Mirai.Net.OAuth
             
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="secret"></param>
+        /// <param name="tokenType"></param>
         public TokenCredential(string token, string secret, TokenType tokenType)
         {
             this.SetToken(token, secret, tokenType);

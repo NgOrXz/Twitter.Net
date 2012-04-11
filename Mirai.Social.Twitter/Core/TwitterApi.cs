@@ -36,421 +36,425 @@ namespace Mirai.Social.Twitter.Core
 
     public sealed class TwitterApi
     {
-        #region Constants and Fields
+        #region Twitter Time Zones
 
         public static readonly TwitterTimeZoneInfo[] TimeZones = new[]
             {
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-11:00) International Date Line West",
-                        TimeZoneInfoName = "Pacific/Midway",
+                        Name = "Pacific/Midway",
                         UtcOffset = -39600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-11:00) Midway Island",
-                        TimeZoneInfoName = "Pacific/Midway",
+                        Name = "Pacific/Midway",
                         UtcOffset = -39600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-11:00) Samoa", TimeZoneInfoName = "Pacific/Pago_Pago", UtcOffset = -39600 },
+                    { DisplayName = "(GMT-11:00) Samoa", Name = "Pacific/Pago_Pago", UtcOffset = -39600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-10:00) Hawaii", TimeZoneInfoName = "Pacific/Honolulu", UtcOffset = -36000 },
+                    { DisplayName = "(GMT-10:00) Hawaii", Name = "Pacific/Honolulu", UtcOffset = -36000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-09:00) Alaska", TimeZoneInfoName = "America/Juneau", UtcOffset = -32400 },
+                    { DisplayName = "(GMT-09:00) Alaska", Name = "America/Juneau", UtcOffset = -32400 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-08:00) Pacific Time (US & Canada)",
-                        TimeZoneInfoName = "America/Los_Angeles",
+                        Name = "America/Los_Angeles",
                         UtcOffset = -28800
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-08:00) Tijuana", TimeZoneInfoName = "America/Tijuana", UtcOffset = -28800 },
+                    { DisplayName = "(GMT-08:00) Tijuana", Name = "America/Tijuana", UtcOffset = -28800 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-07:00) Mountain Time (US & Canada)",
-                        TimeZoneInfoName = "America/Denver",
+                        Name = "America/Denver",
                         UtcOffset = -25200
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-07:00) Arizona", TimeZoneInfoName = "America/Phoenix", UtcOffset = -25200 },
+                    { DisplayName = "(GMT-07:00) Arizona", Name = "America/Phoenix", UtcOffset = -25200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-07:00) Chihuahua",
-                        TimeZoneInfoName = "America/Chihuahua",
+                        Name = "America/Chihuahua",
                         UtcOffset = -25200
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-07:00) Mazatlan", TimeZoneInfoName = "America/Mazatlan", UtcOffset = -25200 },
+                    { DisplayName = "(GMT-07:00) Mazatlan", Name = "America/Mazatlan", UtcOffset = -25200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Central Time (US & Canada)",
-                        TimeZoneInfoName = "America/Chicago",
+                        Name = "America/Chicago",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Saskatchewan",
-                        TimeZoneInfoName = "America/Regina",
+                        Name = "America/Regina",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Guadalajara",
-                        TimeZoneInfoName = "America/Mexico_City",
+                        Name = "America/Mexico_City",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Mexico City",
-                        TimeZoneInfoName = "America/Mexico_City",
+                        Name = "America/Mexico_City",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Monterrey",
-                        TimeZoneInfoName = "America/Monterrey",
+                        Name = "America/Monterrey",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-06:00) Central America",
-                        TimeZoneInfoName = "America/Guatemala",
+                        Name = "America/Guatemala",
                         UtcOffset = -21600
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-05:00) Eastern Time (US & Canada)",
-                        TimeZoneInfoName = "America/New_York",
+                        Name = "America/New_York",
                         UtcOffset = -18000
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-05:00) IIndiana (East)",
-                        TimeZoneInfoName = "America/Indiana/Indianapolis",
+                        Name = "America/Indiana/Indianapolis",
                         UtcOffset = -18000
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-05:00) Bogota", TimeZoneInfoName = "America/Bogota", UtcOffset = -18000 },
+                    { DisplayName = "(GMT-05:00) Bogota", Name = "America/Bogota", UtcOffset = -18000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-05:00) Lima", TimeZoneInfoName = "America/Lima", UtcOffset = -18000 },
+                    { DisplayName = "(GMT-05:00) Lima", Name = "America/Lima", UtcOffset = -18000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-05:00) Quito", TimeZoneInfoName = "America/Lima", UtcOffset = -18000 },
+                    { DisplayName = "(GMT-05:00) Quito", Name = "America/Lima", UtcOffset = -18000 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-04:00) Atlantic Time (Canada)",
-                        TimeZoneInfoName = "America/Halifax",
+                        Name = "America/Halifax",
                         UtcOffset = -14400
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-04:30) Caracas", TimeZoneInfoName = "America/Caracas", UtcOffset = -12600 },
+                    { DisplayName = "(GMT-04:30) Caracas", Name = "America/Caracas", UtcOffset = -12600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-04:00) La Paz", TimeZoneInfoName = "America/La_Paz", UtcOffset = -14400 },
+                    { DisplayName = "(GMT-04:00) La Paz", Name = "America/La_Paz", UtcOffset = -14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-04:00) Santiago", TimeZoneInfoName = "America/Santiago", UtcOffset = -14400 },
+                    { DisplayName = "(GMT-04:00) Santiago", Name = "America/Santiago", UtcOffset = -14400 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-03:30) Newfoundland",
-                        TimeZoneInfoName = "America/St_Johns",
+                        Name = "America/St_Johns",
                         UtcOffset = -12600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-03:00) Brasilia", TimeZoneInfoName = "America/Sao_Paulo", UtcOffset = -10800 },
+                    { DisplayName = "(GMT-03:00) Brasilia", Name = "America/Sao_Paulo", UtcOffset = -10800 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-03:00) Buenos Aires",
-                        TimeZoneInfoName = "America/Argentina/Buenos_Aires",
+                        Name = "America/Argentina/Buenos_Aires",
                         UtcOffset = -10800
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-03:00) Georgetown", TimeZoneInfoName = "America/Guyana", UtcOffset = -10800 },
+                    { DisplayName = "(GMT-03:00) Georgetown", Name = "America/Guyana", UtcOffset = -10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-03:00) Greenland", TimeZoneInfoName = "America/Godthab", UtcOffset = -10800 },
+                    { DisplayName = "(GMT-03:00) Greenland", Name = "America/Godthab", UtcOffset = -10800 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT-02:00) Mid-Atlantic",
-                        TimeZoneInfoName = "Atlantic/South_Georgia",
+                        Name = "Atlantic/South_Georgia",
                         UtcOffset = -7200
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT-01:00) Azores", TimeZoneInfoName = "Atlantic/Azores", UtcOffset = -3600 },
+                    { DisplayName = "(GMT-01:00) Azores", Name = "Atlantic/Azores", UtcOffset = -3600 },
                 new TwitterTimeZoneInfo
                     {
-                        DisplayName = "(GMT-01:00) Cape Verde Is.",
-                        TimeZoneInfoName = "Atlantic/Cape_Verde",
+                        DisplayName = "(GMT-01:00) Cape Verde Is",
+                        Name = "Atlantic/Cape_Verde",
                         UtcOffset = -3600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) Dublin", TimeZoneInfoName = "Europe/Dublin", UtcOffset = 0 },
+                    { DisplayName = "(GMT) Dublin", Name = "Europe/Dublin", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) Edinburgh", TimeZoneInfoName = "Europe/London", UtcOffset = 0 },
+                    { DisplayName = "(GMT) Edinburgh", Name = "Europe/London", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) Lisbon", TimeZoneInfoName = "Europe/Lisbon", UtcOffset = 0 },
+                    { DisplayName = "(GMT) Lisbon", Name = "Europe/Lisbon", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) London", TimeZoneInfoName = "Europe/London", UtcOffset = 0 },
+                    { DisplayName = "(GMT) London", Name = "Europe/London", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) Casablanca", TimeZoneInfoName = "Africa/Casablanca", UtcOffset = 0 },
+                    { DisplayName = "(GMT) Casablanca", Name = "Africa/Casablanca", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT) Monrovia", TimeZoneInfoName = "Africa/Monrovia", UtcOffset = 0 },
+                    { DisplayName = "(GMT) Monrovia", Name = "Africa/Monrovia", UtcOffset = 0 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Belgrade", TimeZoneInfoName = "Europe/Belgrade", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Belgrade", Name = "Europe/Belgrade", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Bratislava", TimeZoneInfoName = "Europe/Bratislava", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Bratislava", Name = "Europe/Bratislava", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Budapest", TimeZoneInfoName = "Europe/Budapest", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Budapest", Name = "Europe/Budapest", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Ljubljana", TimeZoneInfoName = "Europe/Ljubljana", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Ljubljana", Name = "Europe/Ljubljana", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Prague", TimeZoneInfoName = "Europe/Prague", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Prague", Name = "Europe/Prague", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Sarajevo", TimeZoneInfoName = "Europe/Sarajevo", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Sarajevo", Name = "Europe/Sarajevo", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Skopje", TimeZoneInfoName = "Europe/Skopje", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Skopje", Name = "Europe/Skopje", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Warsaw", TimeZoneInfoName = "Europe/Warsaw", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Warsaw", Name = "Europe/Warsaw", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Zagreb", TimeZoneInfoName = "Europe/Zagreb", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Zagreb", Name = "Europe/Zagreb", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Brussels", TimeZoneInfoName = "Europe/Brussels", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Brussels", Name = "Europe/Brussels", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Copenhagen", TimeZoneInfoName = "Europe/Copenhagen", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Copenhagen", Name = "Europe/Copenhagen", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Madrid", TimeZoneInfoName = "Europe/Madrid", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Madrid", Name = "Europe/Madrid", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Paris", TimeZoneInfoName = "Europe/Paris", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Paris", Name = "Europe/Paris", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Amsterdam", TimeZoneInfoName = "Europe/Amsterdam", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Amsterdam", Name = "Europe/Amsterdam", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Berlin", TimeZoneInfoName = "Europe/Berlin", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Berlin", Name = "Europe/Berlin", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Bern", TimeZoneInfoName = "Europe/Berlin", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Bern", Name = "Europe/Berlin", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Rome", TimeZoneInfoName = "Europe/Rome", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Rome", Name = "Europe/Rome", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Stockholm", TimeZoneInfoName = "Europe/Stockholm", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Stockholm", Name = "Europe/Stockholm", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+01:00) Vienna", TimeZoneInfoName = "Europe/Vienna", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+01:00) Vienna", Name = "Europe/Vienna", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+01:00) West Central Africa",
-                        TimeZoneInfoName = "Africa/Algiers",
+                        Name = "Africa/Algiers",
                         UtcOffset = 3600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Bucharest", TimeZoneInfoName = "Europe/Bucharest", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Bucharest", Name = "Europe/Bucharest", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Cairo", TimeZoneInfoName = "Africa/Cairo", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Cairo", Name = "Africa/Cairo", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Helsinki", TimeZoneInfoName = "Europe/Helsinki", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Helsinki", Name = "Europe/Helsinki", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Kyiv", TimeZoneInfoName = "Europe/Kiev", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Kyiv", Name = "Europe/Kiev", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Riga", TimeZoneInfoName = "Europe/Riga", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Riga", Name = "Europe/Riga", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Sofia", TimeZoneInfoName = "Europe/Sofia", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Sofia", Name = "Europe/Sofia", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Tallinn", TimeZoneInfoName = "Europe/Tallinn", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Tallinn", Name = "Europe/Tallinn", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Vilnius", TimeZoneInfoName = "Europe/Vilnius", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Vilnius", Name = "Europe/Vilnius", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Athens", TimeZoneInfoName = "Europe/Athens", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Athens", Name = "Europe/Athens", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Istanbul", TimeZoneInfoName = "Europe/Istanbul", UtcOffset = 7200 },
+                    { DisplayName = "(GMT+02:00) Istanbul", Name = "Europe/Istanbul", UtcOffset = 7200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Minsk", TimeZoneInfoName = "Europe/Minsk", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Minsk", Name = "Europe/Minsk", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Jerusalem", TimeZoneInfoName = "Asia/Jerusalem", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+02:00) Jerusalem", Name = "Asia/Jerusalem", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Harare", TimeZoneInfoName = "Africa/Harare", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+02:00) Harare", Name = "Africa/Harare", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+02:00) Pretoria", TimeZoneInfoName = "Africa/Johannesburg", UtcOffset = 3600 },
+                    { DisplayName = "(GMT+02:00) Pretoria", Name = "Africa/Johannesburg", UtcOffset = 3600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Moscow", TimeZoneInfoName = "Europe/Moscow", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Moscow", Name = "Europe/Moscow", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+04:00) St. Petersburg",
-                        TimeZoneInfoName = "Europe/Moscow",
+                        Name = "Europe/Moscow",
                         UtcOffset = 14400
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Volgograd", TimeZoneInfoName = "Europe/Moscow", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Volgograd", Name = "Europe/Moscow", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Kuwait", TimeZoneInfoName = "Asia/Kuwait", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Kuwait", Name = "Asia/Kuwait", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Riyadh", TimeZoneInfoName = "Asia/Riyadh", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Riyadh", Name = "Asia/Riyadh", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Nairobi", TimeZoneInfoName = "Africa/Nairobi", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Nairobi", Name = "Africa/Nairobi", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Baghdad", TimeZoneInfoName = "Asia/Baghdad", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Baghdad", Name = "Asia/Baghdad", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+03:00) Tehran", TimeZoneInfoName = "Asia/Tehran", UtcOffset = 10800 },
+                    { DisplayName = "(GMT+03:00) Tehran", Name = "Asia/Tehran", UtcOffset = 10800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Abu Dhabi", TimeZoneInfoName = "Asia/Muscat", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Abu Dhabi", Name = "Asia/Muscat", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Muscat", TimeZoneInfoName = "Asia/Muscat", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Muscat", Name = "Asia/Muscat", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Baku", TimeZoneInfoName = "Asia/Baku", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Baku", Name = "Asia/Baku", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Tbilisi", TimeZoneInfoName = "Asia/Tbilisi", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Tbilisi", Name = "Asia/Tbilisi", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:00) Yerevan", TimeZoneInfoName = "Asia/Yerevan", UtcOffset = 14400 },
+                    { DisplayName = "(GMT+04:00) Yerevan", Name = "Asia/Yerevan", UtcOffset = 14400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+04:30) Kabul", TimeZoneInfoName = "Asia/Kabul", UtcOffset = 16200 },
+                    { DisplayName = "(GMT+04:30) Kabul", Name = "Asia/Kabul", UtcOffset = 16200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+06:00) Ekaterinburg",
-                        TimeZoneInfoName = "Asia/Yekaterinburg",
+                        Name = "Asia/Yekaterinburg",
                         UtcOffset = 21600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:00) Islamabad", TimeZoneInfoName = "Asia/Karachi", UtcOffset = 18000 },
+                    { DisplayName = "(GMT+05:00) Islamabad", Name = "Asia/Karachi", UtcOffset = 18000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:00) Karachi", TimeZoneInfoName = "Asia/Karachi", UtcOffset = 18000 },
+                    { DisplayName = "(GMT+05:00) Karachi", Name = "Asia/Karachi", UtcOffset = 18000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:00) Tashkent", TimeZoneInfoName = "Asia/Tashkent", UtcOffset = 18000 },
+                    { DisplayName = "(GMT+05:00) Tashkent", Name = "Asia/Tashkent", UtcOffset = 18000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:30) Chennai", TimeZoneInfoName = "Asia/Kolkata", UtcOffset = 19800 },
+                    { DisplayName = "(GMT+05:30) Chennai", Name = "Asia/Kolkata", UtcOffset = 19800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:30) Kolkata", TimeZoneInfoName = "Asia/Kolkata", UtcOffset = 19800 },
+                    { DisplayName = "(GMT+05:30) Kolkata", Name = "Asia/Kolkata", UtcOffset = 19800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:30) Mumbai", TimeZoneInfoName = "Asia/Kolkata", UtcOffset = 19800 },
+                    { DisplayName = "(GMT+05:30) Mumbai", Name = "Asia/Kolkata", UtcOffset = 19800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:30) New Delhi", TimeZoneInfoName = "Asia/Kolkata", UtcOffset = 19800 },
+                    { DisplayName = "(GMT+05:30) New Delhi", Name = "Asia/Kolkata", UtcOffset = 19800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+05:45) Kathmandu", TimeZoneInfoName = "Asia/Kathmandu", UtcOffset = 20700 },
+                    { DisplayName = "(GMT+05:45) Kathmandu", Name = "Asia/Kathmandu", UtcOffset = 20700 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+06:00) Astana", TimeZoneInfoName = "Asia/Dhaka", UtcOffset = 21600 },
+                    { DisplayName = "(GMT+06:00) Astana", Name = "Asia/Dhaka", UtcOffset = 21600 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+06:00) Dhaka", TimeZoneInfoName = "Asia/Dhaka", UtcOffset = 21600 },
+                    { DisplayName = "(GMT+06:00) Dhaka", Name = "Asia/Dhaka", UtcOffset = 21600 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+06:00) Sri Jayawardenepura",
-                        TimeZoneInfoName = "Asia/Colombo",
+                        Name = "Asia/Colombo",
                         UtcOffset = 21600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+06:00) Almaty", TimeZoneInfoName = "Asia/Almaty", UtcOffset = 21600 },
+                    { DisplayName = "(GMT+06:00) Almaty", Name = "Asia/Almaty", UtcOffset = 21600 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+07:00) Novosibirsk",
-                        TimeZoneInfoName = "Asia/Novosibirsk",
+                        Name = "Asia/Novosibirsk",
                         UtcOffset = 25200
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+06:30) Rangoon", TimeZoneInfoName = "Asia/Rangoon", UtcOffset = 23400 },
+                    { DisplayName = "(GMT+06:30) Rangoon", Name = "Asia/Rangoon", UtcOffset = 23400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+07:00) Bangkok", TimeZoneInfoName = "Asia/Bangkok", UtcOffset = 25200 },
+                    { DisplayName = "(GMT+07:00) Bangkok", Name = "Asia/Bangkok", UtcOffset = 25200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+07:00) Hanoi", TimeZoneInfoName = "Asia/Bangkok", UtcOffset = 25200 },
+                    { DisplayName = "(GMT+07:00) Hanoi", Name = "Asia/Bangkok", UtcOffset = 25200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+07:00) Jakarta", TimeZoneInfoName = "Asia/Jakarta", UtcOffset = 25200 },
+                    { DisplayName = "(GMT+07:00) Jakarta", Name = "Asia/Jakarta", UtcOffset = 25200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+08:00) Krasnoyarsk",
-                        TimeZoneInfoName = "Asia/Krasnoyarsk",
+                        Name = "Asia/Krasnoyarsk",
                         UtcOffset = 28800
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Beijing", TimeZoneInfoName = "Asia/Shanghai", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Beijing", Name = "Asia/Shanghai", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Chongqing", TimeZoneInfoName = "Asia/Chongqing", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Chongqing", Name = "Asia/Chongqing", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Hong Kong", TimeZoneInfoName = "Asia/Hong_Kong", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Hong Kong", Name = "Asia/Hong_Kong", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Urumqi", TimeZoneInfoName = "Asia/Urumqi", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Urumqi", Name = "Asia/Urumqi", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+08:00) Kuala Lumpur",
-                        TimeZoneInfoName = "Asia/Kuala_Lumpur",
+                        Name = "Asia/Kuala_Lumpur",
                         UtcOffset = 28800
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Singapore", TimeZoneInfoName = "Asia/Singapore", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Singapore", Name = "Asia/Singapore", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Taipei", TimeZoneInfoName = "Asia/Taipei", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Taipei", Name = "Asia/Taipei", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+08:00) Perth", TimeZoneInfoName = "Australia/Perth", UtcOffset = 28800 },
+                    { DisplayName = "(GMT+08:00) Perth", Name = "Australia/Perth", UtcOffset = 28800 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:00) Irkutsk", TimeZoneInfoName = "Asia/Irkutsk", UtcOffset = 32400 },
+                    { DisplayName = "(GMT+09:00) Irkutsk", Name = "Asia/Irkutsk", UtcOffset = 32400 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+08:00) Ulaan Bataar",
-                        TimeZoneInfoName = "Asia/Ulaanbaatar",
+                        Name = "Asia/Ulaanbaatar",
                         UtcOffset = 28800
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:00) Seoul", TimeZoneInfoName = "Asia/Seoul", UtcOffset = 32400 },
+                    { DisplayName = "(GMT+09:00) Seoul", Name = "Asia/Seoul", UtcOffset = 32400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:00) Osaka", TimeZoneInfoName = "Asia/Tokyo", UtcOffset = 32400 },
+                    { DisplayName = "(GMT+09:00) Osaka", Name = "Asia/Tokyo", UtcOffset = 32400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:00) Sapporo", TimeZoneInfoName = "Asia/Tokyo", UtcOffset = 32400 },
+                    { DisplayName = "(GMT+09:00) Sapporo", Name = "Asia/Tokyo", UtcOffset = 32400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:00) Tokyo", TimeZoneInfoName = "Asia/Tokyo", UtcOffset = 32400 },
+                    { DisplayName = "(GMT+09:00) Tokyo", Name = "Asia/Tokyo", UtcOffset = 32400 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+10:00) Yakutsk", TimeZoneInfoName = "Asia/Yakutsk", UtcOffset = 36000 },
+                    { DisplayName = "(GMT+10:00) Yakutsk", Name = "Asia/Yakutsk", UtcOffset = 36000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:30) Darwin", TimeZoneInfoName = "Australia/Darwin", UtcOffset = 34200 },
+                    { DisplayName = "(GMT+09:30) Darwin", Name = "Australia/Darwin", UtcOffset = 34200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+09:30) Adelaide", TimeZoneInfoName = "Australia/Adelaide", UtcOffset = 34200 },
+                    { DisplayName = "(GMT+09:30) Adelaide", Name = "Australia/Adelaide", UtcOffset = 34200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+10:00) Canberra",
-                        TimeZoneInfoName = "Australia/Melbourne",
+                        Name = "Australia/Melbourne",
                         UtcOffset = 36000
                     },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+10:00) Melbourne",
-                        TimeZoneInfoName = "Australia/Melbourne",
+                        Name = "Australia/Melbourne",
                         UtcOffset = 36000
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+10:00) Sydney", TimeZoneInfoName = "Australia/Sydney", UtcOffset = 36000 },
+                    { DisplayName = "(GMT+10:00) Sydney", Name = "Australia/Sydney", UtcOffset = 36000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+10:00) Brisbane", TimeZoneInfoName = "Australia/Brisbane", UtcOffset = 36000 },
+                    { DisplayName = "(GMT+10:00) Brisbane", Name = "Australia/Brisbane", UtcOffset = 36000 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+10:00) Hobart", TimeZoneInfoName = "Australia/Hobart", UtcOffset = 36000 },
+                    { DisplayName = "(GMT+10:00) Hobart", Name = "Australia/Hobart", UtcOffset = 36000 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+11:00) Vladivostok",
-                        TimeZoneInfoName = "Asia/Vladivostok",
+                        Name = "Asia/Vladivostok",
                         UtcOffset = 39600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+10:00) Guam", TimeZoneInfoName = "Pacific/Guam", UtcOffset = 36000 },
+                    { DisplayName = "(GMT+10:00) Guam", Name = "Pacific/Guam", UtcOffset = 36000 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+10:00) Port Moresby",
-                        TimeZoneInfoName = "Pacific/Port_Moresby",
+                        Name = "Pacific/Port_Moresby",
                         UtcOffset = 36000
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Magadan", TimeZoneInfoName = "Asia/Magadan", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Magadan", Name = "Asia/Magadan", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+11:00) Solomon Is.", TimeZoneInfoName = "Asia/Magadan", UtcOffset = 39600 },
+                    { DisplayName = "(GMT+11:00) Solomon Is", Name = "Asia/Magadan", UtcOffset = 39600 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+11:00) New Caledonia",
-                        TimeZoneInfoName = "Pacific/Noumea",
+                        Name = "Pacific/Noumea",
                         UtcOffset = 39600
                     },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Fiji", TimeZoneInfoName = "Pacific/Fiji", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Fiji", Name = "Pacific/Fiji", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Kamchatka", TimeZoneInfoName = "Asia/Kamchatka", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Kamchatka", Name = "Asia/Kamchatka", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Marshall Is.", TimeZoneInfoName = "Pacific/Majuro", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Marshall Is", Name = "Pacific/Majuro", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Auckland", TimeZoneInfoName = "Pacific/Auckland", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Auckland", Name = "Pacific/Auckland", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
-                    { DisplayName = "(GMT+12:00) Wellington", TimeZoneInfoName = "Pacific/Auckland", UtcOffset = 43200 },
+                    { DisplayName = "(GMT+12:00) Wellington", Name = "Pacific/Auckland", UtcOffset = 43200 },
                 new TwitterTimeZoneInfo
                     {
                         DisplayName = "(GMT+13:00) Nuku'alofa",
-                        TimeZoneInfoName = "Pacific/Tongatapu",
+                        Name = "Pacific/Tongatapu",
                         UtcOffset = 46800
                     }
             };
+
+        #endregion
+
+        #region Constants and Fields
 
         internal static readonly string ApiBaseUri     = "https://api.twitter.com";
         internal static readonly string UploadApiUri   = "https://upload.twitter.com";
@@ -744,19 +748,26 @@ namespace Mirai.Social.Twitter.Core
         #region Public Methods
         
         /// <summary>
-        /// Acquires the access token for the non Pin-based flow authentication.
+        /// Processes the user authorization for the non Pin-based flow authentication.
         /// </summary>
         /// <param name="postData"></param>
-        public void AcquireAccessToken(IEnumerable<KeyValuePair<string, string>> postData)
+        /// <returns>Returns the extra, non-OAuth parameters.</returns>
+        public void ProcessUserAuthorization(IDictionary<string, string> postData)
         {
-            this._OAuth.AcquireAccessToken(postData);
+            this._OAuth.ProcessUserAuthorization(postData);
         }
 
-        public void AcquireAccessToken(string oauthVerifier, IDictionary<string, string> postData = null)
+        /// <summary>
+        /// Processes the user authorization.
+        /// </summary>
+        /// <param name="oauthVerifier"></param>
+        /// <param name="postData"></param>
+        /// <returns>Returns the extra, non-OAuth parameters.</returns>
+        public void ProcessUserAuthorization(string oauthVerifier, IDictionary<string, string> postData = null)
         {
             try
             {
-                this._OAuth.AcquireAccessToken(oauthVerifier, postData);
+                this._OAuth.ProcessUserAuthorization(oauthVerifier, postData);
             }
             catch (WebException e)
             {
@@ -767,11 +778,17 @@ namespace Mirai.Social.Twitter.Core
             }
         }
 
-        public Uri AcquireRequestToken(string oauthCallback, IDictionary<string, string> postData = null)
+        /// <summary>
+        /// Begins an OAuth authorization request. 
+        /// </summary>
+        /// <param name="oauthCallback"></param>
+        /// <param name="postData"></param>
+        /// <returns></returns>
+        public Uri RequestUserAuthorization(string oauthCallback, IDictionary<string, string> postData = null)
         {
             try
             {
-                return this._OAuth.AcquireRequestToken(oauthCallback, postData);
+                return this._OAuth.RequestUserAuthorization(oauthCallback, postData);
             }
             catch (WebException e)
             {
@@ -803,8 +820,8 @@ namespace Mirai.Social.Twitter.Core
             return result;
         }
 
-        public string ExecuteAuthenticatedRequestForMultipartFormData(
-                                                Uri resourceUrl, IEnumerable<KeyValuePair<string, object>> postData)
+        public string ExecuteAuthenticatedRequestForMultipartFormData(Uri resourceUrl, 
+                                                                      IDictionary<string, object> postData)
         {
             try
             {
@@ -821,7 +838,7 @@ namespace Mirai.Social.Twitter.Core
 
         public string ExecuteUnauthenticatedRequest(Uri resourceUri,
                                                     HttpMethod httpMethod = HttpMethod.Get,
-                                                    IEnumerable<KeyValuePair<string, string>> postData = null)
+                                                    IDictionary<string, string> postData = null)
         {
             try
             {
@@ -864,7 +881,7 @@ namespace Mirai.Social.Twitter.Core
                 var response    = this.ExecuteUnauthenticatedRequest(uriBuilder.Uri);
                 config          = JsonConvert.DeserializeObject<TwitterConfiguration>(response);
             }
-            catch (WebException e)
+            catch (WebException)
             {
             }
 

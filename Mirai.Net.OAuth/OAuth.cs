@@ -169,7 +169,7 @@ namespace Mirai.Net.OAuth
         }
 
         /// <summary>
-        /// 
+        ///  
         /// </summary>
         public bool Authenticated
         {
@@ -276,14 +276,18 @@ namespace Mirai.Net.OAuth
         #region Public Methods
 
         /// <summary>
-        /// Acquires the access token for the non Pin-based flow authentication.
+        /// Processes the user authorization for the non Pin-based flow authentication.
         /// </summary>
         /// <param name="postData"></param>
-        public void AcquireAccessToken(IEnumerable<KeyValuePair<string, string>> postData)
+        /// <returns>Returns the extra, non-OAuth parameters.</returns>
+        /// <exception cref="OAuthResponseFormatException"></exception>
+        /// <exception cref="OAuthTokenVerificationException"></exception>
+        public Dictionary<string, string> ProcessUserAuthorization(IDictionary<string, string> postData)
         {
             var httpContext = HttpContext.Current;
             if (httpContext == null)
-                throw new InvalidOperationException("This method can only be used in the non Pin-based flow authentication.");
+                throw new InvalidOperationException(
+                    "This method can only be used in the non Pin-based flow authentication.");
             
             var requestUri = httpContext.Request.Url.ToString();
 
@@ -291,18 +295,18 @@ namespace Mirai.Net.OAuth
             var match   = Regex.Match(requestUri, pattern, RegexOptions.IgnoreCase);
 
             if (!match.Success)
-                throw new OAuthResponseFormatException("The server's request is unrecognized.", requestUri);
+                throw new OAuthResponseFormatException("The server returns a unrecognized content.", requestUri);
 
             var token = match.Groups["token"].Value;
             if (!token.Equals(this.Token, StringComparison.Ordinal))
                 throw new OAuthTokenVerificationException("Request token validation failed.", this.Token, token);
 
             var oauthVerifier = match.Groups["verifier"].Value;
-            this.AcquireAccessToken(oauthVerifier, postData);
+            return this.ProcessUserAuthorization(oauthVerifier, postData);
         }
 
         /// <summary>
-        /// Acquires the access token.
+        /// Processes the user authorization.
         /// </summary>
         /// <param name="oauthVerifier">
         /// The oauth_verifier parameter.
@@ -310,6 +314,7 @@ namespace Mirai.Net.OAuth
         /// <param name="postData">
         /// The extra postData. This parameter is ignored when HTTP method is set to GET / HEAD.
         /// </param>
+        /// <returns>Returns the extra, non-OAuth parameters.</returns>
         /// <exception cref="ArgumentException">
         /// Thrown when oauthVerifier parameter is not specified.
         /// </exception>
@@ -319,7 +324,8 @@ namespace Mirai.Net.OAuth
         /// <exception cref="InvalidOperationException">
         /// Thrown when the currently stored token is not a request token.
         /// </exception>
-        public void AcquireAccessToken(string oauthVerifier, IEnumerable<KeyValuePair<string, string>> postData = null)
+        public Dictionary<string, string> ProcessUserAuthorization(string oauthVerifier, 
+                                                                   IDictionary<string, string> postData = null)
         {
             string oauthParamsString;
             this.PrepareToAcquireAccessToken(oauthVerifier, postData, out oauthParamsString);
@@ -334,22 +340,28 @@ namespace Mirai.Net.OAuth
             var pattern = @"oauth_token=(?<token>[^&]+)&oauth_token_secret=(?<secret>[^&]+)";
             var match   = Regex.Match(result, pattern, RegexOptions.IgnoreCase);
             if (!match.Success)
-            {
                 throw new OAuthResponseFormatException("The server returns a unrecognized content.", result);
-            }
+
             this._ConsumerCredential.SetToken(match.Groups["token"].Value,
                                               match.Groups["secret"].Value,
                                               TokenType.AccessToken);
+
+            var extraData = result.Split('&')
+                                  .Where(s => !s.StartsWith("oauth_", StringComparison.OrdinalIgnoreCase))
+                                  .Select(s => s.Split('='))
+                                  .ToDictionary(nvp => nvp[0], nvp => nvp[1]);
+
+            return extraData;
         }
 
         /// <summary>
-        /// Acquires the request token.
+        /// Begins an OAuth authorization request. 
         /// </summary>
         /// <param name="oauthCallback">The oauth_callback parameter.</param>
         /// <param name="postData">
-        /// The extra postData. This parameter is ignored when HTTP method is set to GET / HEAD.
+        /// The extra parameters. This parameter is ignored when HTTP method is set to GET / HEAD.
         /// </param>
-        /// <returns></returns>
+        /// <returns>The URL to open a browser window to allow the user to provide authorization.</returns>
         /// <exception cref="ArgumentException">
         /// Thrown when callback hasn'postDataList specified.
         /// </exception>
@@ -358,7 +370,7 @@ namespace Mirai.Net.OAuth
         /// or
         /// the server returns false for the oauth_callback_confirmed parameter.
         /// </exception>
-        public Uri AcquireRequestToken(string oauthCallback, IEnumerable<KeyValuePair<string, string>> postData = null)
+        public Uri RequestUserAuthorization(string oauthCallback, IDictionary<string, string> postData = null)
         {
             string oauthParamsString;
             this.PrepareToAcquireRequestToken(oauthCallback, postData, out oauthParamsString);
@@ -426,7 +438,7 @@ namespace Mirai.Net.OAuth
         /// <param name="postData"></param>
         /// <returns></returns>
         public string ExecuteAuthenticatedRequestForMultipartFormData(Uri resourceUrl, 
-                                                                      IEnumerable<KeyValuePair<string, object>> postData)
+                                                                      IDictionary<string, object> postData)
         {
             string oauthParamsString;
             this.PrepareToExecuteAuthenticatedRequest(resourceUrl, HttpMethod.Post, null, true, out oauthParamsString);
@@ -449,7 +461,7 @@ namespace Mirai.Net.OAuth
         /// <returns></returns>
         public string ExecuteUnauthenticatedRequest(Uri resourceUri,
                                                     HttpMethod httpMethod = HttpMethod.Get,
-                                                    IEnumerable<KeyValuePair<string, string>> postData = null)
+                                                    IDictionary<string, string> postData = null)
         {
             var webRequest = this.PrepareRequest(resourceUri, httpMethod, null, postData);
 
@@ -492,7 +504,7 @@ namespace Mirai.Net.OAuth
             return result;
         }
 
-        private static byte[] GenerateMultipartFormData(IEnumerable<KeyValuePair<string, object>> postData, string boundary)
+        private static byte[] GenerateMultipartFormData(IDictionary<string, object> postData, string boundary)
         {
             if (String.IsNullOrEmpty(boundary))
                 throw new ArgumentException("The multipart boundary must be specified.", "boundary");
@@ -722,7 +734,7 @@ namespace Mirai.Net.OAuth
         }
 
         private static Dictionary<string, string> MergeInputParameters(Uri resourceUri, 
-                                                                       IEnumerable<KeyValuePair<string, string>> postData)
+                                                                       IDictionary<string, string> postData)
         {
             var inputParams = new Dictionary<string, string>();
 
@@ -737,7 +749,7 @@ namespace Mirai.Net.OAuth
 
             if (postData != null)
             {
-                foreach (KeyValuePair<string, string> kvp in postData)
+                foreach (var kvp in postData)
                 {
                     inputParams.Add(kvp.Key, kvp.Value);
                 }
@@ -763,7 +775,7 @@ namespace Mirai.Net.OAuth
         private HttpWebRequest PrepareRequest(Uri resourceUri,
                                               HttpMethod httpMethod,
                                               string protocolParamsString,
-                                              IEnumerable<KeyValuePair<string, string>> postData)
+                                              IDictionary<string, string> postData)
         {
             var webRequest          = this.PrepareRequestCore(resourceUri, httpMethod, protocolParamsString);
             webRequest.ContentType  = "application/x-www-form-urlencoded";
@@ -843,7 +855,7 @@ namespace Mirai.Net.OAuth
         private HttpWebRequest PrepareRequestForMultipartFormData(Uri resourceUri,
                                                                   HttpMethod httpMethod,
                                                                   string protocolParamsString,
-                                                                  IEnumerable<KeyValuePair<string, object>> postData,
+                                                                  IDictionary<string, object> postData,
                                                                   string boundary)
         {
             if (String.IsNullOrEmpty(boundary))
@@ -869,7 +881,7 @@ namespace Mirai.Net.OAuth
         }
 
         private void PrepareToAcquireAccessToken(string oauthVerifier,
-                                                 IEnumerable<KeyValuePair<string, string>> postData,
+                                                 IDictionary<string, string> postData,
                                                  out string protocolParamsString)
         {
             if (string.IsNullOrEmpty(oauthVerifier))
@@ -911,7 +923,7 @@ namespace Mirai.Net.OAuth
         }
 
         private void PrepareToAcquireRequestToken(string oauthCallback,
-                                                  IEnumerable<KeyValuePair<string, string>> postData,
+                                                  IDictionary<string, string> postData,
                                                   out string protocolParamsString)
         {
             if (String.IsNullOrEmpty(oauthCallback))
@@ -956,7 +968,7 @@ namespace Mirai.Net.OAuth
 
         private void PrepareToExecuteAuthenticatedRequest(Uri resourceUri,
                                                           HttpMethod httpMethod,
-                                                          IEnumerable<KeyValuePair<string, string>> postData, 
+                                                          IDictionary<string, string> postData, 
                                                           bool isMultipart,
                                                           out string protocolParamsString)
         {

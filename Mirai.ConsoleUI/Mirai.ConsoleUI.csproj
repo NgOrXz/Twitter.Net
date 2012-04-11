@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mirai.Social.Twitter\Mirai.Social.Twitter.csproj">
-      <Project>{efa3b788-e7dd-4a24-8775-7a85bfe37a7f}</Project>
+      <Project>{EFA3B788-E7DD-4A24-8775-7A85BFE37A7F}</Project>
       <Name>Mirai.Social.Twitter</Name>
     </ProjectReference>
   </ItemGroup>

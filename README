@@ -1,7 +1,7 @@
 Usage:
     TwitterApi twitterApi = new TwitterApi("consumer key", "consumer secret");
-    twitterApi.AcquireRequestToken("oob");
-    twitterApi.AcquireAccessToken("verifier");
+    twitterApi.RequestUserAuthorization("oob");
+    twitterApi.ProcessUserAuthorization("oauth_verifier");
     twitterApi.TweetCommand.Update("Hello World!");
     
     --- OR ---

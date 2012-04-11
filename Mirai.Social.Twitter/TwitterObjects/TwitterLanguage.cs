@@ -26,12 +26,18 @@ namespace Mirai.Social.Twitter.TwitterObjects
     public sealed class TwitterLanguage : TwitterObject
     {
         [JsonProperty("code")]
-        public string Code { get; set; }
+        public string Code { get; internal set; }
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; internal set; }
 
         [JsonProperty("status")]
-        public string Status { get; set; }
+        public string Status { get; internal set; }
+        
+        
+        internal TwitterLanguage()
+        {
+        
+        }
     }
 }

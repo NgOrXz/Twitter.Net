@@ -33,6 +33,8 @@ namespace TwitterDemo
         internal TwitterTweet[] HomeTimeline;
         internal string SinceId;
 
+        internal Timer TimelineTimer;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -43,6 +45,14 @@ namespace TwitterDemo
                                         keys.Element("consumerSecret").Value,
                                         keys.Element("token").Value,
                                         keys.Element("tokenSecret").Value);
+
+            this.TimelineTimer = new Timer(state =>
+                                    {
+                                        var task = new Task(this.UpdateHomeTimeline);
+                                        task.Start((TaskScheduler)state);
+
+                                    }, TaskScheduler.FromCurrentSynchronizationContext(), 90000, 90000);
+
 
             this.RefreshHomeTimeline.Click += (sender, args) =>
                 {
@@ -83,15 +93,6 @@ namespace TwitterDemo
                 {
                     this.TwitterApi.TweetCommand.Update(this.NewTweetBox.Text); 
                     this.NewTweetBox.Clear();
-
-                    var t = new Timer(state =>
-                        {
-                            var task = new Task(this.UpdateHomeTimeline);
-                            task.Start((TaskScheduler)state);
-                            
-                        }, TaskScheduler.FromCurrentSynchronizationContext(), 3000, Timeout.Infinite);
-
-                    GC.KeepAlive(t);
                 };
         }
 
