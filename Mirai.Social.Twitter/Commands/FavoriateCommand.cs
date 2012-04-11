@@ -27,7 +27,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
@@ -78,6 +77,11 @@ namespace Mirai.Social.Twitter.Commands
             return twitterTweet;
         }
 
+        /// <summary>
+        /// Un-favorites the status specified in the ID parameter as the authenticating user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Returns the un-favorited status in the requested format when successful. </returns>
         public TwitterTweet Destroy(string id)
         {
             if (!this.TwitterApi.Authenticated)
@@ -96,7 +100,7 @@ namespace Mirai.Social.Twitter.Commands
 
         /// <summary>
         /// Returns the specified number of most recent favorite statuses for the authenticating dm or 
-        /// dm specified by the idOrScreenName parameter 
+        /// dm specified by the idOrScreenName parameter.
         /// </summary>
         /// <param name="idOrScreenName">
         /// The ID or screen name of the dm for whom to request a list of favorite statuses.

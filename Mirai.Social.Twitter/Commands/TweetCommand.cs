@@ -28,7 +28,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
@@ -323,8 +322,7 @@ namespace Mirai.Social.Twitter.Commands
         /// <param name="possiblySensitive"></param>
         /// <param name="mediaList"></param>
         /// <returns></returns>
-        public TwitterTweet UpdateWithMedia(
-                                            string status,
+        public TwitterTweet UpdateWithMedia(string status,
                                             string inReplyToStatusId = null,
                                             string latitude = null,
                                             string longitude = null,
@@ -341,39 +339,39 @@ namespace Mirai.Social.Twitter.Commands
             if (!this.TwitterApi.Authenticated)
                 throw new InvalidOperationException("Authentication required.");
 
-            var postData = new List<KeyValuePair<string, object>>
+            var postData = new Dictionary<string, object>
                 {
-                    new KeyValuePair<string, object>("status", status),
-                    new KeyValuePair<string, object>(
-                        "display_coordinates", displayCoordinates ? "true" : "false"),
-                    new KeyValuePair<string, object>(
-                        "possibly_sensitive", possiblySensitive ? "true" : "false")
+                    { "status", status },
+                    { "display_coordinates", displayCoordinates ? "true" : "false" },
+                    { "possibly_sensitive", possiblySensitive ? "true" : "false" }
                 };
 
             if (!string.IsNullOrEmpty(inReplyToStatusId))
             {
-                postData.Add(new KeyValuePair<string, object>("in_reply_to_status_id", inReplyToStatusId));
+                postData.Add("in_reply_to_status_id", inReplyToStatusId);
             }
 
             if (!string.IsNullOrEmpty(latitude))
             {
-                postData.Add(new KeyValuePair<string, object>("lat", latitude));
+                postData.Add("lat", latitude);
             }
 
             if (!string.IsNullOrEmpty(longitude))
             {
-                postData.Add(new KeyValuePair<string, object>("long", longitude));
+                postData.Add("long", longitude);
             }
 
             if (!string.IsNullOrEmpty(placeId))
             {
-                postData.Add(new KeyValuePair<string, object>("place_id", placeId));
+                postData.Add("place_id", placeId);
             }
 
             if (mediaList != null)
             {
-                postData.AddRange(mediaList.Take(this.TwitterApi.Configuration.MaxMediaPerUpload)
-                                           .Select(media => new KeyValuePair<string, object>("media[]", media)));
+                foreach (var media in mediaList.Take(this.TwitterApi.Configuration.MaxMediaPerUpload))
+                {
+                    postData.Add("media[]", media);
+                }
             }
 
             var uriBuilder  = new UriBuilder(this._UploadCommandBaseUri);

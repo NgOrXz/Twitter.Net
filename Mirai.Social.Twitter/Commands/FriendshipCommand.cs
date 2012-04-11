@@ -26,14 +26,12 @@ namespace Mirai.Social.Twitter.Commands
     using System.Linq;
     using System.Text;
 
+    using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
-    using Mirai.Net.OAuth;
-    using Mirai.Social.Twitter.Core;
 
     public sealed class FriendshipCommand : TwitterCommandBase
     {

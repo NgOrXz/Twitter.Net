@@ -27,7 +27,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;
@@ -41,6 +40,12 @@ namespace Mirai.Social.Twitter.Commands
 
         #region Public Methods
 
+        /// <summary>
+        /// Destroys the direct message specified in the required ID parameter.
+        /// </summary>
+        /// <param name="id">The ID of the direct message to delete.</param>
+        /// <param name="includeEntities"></param>
+        /// <returns></returns>
         public TwitterDirectMessage Destroy(string id, bool includeEntities = true)
         {
             if (String.IsNullOrEmpty(id))
@@ -62,6 +67,14 @@ namespace Mirai.Social.Twitter.Commands
             return dm;
         }
 
+        /// <summary>
+        /// Sends a new direct message to the specified user from the authenticating user.
+        /// </summary>
+        /// <param name="screenName"></param>
+        /// <param name="text"></param>
+        /// <param name="userId"></param>
+        /// <param name="wrapLinks"></param>
+        /// <returns></returns>
         public TwitterDirectMessage New(string screenName, string text, string userId = null, bool wrapLinks = true)
         {
             if (!this.TwitterApi.Authenticated)
@@ -98,6 +111,16 @@ namespace Mirai.Social.Twitter.Commands
             return dm;
         }
 
+        /// <summary>
+        /// Returns the 20 most recent direct messages sent to the authenticating user.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="skipStatus"></param>
+        /// <returns></returns>
         public TwitterDirectMessage[] RetrieveDirectMessages(int count = 20, string sinceId = null, 
                                                              string maxId = null, int page = 1, 
                                                              bool includeEntities = true, bool skipStatus = false)
@@ -125,6 +148,15 @@ namespace Mirai.Social.Twitter.Commands
             return directMessages;
         }
 
+        /// <summary>
+        /// Returns the 20 most recent direct messages sent by the authenticating user.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="includeEntities"></param>
+        /// <returns></returns>
         public TwitterDirectMessage[] Sent(int count = 20, string sinceId = null,
                                                              string maxId = null, int page = 1,
                                                              bool includeEntities = true)
@@ -151,6 +183,11 @@ namespace Mirai.Social.Twitter.Commands
             return directMessages;
         }
 
+        /// <summary>
+        /// Returns a single direct message, specified by an id parameter.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public TwitterDirectMessage Show(string id)
         {
             if (String.IsNullOrEmpty(id))

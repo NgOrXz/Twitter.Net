@@ -24,7 +24,6 @@ namespace Mirai.Social.Twitter.Commands
     using System;
 
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
     using Newtonsoft.Json;

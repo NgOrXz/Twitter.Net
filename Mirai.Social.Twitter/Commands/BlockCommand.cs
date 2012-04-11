@@ -28,7 +28,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
 
@@ -53,8 +52,8 @@ namespace Mirai.Social.Twitter.Commands
         /// <summary>
         /// Blocks the user specified in the ID parameter for the authenticating user. 
         /// </summary>
-        /// <param name="screenName"></param>
-        /// <param name="userId"></param>
+        /// <param name="screenName">The screen name of the potentially blocked user. </param>
+        /// <param name="userId">The ID of the potentially blocked user. </param>
         /// <param name="includeEntities"></param>
         /// <param name="skipStatus"></param>
         /// <returns></returns>
@@ -83,7 +82,7 @@ namespace Mirai.Social.Twitter.Commands
         /// <param name="userId"></param>
         /// <param name="includeEntities"></param>
         /// <param name="skipStatus"></param>
-        /// <returns>Return the blocked user if a block exists. Otherwise, null.</returns>
+        /// <returns>Returns the blocked user if a block exists. Otherwise, null.</returns>
         public TwitterUser IsBlocked(string screenName, string userId = null, bool includeEntities = true, bool skipStatus = false)
         {
             if (String.IsNullOrEmpty(screenName) && String.IsNullOrEmpty(userId))

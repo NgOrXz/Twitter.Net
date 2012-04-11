@@ -26,7 +26,6 @@ namespace Mirai.Social.Twitter.Commands
 
     using Mirai.Net.OAuth;
     using Mirai.Social.Twitter.Core;
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
 

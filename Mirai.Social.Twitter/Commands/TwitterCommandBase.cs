@@ -21,13 +21,6 @@
 
 namespace Mirai.Social.Twitter.Commands
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Runtime.ExceptionServices;
-
-    using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.Core;
 
     public abstract class TwitterCommandBase

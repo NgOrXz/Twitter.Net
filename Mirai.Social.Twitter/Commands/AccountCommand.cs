@@ -31,6 +31,7 @@ namespace Mirai.Social.Twitter.Commands
     using Mirai.Social.Twitter.Core;
     using Mirai.Social.Twitter.TwitterObjects;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -99,7 +100,7 @@ namespace Mirai.Social.Twitter.Commands
                                 this.TwitterApi.ExecuteAuthenticatedRequest(uri, HttpMethod.Get, null) :
                                 this.TwitterApi.ExecuteUnauthenticatedRequest(uri);
 
-            var rateLimit   = TwitterObject.Parse<TwitterRateLimitStatus>(response);
+            var rateLimit   = JsonConvert.DeserializeObject<TwitterRateLimitStatus>(response);
 
             return rateLimit;
         }
@@ -226,12 +227,12 @@ namespace Mirai.Social.Twitter.Commands
             if (fileName != null && !imageType.Contains(Path.GetExtension(fileName), StringComparer.OrdinalIgnoreCase))
                 throw new ArgumentException("Invalid image format.", "fileName");
 
-            var postData = new List<KeyValuePair<string, object>>
+            var postData = new Dictionary<string, object>
                 {
-                    new KeyValuePair<string, object>("tile", tile ? "true" : "false" ),
-                    new KeyValuePair<string, object>("include_entities", includeEntities ? "true" : "false"),
-                    new KeyValuePair<string, object>("skip_status", skipStatus ? "true" : "false"),
-                    new KeyValuePair<string, object>("use", use ? "true" : "false")
+                    { "tile", tile ? "true" : "false" },
+                    { "include_entities", includeEntities ? "true" : "false" },
+                    { "skip_status", skipStatus ? "true" : "false" },
+                    { "use", use ? "true" : "false" }
                 };
 
             if (fileName != null)
@@ -248,7 +249,7 @@ namespace Mirai.Social.Twitter.Commands
                     fs.Read(data, 0, data.Length);
                 }
 
-                postData.Add(new KeyValuePair<string, object>("image", Convert.ToBase64String(data)));
+                postData.Add("image", Convert.ToBase64String(data));
             }
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile_background_image.json");
@@ -340,11 +341,11 @@ namespace Mirai.Social.Twitter.Commands
                 fs.Read(data, 0, data.Length);
             }
 
-            var postData = new List<KeyValuePair<string, object>>
+            var postData = new Dictionary<string, object>
                 {
-                    new KeyValuePair<string, object>("image", Convert.ToBase64String(data)),
-                    new KeyValuePair<string, object>("include_entities", includeEntities ? "true" : "false"),
-                    new KeyValuePair<string, object>("skip_status", skipStatus ? "true" : "false")
+                    { "image", Convert.ToBase64String(data) },
+                    { "include_entities", includeEntities ? "true" : "false" },
+                    { "skip_status", skipStatus ? "true" : "false" }
                 };
 
             var uri = new Uri(this.CommandBaseUri + "/update_profile_image.json");
