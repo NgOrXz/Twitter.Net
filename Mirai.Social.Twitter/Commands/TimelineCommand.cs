@@ -60,6 +60,18 @@ namespace Mirai.Social.Twitter.Commands
 
         #region Public Methods
 
+        /// <summary>
+        /// Returns the 20 most recent retweets posted by the authenticating user. 
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <returns></returns>
         public TwitterTweet[] RetweetedByMe(int count = 20, string sinceId = null, string maxId = null,
                                             int page = 1, bool trimUser = true, bool includeRetweets = true,
                                             bool includeEntities = true, bool excludeReplies = true)
@@ -71,6 +83,18 @@ namespace Mirai.Social.Twitter.Commands
                                          page, trimUser, includeRetweets, includeEntities, excludeReplies);
         }
 
+        /// <summary>
+        /// Returns the 20 most recent retweets posted by users the authenticating user follow.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <returns></returns>
         public TwitterTweet[] RetweetedToMe(int count = 20, string sinceId = null, string maxId = null,
                                             int page = 1, bool trimUser = true, bool includeRetweets = true,
                                             bool includeEntities = true, bool excludeReplies = true)
@@ -82,6 +106,18 @@ namespace Mirai.Social.Twitter.Commands
                                          page, trimUser, includeRetweets, includeEntities, excludeReplies);
         }
 
+        /// <summary>
+        /// Returns the 20 most recent tweets of the authenticated user that have been retweeted by others.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <returns></returns>
         public TwitterTweet[] RetweetsOfMe(int count = 20, string sinceId = null, string maxId = null,
                                            int page = 1, bool trimUser = true, bool includeRetweets = true,
                                            bool includeEntities = true, bool excludeReplies = true)
@@ -93,6 +129,23 @@ namespace Mirai.Social.Twitter.Commands
                                          page, trimUser, includeRetweets, includeEntities, excludeReplies);
         }
 
+        /// <summary>
+        /// Returns the 20 most recent retweets posted by the specified user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="screenName"></param>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This method is identical to statuses/retweeted_by_me except you can choose the user to view. 
+        /// </remarks>
         public TwitterTweet[] RetweetedByUser(string userId = null, string screenName = null, int count = 20,
                                               string sinceId = null, string maxId = null,
                                               int page = 1, bool trimUser = true, bool includeRetweets = true,
@@ -102,6 +155,23 @@ namespace Mirai.Social.Twitter.Commands
                                          page, trimUser, includeRetweets, includeEntities, excludeReplies);
         }
 
+        /// <summary>
+        /// Returns the 20 most recent retweets posted by users the specified user follows. 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="screenName"></param>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This method is identical to statuses/retweeted_to_me except you can choose the user to view. 
+        /// </remarks>
         public TwitterTweet[] RetweetedToUser(string userId = null, string screenName = null, int count = 20,
                                               string sinceId = null, string maxId = null,
                                               int page = 1, bool trimUser = true, bool includeRetweets = true,
@@ -140,6 +210,19 @@ namespace Mirai.Social.Twitter.Commands
                                          contributorDetails);
         }
 
+        /// <summary>
+        /// Returns the 20 most recent mentions (status containing @username) for the authenticating user.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="sinceId"></param>
+        /// <param name="maxId"></param>
+        /// <param name="page"></param>
+        /// <param name="trimUser"></param>
+        /// <param name="includeRetweets"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="excludeReplies"></param>
+        /// <param name="contributorDetails"></param>
+        /// <returns></returns>
         public TwitterTweet[] RetrieveMentions(int count = 20, string sinceId = null, string maxId = null,
                                                int page = 1, bool trimUser = true, bool includeRetweets = true,
                                                bool includeEntities = true, bool excludeReplies = true,

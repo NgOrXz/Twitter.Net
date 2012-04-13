@@ -45,7 +45,7 @@ namespace Mirai.Social.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Favorites the status specified in the ID parameter as the authenticating dm. Returns the favorite 
+        /// Favorites the status specified in the ID parameter as the authenticating user. Returns the favorite 
         /// status when successful.
         /// </summary>
         /// <param name="id"></param>
@@ -99,11 +99,11 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns the specified number of most recent favorite statuses for the authenticating dm or 
-        /// dm specified by the idOrScreenName parameter.
+        /// Returns the specified number of most recent favorite statuses for the authenticating user or 
+        /// user specified by the idOrScreenName parameter.
         /// </summary>
         /// <param name="idOrScreenName">
-        /// The ID or screen name of the dm for whom to request a list of favorite statuses.
+        /// The ID or screen name of the user for whom to request a list of favorite statuses.
         /// </param>
         /// <param name="count">Specifies the number of records to retrieve. Must be less than or equal to 200. 
         /// Defaults to 20.

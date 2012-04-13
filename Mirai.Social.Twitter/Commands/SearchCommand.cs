@@ -46,6 +46,12 @@ namespace Mirai.Social.Twitter.Commands
 			this._CommandBaseUri = TwitterApi.SearchApiUri + "/" + "search";
 		}
 
+		/// <summary>
+		/// Returns tweets that match a specified query. 
+		/// </summary>
+		/// <param name="q"></param>
+		/// <param name="searchCommandOptions"></param>
+		/// <returns></returns>
 		public TwitterSearch Search(string q, SearchOptions searchCommandOptions)
 		{
 			if (String.IsNullOrEmpty(q))

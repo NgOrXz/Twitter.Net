@@ -174,7 +174,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// 
+        /// Runs a search for users similar to Find People button on Twitter.com.
         /// </summary>
         /// <param name="q">The user query to run against people user.</param>
         /// <param name="page"></param>

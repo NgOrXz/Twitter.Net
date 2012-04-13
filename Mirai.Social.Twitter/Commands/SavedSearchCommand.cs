@@ -43,6 +43,11 @@ namespace Mirai.Social.Twitter.Commands
 
         #region Public Methods
 
+        /// <summary>
+        /// Create a new saved search for the authenticated user. A user may only have 25 saved searches. 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public TwitterSavedSearch Create(string query)
         {
             if (String.IsNullOrEmpty(query))
@@ -61,6 +66,11 @@ namespace Mirai.Social.Twitter.Commands
             return savedSeach;
         }
 
+        /// <summary>
+        /// Destroys a saved search for the authenticating user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public TwitterSavedSearch Destroy(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -77,6 +87,10 @@ namespace Mirai.Social.Twitter.Commands
             return savedSeach;
         }
 
+        /// <summary>
+        /// Returns the authenticated user's saved search queries. 
+        /// </summary>
+        /// <returns></returns>
         public TwitterSavedSearch[] RetrieveSavedSearches()
         {
             if (!this.TwitterApi.Authenticated)
@@ -90,6 +104,11 @@ namespace Mirai.Social.Twitter.Commands
             return savedSeaches;
         }
 
+        /// <summary>
+        /// Retrieve the information for the saved search represented by the given id. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public TwitterSavedSearch Show(string id)
         {
             if (String.IsNullOrEmpty(id))

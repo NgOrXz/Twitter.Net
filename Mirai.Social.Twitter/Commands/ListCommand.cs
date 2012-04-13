@@ -41,6 +41,13 @@ namespace Mirai.Social.Twitter.Commands
 
         #region Public Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="screenName"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public TwitterList AddMemberToListById(string listId, string screenName, string userId = null)
         {
             if (String.IsNullOrEmpty(listId))
@@ -53,6 +60,15 @@ namespace Mirai.Social.Twitter.Commands
                                          !String.IsNullOrEmpty(screenName) ? new[] { screenName } : null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="ownerScreenName"></param>
+        /// <param name="screenName"></param>
+        /// <param name="ownerId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public TwitterList AddMemberToListBySlug(string slug, string ownerScreenName, string screenName,
                                                  string ownerId, string userId = null)
         {
@@ -158,6 +174,13 @@ namespace Mirai.Social.Twitter.Commands
                                              userId, screenName, includeEntites, skipStatus);
         }
 
+        /// <summary>
+        /// Creates a new list for the authenticated user. Note that you can't create more than 20 lists per account. 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="mode"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public TwitterList CreateList(string name, TwitterListMode mode = TwitterListMode.Public, string description = null)
         {
             if (String.IsNullOrEmpty(name))
@@ -183,6 +206,11 @@ namespace Mirai.Social.Twitter.Commands
             return list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
         public TwitterList DestroyListById(string listId)
         {
             if (String.IsNullOrEmpty(listId))
@@ -191,6 +219,13 @@ namespace Mirai.Social.Twitter.Commands
             return this.DestroyList(listId, null, null, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="ownerScreenName"></param>
+        /// <param name="ownerId"></param>
+        /// <returns></returns>
         public TwitterList DestroyListBySlug(string slug, string ownerScreenName, string ownerId = null)
         {
             if (String.IsNullOrEmpty(slug))
@@ -267,6 +302,13 @@ namespace Mirai.Social.Twitter.Commands
             return lists;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="userIds"></param>
+        /// <param name="screenNames"></param>
+        /// <returns></returns>
         public TwitterList RemoveMembersFromListById(string listId, IEnumerable<string> userIds, 
                                                      IEnumerable<string> screenNames)
         {
@@ -278,6 +320,15 @@ namespace Mirai.Social.Twitter.Commands
             return this.AddRemoveMembers("/members/destroy_all.json", listId, null, null, null, userIds, screenNames);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="ownerScreenName"></param>
+        /// <param name="screenNames"></param>
+        /// <param name="ownerId"></param>
+        /// <param name="userIds"></param>
+        /// <returns></returns>
         public TwitterList RemoveMembersFromListBySlug(string slug, string ownerScreenName, IEnumerable<string> screenNames,
                                                        string ownerId = null, IEnumerable<string> userIds = null)
         {
@@ -325,6 +376,14 @@ namespace Mirai.Social.Twitter.Commands
                                          !String.IsNullOrEmpty(screenName) ? new[] { screenName } : null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="cursor"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="skipStatus"></param>
+        /// <returns></returns>
         public TwitterCursorPagedUserCollection RetrieveMembersById(string listId, string cursor = "-1",
                                                                     bool includeEntities = true, bool skipStatus = false)
         {
@@ -334,6 +393,16 @@ namespace Mirai.Social.Twitter.Commands
             return this.RetrieveUsers("members", listId, null, null, null, cursor, includeEntities, skipStatus);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="ownerScreenName"></param>
+        /// <param name="ownerId"></param>
+        /// <param name="cursor"></param>
+        /// <param name="includeEntities"></param>
+        /// <param name="skipStatus"></param>
+        /// <returns></returns>
         public TwitterCursorPagedUserCollection RetrieveMembersBySlug(string slug, string ownerScreenName, 
                                                                       string ownerId = null, string cursor = "-1", 
                                                                       bool includeEntities = true, bool skipStatus = false)

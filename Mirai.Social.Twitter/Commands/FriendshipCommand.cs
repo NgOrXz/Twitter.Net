@@ -47,11 +47,11 @@ namespace Mirai.Social.Twitter.Commands
         #region Public Methods
 
         /// <summary>
-        /// Allows the authenticating users to follow the dm specified in the ID parameter.
+        /// Allows the authenticating users to follow the user specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
-        /// <param name="follow">Enable notifications for the target dm.</param>
+        /// <param name="follow">Enable notifications for the target user.</param>
         /// <returns></returns>
         public TwitterUser Create(string screenName, string userId = null, bool follow = true)
         {
@@ -85,12 +85,12 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows the authenticating users to unfollow the dm specified in the ID parameter.
+        /// Allows the authenticating users to unfollow the user specified in the ID parameter.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
         /// <param name="includeEntities"></param>
-        /// <returns>Returns the unfollowed dm when successful.</returns>
+        /// <returns>Returns the unfollowed user when successful.</returns>
         public TwitterUser Destroy(string screenName, string userId = null, bool includeEntities = true)
         {
             if (!this.TwitterApi.Authenticated)
@@ -147,7 +147,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every dm the specified dm is following.
+        /// Returns an array of numeric IDs for every user the specified user is following.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -159,7 +159,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every dm following the specified dm.
+        /// Returns an array of numeric IDs for every user following the specified user.
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
@@ -171,7 +171,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every dm who has a pending request to follow the authenticating dm.
+        /// Returns an array of numeric IDs for every user who has a pending request to follow the authenticating user.
         /// </summary>
         /// <param name="cursor"></param>
         /// <returns></returns>
@@ -181,7 +181,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of numeric IDs for every protected dm for whom the authenticating dm has a pending 
+        /// Returns an array of numeric IDs for every protected user for whom the authenticating user has a pending 
         /// follow request.
         /// </summary>
         /// <param name="cursor"></param>
@@ -192,7 +192,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Returns an array of user_ids that the currently authenticated dm does not want to see retweets from.
+        /// Returns an array of user_ids that the currently authenticated user does not want to see retweets from.
         /// </summary>
         /// <returns></returns>
         public string[] RetrieveNoRetweetIds()
@@ -248,7 +248,7 @@ namespace Mirai.Social.Twitter.Commands
         }
 
         /// <summary>
-        /// Allows one to enable or disable retweets and device notifications from the specified dm. 
+        /// Allows one to enable or disable retweets and device notifications from the specified user. 
         /// </summary>
         /// <param name="screenName"></param>
         /// <param name="userId"></param>
